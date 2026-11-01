@@ -23,6 +23,7 @@
     <button data-t="tplan">계획 도면</button>
     <button data-t="tcase">비슷한 집 사례</button>
     <button data-t="tnote">정리 · 확인할 것</button>
+    <button data-t="telem">인테리어 요소 사전</button>
   </nav>
 </header>
 
@@ -87,6 +88,7 @@
     </ul>
   </div>
 </section>
+<section id="telem" class="tab"><article id="elem" class="notes md">불러오는 중…</article></section>
 </main>
 
 <div id="lightbox"><img></div>
@@ -107,6 +109,8 @@ document.getElementById('cases').innerHTML=CASES.map(([img,t,u,b])=>`<article><h
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));window.dispatchEvent(new Event('resize'));});
 const lb=document.getElementById('lightbox');document.addEventListener('click',e=>{if(e.target.matches('.cards img,.cases img')){lb.querySelector('img').src=e.target.src;lb.classList.add('on');}else if(e.target.closest('#lightbox'))lb.classList.remove('on');});
 </script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script>fetch("elements.md?v=1").then(r=>r.text()).then(t=>{document.getElementById("elem").innerHTML=marked.parse(t);document.querySelectorAll("#elem a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script type="module" src="js/app.js?v=10"></script>
 </body>
 </html>
