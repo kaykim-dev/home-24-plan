@@ -7,6 +7,7 @@ const S = 0.001;
 let root;
 export const CEIL_ONLY = [];
 export const WALLS = [];
+const CUR_SEGS = [];
 let tagNext = null;
 const matCache = new Map();
 
@@ -172,7 +173,9 @@ function cabinet(g, W, D, z0, H, o = {}) {
     const cols = isDrawer ? (o.drawerCols || 1) : n; const w = W / cols;
     for (let i = 0; i < cols; i++) {
       const x = -W / 2 + i * w;
+      const isMir = !isDrawer && o.mirror && o.mirror.includes(i);
       B(x + 1.5, D / 2 - 19, x + w - 1.5, D / 2, zz + 1.5, zz + rh - 1.5, door, 2, g);
+      if (isMir) { B(x + 40, D / 2, x + w - 40, D / 2 + 6, zz + 120, zz + rh - 120, M('#dfe6e9', { rough: 0.04, metal: 0.3 }), 2, g); }
       if (o.handle === 'bar' || o.handle === 'brass') {
         const m = o.handle === 'brass' ? M('#b8955a', { rough: 0.3, metal: 0.9 }) : BLACKMETAL();
         if (isDrawer) B(x + w / 2 - 80, D / 2, x + w / 2 + 80, D / 2 + 22, zz + rh - 60, zz + rh - 48, m, 4, g);
@@ -186,27 +189,22 @@ function cabinet(g, W, D, z0, H, o = {}) {
 }
 function countertop(x1, y1, x2, y2, z, col) { return B(x1, y1, x2, y2, z, z + 30, M(col, { rough: 0.25 }), 3); }
 
-function sofaBanquette(T) {
+function sofaBanquette(T) { // ㄱ자 붙박이 소파: 가로(전실 벽 앞) 0~1050, 세로(왼쪽 벽) 6550~8350
   const base = M(T.base, { rough: 0.7 }), seat = M(T.seat, { tex: 'fabric', rough: 0.95 }), back = M(T.back, { tex: 'fabric', rough: 0.95 });
-  const plinth = M(darker(T.base, 0.6));
-  // A: 전실 벽 앞 (등받이 북쪽, 앉는 방향 남)
-  B(20, 6040, 1230, 6500, 0, 80, plinth); B(0, 6000, 1250, 6550, 80, 330, base, 6);
-  B(0, 6550, 550, 8450, 80, 330, base, 6); B(20, 6550, 510, 8430, 0, 80, plinth);
-  // 서랍 손잡이 홈
-  for (const [a, b] of [[30, 600], [650, 1220]]) B(a, 6548, b, 6552, 300, 312, M('#555'), 0);
-  for (const [a, b] of [[6580, 7480], [7530, 8420]]) B(548, a, 552, b, 300, 312, M('#555'), 0);
-  // 좌판 쿠션 (두께 100, 좌판 높이 ~430)
-  for (const [a, b] of [[170, 700], [710, 1245]]) B(a, 6150, b, 6545, 330, 435, seat, 45);
-  for (const [a, b] of [[6555, 7180], [7190, 7815], [7825, 8445]]) B(160, a, 545, b, 330, 435, seat, 45);
+  const plinth = M(darker(T.base, 0.6)); const AX = 1050, BY = 8350;
+  B(20, 6040, AX - 20, 6500, 0, 80, plinth); B(0, 6000, AX, 6550, 80, 330, base, 6);
+  B(0, 6550, 550, BY, 80, 330, base, 6); B(20, 6550, 510, BY - 20, 0, 80, plinth);
+  for (const [a, b] of [[30, 520], [560, AX - 30]]) B(a, 6548, b, 6552, 300, 312, M('#555'), 0);
+  for (const [a, b] of [[6580, 7430], [7470, BY - 30]]) B(548, a, 552, b, 300, 312, M('#555'), 0);
+  for (const [a, b] of [[170, 610], [620, AX - 5]]) B(a, 6150, b, 6545, 330, 435, seat, 45);
+  for (const [a, b] of [[6555, 7140], [7150, 7740], [7750, BY - 5]]) B(160, a, 545, b, 330, 435, seat, 45);
   B(5, 6150, 165, 6545, 330, 435, seat, 45);
-  // 등쿠션 (뒤로 살짝 기움)
-  for (const [a, b] of [[210, 700], [710, 1195]]) { const m = B(a, 6060, b, 6215, 440, 860, back, 60); m.rotation.x = -0.12; }
-  for (const [a, b] of [[6230, 7180], [7190, 7815], [7825, 8440]]) { const m = B(55, a, 210, b, 440, 860, back, 60); m.rotation.z = 0.12; }
-  const corner = B(55, 6060, 205, 6215, 440, 860, back, 50);
-  // 쿠션
+  for (const [a, b] of [[210, 610], [620, AX - 45]]) { const m = B(a, 6060, b, 6215, 440, 860, back, 60); m.rotation.x = -0.12; }
+  for (const [a, b] of [[6230, 7140], [7150, 7740], [7750, BY - 10]]) { const m = B(55, a, 210, b, 440, 860, back, 60); m.rotation.z = 0.12; }
+  B(55, 6060, 205, 6215, 440, 860, back, 50);
   const acc = M(T.acc, { tex: 'fabric', rough: 0.95 }), acc2 = M(mixc(T.acc, '#ffffff', 0.5), { tex: 'fabric' });
-  let p = B(230, 6180, 640, 6320, 435, 820, acc, 90); p.rotation.x = -0.25; p.rotation.y = 0.15;
-  p = B(180, 7900, 320, 8300, 435, 800, acc2, 90); p.rotation.z = 0.25; p.rotation.y = -0.1;
+  let p = B(230, 6180, 600, 6320, 435, 800, acc, 90); p.rotation.x = -0.25; p.rotation.y = 0.15;
+  p = B(180, 7850, 320, 8250, 435, 800, acc2, 90); p.rotation.z = 0.25; p.rotation.y = -0.1;
 }
 function table(x1, y1, x2, y2, T, h = 740, legInset = 80) {
   B(x1, y1, x2, y2, h - 32, h, T.stone ? M(T.table, { rough: 0.25 }) : M(T.table, { tex: 'grain', rough: 0.45 }), 6);
@@ -323,7 +321,7 @@ function nightstand(cx, cy, T, lampOn = true) {
 function wardrobe(x1, y1, x2, y2, facing, T, o = {}) {
   const W = facing === 'N' || facing === 'S' ? x2 - x1 : y2 - y1, D = facing === 'N' || facing === 'S' ? y2 - y1 : x2 - x1;
   const g = grp((x1 + x2) / 2, (y1 + y2) / 2, facing);
-  cabinet(g, W, D, o.z0 ?? 0, o.H ?? CEIL, { color: o.color || T.tall, doors: o.doors, handle: o.handle || 'bar', toe: o.toe, drawers: o.drawers, drawerCols: o.drawerCols, wood: o.wood, gloss: o.gloss });
+  cabinet(g, W, D, o.z0 ?? 0, o.H ?? CEIL, { color: o.color || T.tall, doors: o.doors, handle: o.handle || 'bar', toe: o.toe, drawers: o.drawers, drawerCols: o.drawerCols, wood: o.wood, gloss: o.gloss, mirror: o.mirror });
   return g;
 }
 function desk(x1, y1, x2, y2, T, chairFacing = 'N') {
@@ -334,7 +332,7 @@ function desk(x1, y1, x2, y2, T, chairFacing = 'N') {
 function officeChair(cx, cy, facing, col) {
   const g = grp(cx, cy, facing);
   const m = M(col, { tex: 'fabric', rough: 0.95 }), k = M('#2b2b2b', { rough: 0.5, metal: .3 });
-  for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2; const s = addMesh(new THREE.BoxGeometry(0.3, 0.02, 0.03), k, g); s.position.set(Math.cos(a) * 0.15, 0.06, Math.sin(a) * 0.15); s.rotation.y = -a; const w = addMesh(new THREE.SphereGeometry(0.025, 8, 6), k, g); w.position.set(Math.cos(a) * 0.29, 0.025, Math.sin(a) * 0.29); }
+  for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2; const s = addMesh(new THREE.BoxGeometry(0.26, 0.02, 0.03), k, g); s.position.set(Math.cos(a) * 0.12, 0.06, Math.sin(a) * 0.12); s.rotation.y = -a; const w = addMesh(new THREE.SphereGeometry(0.022, 8, 6), k, g); w.position.set(Math.cos(a) * 0.24, 0.022, Math.sin(a) * 0.24); }
   const p = addMesh(new THREE.CylinderGeometry(0.02, 0.02, 0.38, 10), k, g); p.position.y = 0.26;
   B(-230, -220, 230, 220, 440, 510, m, 30, g);
   const bk = B(-210, -260, 210, -200, 560, 960, m, 40, g); bk.rotation.x = -0.15;
@@ -512,25 +510,25 @@ function kidsBookshelf(x1, y1, x2, y2, H, T) { // 긴 아기 책장·장난감�
 }
 function floorSofa(T) { // 좌식 라운지 소파 (거실 확장부)
   const base = M(darker(T.seat, .8), { tex: 'fabric' }), seat = M(T.seat, { tex: 'fabric', rough: 1 }), back = M(T.back, { tex: 'fabric', rough: 1 });
-  B(150, 9750, 2750, 10430, 0, 120, base, 30);
-  for (let i = 0; i < 3; i++) B(170 + i * 860, 9760, 1010 + i * 860, 10200, 120, 260, seat, 50);
-  for (let i = 0; i < 3; i++) { const b = B(190 + i * 860, 10200, 990 + i * 860, 10420, 140, 560, back, 70); b.rotation.x = 0.18; }
-  for (const x of [250, 2300]) { const p = B(x, 9800, x + 380, 9950, 260, 600, M(T.acc, { tex: 'fabric' }), 70); p.rotation.y = x < 1000 ? 0.4 : -0.4; }
-  cyl(1650, 9380, 0, 330, 330, 350, M(T.table, { tex: T.stone ? undefined : 'grain', rough: T.stone ? .3 : .45 }), 48);
-  cyl(1560, 9360, 330, 420, 50, 45, M('#efe9de', { rough: .3 })); books(1650, 9330, 330, 3);
-  rug(250, 8900, 2700, 9800, T.rug || '#e8e0d4');
+  B(470, 9750, 2580, 10430, 0, 120, base, 30);
+  for (let i = 0; i < 3; i++) B(490 + i * 700, 9760, 1180 + i * 700, 10200, 120, 260, seat, 50);
+  for (let i = 0; i < 3; i++) { const b = B(510 + i * 700, 10200, 1160 + i * 700, 10420, 140, 560, back, 70); b.rotation.x = 0.18; }
+  for (const x of [540, 2120]) { const p = B(x, 9800, x + 380, 9950, 260, 600, M(T.acc, { tex: 'fabric' }), 70); p.rotation.y = x < 1000 ? 0.4 : -0.4; }
+  cyl(1650, 9420, 0, 330, 300, 320, M(T.table, { tex: T.stone ? undefined : 'grain', rough: T.stone ? .3 : .45 }), 48);
+  cyl(1560, 9400, 330, 420, 50, 45, M('#efe9de', { rough: .3 })); books(1650, 9370, 330, 3);
+  rug(450, 8900, 2600, 9800, T.rug || '#e8e0d4');
 }
 function floorLounge(T) { // 좌식 쿠션 + 라탄 라운지체어 (리조트)
-  rug(300, 9000, 2700, 10300, T.rug || '#e6dccb', false);
-  for (const [x, y, c] of [[520, 9700, T.acc], [1000, 10100, T.seat]]) { cyl(x, y, 0, 180, 300, 300, M(c, { tex: 'fabric' }), 32); cyl(x, y, 180, 200, 290, 270, M(mixc(c, '#ffffff', .2), { tex: 'fabric' }), 32); }
-  cyl(1600, 9700, 0, 330, 280, 300, M('#c9a77c', { tex: 'rattan' }), 32); cyl(1600, 9700, 330, 355, 330, 330, M(T.table, { tex: 'grain' }), 40);
+  rug(450, 9000, 2600, 10300, T.rug || '#e6dccb', false);
+  for (const [x, y, c] of [[720, 9700, T.acc], [1050, 10100, T.seat]]) { cyl(x, y, 0, 180, 300, 300, M(c, { tex: 'fabric' }), 32); cyl(x, y, 180, 200, 290, 270, M(mixc(c, '#ffffff', .2), { tex: 'fabric' }), 32); }
+  cyl(1600, 9550, 0, 330, 250, 270, M('#c9a77c', { tex: 'rattan' }), 32); cyl(1600, 9550, 330, 355, 280, 280, M(T.table, { tex: 'grain' }), 40);
   // 라탄 라운지체어
-  const g = grp(2350, 10050, 'N');
+  const g = grp(2265, 10020, 'N');
   B(-330, -300, 330, 320, 120, 360, M('#c9a77c', { tex: 'rattan' }), 40, g); B(-300, -280, 300, 300, 360, 430, M('#efe6d6', { tex: 'fabric' }), 40, g);
   const bk = B(-330, 220, 330, 330, 360, 900, M('#c9a77c', { tex: 'rattan' }), 40, g); bk.rotation.x = 0.25;
   for (const x of [-330, 300]) B(x, -300, x + 30, 320, 120, 600, M('#c9a77c', { tex: 'rattan' }), 10, g);
   for (const [x, y] of [[-300, -270], [270, -270], [-300, 290], [270, 290]]) B(x, y, x + 30, y + 30, 0, 120, M('#8a6a48'), 4, g);
-  plant(450, 10150, 0.9, 0, '#c9a77c'); plant(2620, 9450, 0.55, 0, '#e8e1d4');
+  plant(2850, 9760, 0.55, 0, '#c9a77c'); plant(560, 9250, 0.5, 0, '#e8e1d4');
 }
 function kidsWardrobe(x1, y1, x2, y2, facing, T) { // 아이 붙박이장: 위 장 + 가운데 옷걸이 문 + 아래 열린 칸(바구니)
   const W = facing === 'N' || facing === 'S' ? x2 - x1 : y2 - y1, D = facing === 'N' || facing === 'S' ? y2 - y1 : x2 - x1;
@@ -601,11 +599,19 @@ export function buildHouse(scene, T, V) {
   // 현관문
   B(-200, 4580, -150, 5380, 0, 2080, M(T.entryDoor || '#3d3d3d', { rough: 0.5 }), 4);
   B(-150, 5280, -110, 5300, 950, 1150, METAL(), 4);
-  // 앞쪽 일자 통창
-  wall(-220, 10500, 5900, 10650, 0, 450); wall(-220, 10500, 5900, 10650, 2150, CEIL); wall(5900, 10500, 6842, 10650);
-  { const fm = M('#f4f4f2', { rough: 0.4 }); for (const x of [0, 1460, 2900, 2960, 4400, 5850]) B(x, 10520, x + 50, 10600, 450, 2150, fm); B(0, 10520, 5900, 10600, 430, 460, fm); B(0, 10520, 5900, 10600, 2120, 2150, fm); const g = B(0, 10555, 5900, 10565, 450, 2150, GLASS()); g.castShadow = false; B(-20, 10440, 5920, 10520, 420, 450, M('#f2f0ea', { rough: 0.3 })); }
+  // 앞쪽 통창: 거실 450~2600 (양끝은 벽 + 키큰장), 안방 3176~5900
+  wall(-220, 10500, 450, 10650); wall(2600, 10500, 3176, 10650); wall(5900, 10500, 6842, 10650);
+  for (const [x1, x2, mids] of [[450, 2600, [1525]], [3176, 5900, [4540]]]) {
+    wall(x1, 10500, x2, 10650, 0, 450); wall(x1, 10500, x2, 10650, 2150, CEIL);
+    const fm = M('#f4f4f2', { rough: 0.4 });
+    for (const x of [x1, x2 - 50]) B(x, 10520, x + 50, 10600, 450, 2150, fm);
+    for (const x of mids) B(x - 25, 10520, x + 25, 10600, 450, 2150, fm);
+    B(x1, 10520, x2, 10600, 430, 460, fm); B(x1, 10520, x2, 10600, 2120, 2150, fm);
+    const g = B(x1, 10555, x2, 10565, 450, 2150, GLASS()); g.castShadow = false;
+    B(x1 - 10, 10440, x2 + 10, 10520, 420, 450, M('#f2f0ea', { rough: 0.3 }));
+  }
   for (const c of root.children) if (c.isMesh && c.position.z > 10.4) c.userData.wall = true;
-  windowLight(1450, 10380, 1300, 2700, 1600, 0, 2.2); windowLight(4300, 10380, 1300, 2200, 1600, 0, 1.8);
+  windowLight(1525, 10380, 1300, 2050, 1600, 0, 2.0); windowLight(4540, 10380, 1300, 2600, 1600, 0, 1.8);
   // 하리(상부 보)
   if (V.arch) archHari(0, 2900, 9255, 9330, T.wall); else B(0, 9255, 2900, 9330, 1980, CEIL, wallM);
   B(3264, 9317, 5672, 9540, 1980, CEIL, wallM);
@@ -680,33 +686,44 @@ export function buildHouse(scene, T, V) {
     B(10, 4500, 1190, 4520, 1225, 1230, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 })); B(10, 4490, 1190, 4520, 240, 245, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 }));
     cyl(300, 4380, 900, 1080, 50, 60, M('#cdbfa8', { rough: .4 })).userData.skip = true; B(700, 4300, 900, 4420, 900, 920, M('#2b2b2b', { rough: .3 }), 4);
     for (let i = 0; i < 3; i++) B(150 + i * 300, 4400, 400 + i * 300, 4520, 0, 90, M(['#5a5a5a', '#e8e1d6', '#9a7b62'][i]), 30); }
-  // 분리수거 적층 (40x40 통 5단, 거의 천장까지)
-  { const lid = ['#7ea6c9', '#9fbf8f', '#e2b86b', '#c99a9a', '#a7a7a7'];
-    for (let i = 0; i < 5; i++) { const z = 30 + i * 380; B(30, 5490, 450, 5910, z, z + 360, M('#e9eef0', { rough: 0.4 }), 18); B(60, 5895, 420, 5915, z + 200, z + 330, M(lid[i], { rough: 0.4 }), 10); }
-    B(20, 5480, 460, 5920, 1935, 1955, M(darker(T.tall, .9))); }
-  rug(150, 4650, 1050, 5350, '#cfc6b8');
-  B(600, 5925, 1150, 5950, 300, 2000, M('#d5dee2', { rough: 0.06, metal: 0.15 }), 3); B(590, 5940, 1160, 5950, 290, 2010, M(T.dframe, { rough: .4 }), 2);
+  // 분리수거장: 캔·플라스틱·병 세로형 인출 통 3개(폭 340 x 깊이 400 x 높이 약 1,000) + 가운데 30cm 열린 칸(간접등·키 트레이) + 위 상부장
+  { const ec = T.entryCab || T.tall, ew = !!T.entryWood; const g = grp(575, 5740, 'N');
+    cabinet(g, 1150, 420, 0, 1050, { color: ec, doors: 3, handle: 'groove', toe: 60, wood: ew });
+    cabinet(g, 1150, 420, 1350, CEIL - 1350, { color: ec, doors: 3, handle: 'none', toe: 0, wood: ew });
+    const nm = M(T.niche || darker(ec, .92), { tex: T.nicheWood ? 'grainV' : undefined, rough: .5 });
+    B(0, 5530, 1150, 5950, 1050, 1068, nm); B(0, 5930, 1150, 5950, 1050, 1350, nm); B(0, 5530, 18, 5950, 1050, 1350, nm); B(1132, 5530, 1150, 5950, 1050, 1350, nm); B(0, 5530, 1150, 5950, 1332, 1350, nm);
+    B(30, 5540, 1120, 5560, 1322, 1328, M('#fff4dc', { emissive: '#ffe9c0', ei: 2.2 })).userData.wall = true;
+    B(150, 5700, 450, 5880, 1068, 1085, M(T.table || '#c9a272', { tex: 'grain' }), 6).userData.skip = true; // 키 트레이
+    B(250, 5760, 300, 5800, 1085, 1095, METAL(), 3).userData.skip = true;
+    cyl(850, 5800, 1068, 1220, 45, 55, M('#d9cfc2', { rough: .4 })).userData.skip = true;
+    // 맨 오른쪽 통은 살짝 빼 둔 모습(통 3개: 캔·플라스틱·병)
+    const lab = ['#7ea6c9', '#9fbf8f', '#e2b86b'];
+    for (let i = 0; i < 3; i++) B(60 + i * 380, 5532, 380 + i * 380, 5536, 880, 960, M(lab[i], { rough: .4 }), 3).userData.skip = true; }
+  rug(150, 4650, 1050, 5300, '#cfc6b8');
 
   // ---------- 거실·식탁 ----------
   sofaBanquette(T);
-  table(650, 6700, 1450, 8300, T);
-  chair(1830, 7120, 'W', T, T.chairStyle); chair(1830, 7880, 'W', T, T.chairStyle); chair(1050, 8680, 'N', T, T.chairStyle);
-  pendant(1050, 7500, 1500, T.pendant || '#e9e2d5', T.pendantStyle || 'dome');
-  cyl(1000, 7350, 750, 950, 45, 55, M('#e8e1d4', { rough: .3 })); for (let i = 0; i < 5; i++) { const m = addMesh(new THREE.SphereGeometry(0.05, 10, 6), M('#7f9a6b', { side: true })); m.scale.set(1, .25, .6); m.position.set((1000 + (i - 2) * 40) * S, 1.0 + (i % 2) * 0.05, (7350 + (i % 3 - 1) * 30) * S); m.rotation.z = (i - 2) * .4; }
-  cyl(1100, 7800, 750, 790, 140, 110, M('#f2efe8', { rough: .3 }), 32); for (let i = 0; i < 4; i++) { const f = addMesh(new THREE.SphereGeometry(0.04, 12, 8), M(['#e8a34a', '#d6553a', '#e8c64a', '#e8a34a'][i], { rough: .5 })); f.position.set((1080 + (i % 2) * 50) * S, 0.81, (7780 + (i > 1 ? 50 : 0)) * S); }
+  table(650, 6590, 1450, 8190, T); // 1,600×800, 가로 소파 좌판 앞 4cm까지 당김
+  chair(1830, 7010, 'W', T, T.chairStyle); chair(1830, 7770, 'W', T, T.chairStyle); chair(1050, 8570, 'N', T, T.chairStyle);
+  pendant(1050, 7390, 1500, T.pendant || '#e9e2d5', T.pendantStyle || 'dome');
+  cyl(1000, 7240, 750, 950, 45, 55, M('#e8e1d4', { rough: .3 })); for (let i = 0; i < 5; i++) { const m = addMesh(new THREE.SphereGeometry(0.05, 10, 6), M('#7f9a6b', { side: true })); m.scale.set(1, .25, .6); m.position.set((1000 + (i - 2) * 40) * S, 1.0 + (i % 2) * 0.05, (7240 + (i % 3 - 1) * 30) * S); m.rotation.z = (i - 2) * .4; }
+  cyl(1100, 7690, 750, 790, 140, 110, M('#f2efe8', { rough: .3 }), 32); for (let i = 0; i < 4; i++) { const f = addMesh(new THREE.SphereGeometry(0.04, 12, 8), M(['#e8a34a', '#d6553a', '#e8c64a', '#e8a34a'][i], { rough: .5 })); f.position.set((1080 + (i % 2) * 50) * S, 0.81, (7670 + (i > 1 ? 50 : 0)) * S); }
   // TV 대신 끝에서 끝까지 아기 책장·장난감장 (높이 1,500, 깊이 300)
   kidsBookshelf(2766, 6020, 3066, 9180, 1500, T);
-  // 거실 확장부
+  // 거실 창가 양쪽 키큰장 (창 양끝을 벽으로 막고 그 앞에)
+  { const lc = T.lcab || T.tall, lw = !!(T.kWood || T.mWood);
+    cabinet(grp(225, 10300, 'N'), 450, 400, 0, CEIL, { color: lc, doors: 1, handle: T.khandle === 'brass' ? 'brass' : 'groove', wood: lw });
+    cabinet(grp(2833, 10300, 'N'), 466, 400, 0, CEIL, { color: lc, doors: 1, handle: T.khandle === 'brass' ? 'brass' : 'groove', wood: lw }); }
   const LV = V.living || 'play';
   if (LV === 'bench') windowBench(T);
   else if (LV === 'daybed') daybed(T);
   else if (LV === 'lounge') floorSofa(T);
   else if (LV === 'floor') floorLounge(T);
-  else { playMat(500, 8950, 2500, 10300, T.mat); toyShelf(480, 10070, 1680, 10400, 'N', T, 3, 2, 440); toys(1100, 9550); teepee(2180, 9800, 0.8, '#f3ebe0'); }
-  if (LV === 'bench' || LV === 'daybed' || LV === 'lounge') { romanShade(30, 1450, 10470, 2140, 1500, T.curtain); romanShade(1520, 2880, 10470, 2140, 1500, T.curtain); }
-  else { curtain(0, 380, 10420, 30, 2140, T.curtain); curtain(2520, 2900, 10420, 30, 2140, T.curtain); }
+  else { playMat(500, 8950, 2450, 10050, T.mat); toyShelf(480, 10070, 1580, 10400, 'N', T, 3, 2, 440); toys(1100, 9500); teepee(2020, 9680, 0.7, '#f3ebe0'); }
+  if (LV === 'bench' || LV === 'daybed' || LV === 'lounge') { romanShade(470, 1515, 10470, 2140, 1500, T.curtain); romanShade(1535, 2580, 10470, 2140, 1500, T.curtain); }
+  else { curtain(450, 760, 10420, 30, 2140, T.curtain); curtain(2290, 2600, 10420, 30, 2140, T.curtain); }
   if (LV === 'daybed') floorLamp(300, 8800, T.lampc || '#efe7d8');
-  else if (LV === 'bench') { plant(2620, 10200, 0.85); floorLamp(2550, 9700, T.lampc || '#efe7d8'); }
+  else if (LV === 'bench') { plant(2780, 9780, 0.7); floorLamp(300, 9800, T.lampc || '#efe7d8'); }
   else if (LV === 'play') plant(2620, 9450, 0.55);
 
   // ---------- 안방 ----------
@@ -719,29 +736,22 @@ export function buildHouse(scene, T, V) {
   }
   bed(4429, 8130, 1600, 2050, 'E', T, { channel: T.channel, frame: T.head });
   nsBox(3310, 6880, 3710, 7300, T, !V.headPanel); nsBox(3310, 8960, 3710, 9380, T, !V.headPanel);
-  // 동쪽 벽: 붙박이장(북) + 화장대(가운데) + 붙박이장(남)
+  // 동쪽 벽: 붙박이장 + 화장대 (구성은 컨셉별 V.wd), 일부 문은 전신 거울
   const mCab = T.mCab || T.tall, mWood = !!T.mWood, mH = T.mHandle || 'groove';
-  wardrobe(6022, 5951, 6622, 7300, 'W', T, { doors: 3, color: mCab, handle: mH, wood: mWood });
-  wardrobe(6022, 8400, 6622, 9317, 'W', T, { doors: 2, color: mCab, handle: mH, wood: mWood });
-  { // 화장대: 상부장 + 거울(조명) + 상판 + 서랍, 의자 공간 비움
-    const vm = M(mCab, { tex: mWood ? 'grainV' : undefined, rough: .5 });
-    B(6122, 7300, 6622, 8400, 2000, CEIL, vm, 3); B(6600, 7300, 6622, 8400, 0, 2000, vm);
-    B(6122, 7300, 6622, 7320, 0, 2000, vm); B(6122, 8380, 6622, 8400, 0, 2000, vm);
-    B(6122, 7320, 6622, 8380, 720, 750, M(T.vanityTop || T.ctop, { rough: .25 }), 4);
-    B(6150, 7340, 6600, 8360, 600, 720, M(darker(mCab, .95), { tex: mWood ? 'grainV' : undefined }), 3); B(6142, 7700, 6150, 7980, 640, 652, T.mHandle === 'brass' ? M('#b8955a', { metal: .9, rough: .3 }) : BLACKMETAL());
-    B(6590, 7450, 6600, 8250, 900, 1900, M('#d5dee2', { rough: 0.05, metal: 0.2 }), 6);
-    B(6585, 7430, 6600, 7445, 900, 1900, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 })); B(6585, 8255, 6600, 8270, 900, 1900, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 }));
-    B(6122, 7320, 6622, 8380, 1985, 2000, M('#fff3dc', { emissive: '#ffe6bf', ei: 1 }));
-    for (let i = 0; i < 4; i++) cyl(6450 - (i % 2) * 60, 7500 + i * 70, 750, 750 + 60 + i * 25, 18, 18, M(['#e8d3c0', '#2b2b2b', '#c9a77c', '#f4f1ea'][i], { rough: .3 }));
-    B(6380, 8050, 6560, 8250, 750, 770, M('#b8955a', { metal: .8, rough: .3 }), 4);
-    cyl(5850, 7850, 0, 450, 190, 170, M(T.acc, { tex: 'fabric' }), 32); // 스툴 (침대 발치와 화장대 사이)
+  const segs = V.wd || [['wd', 5951, 7300, []], ['van', 7300, 8400], ['wd', 8400, 9317, []]]; CUR_SEGS.length = 0; CUR_SEGS.push(...segs);
+  for (const sg of segs) {
+    if (sg[0] === 'wd') wardrobe(6022, sg[1], 6622, sg[2], 'W', T, { doors: Math.max(1, Math.round((sg[2] - sg[1]) / 450)), color: mCab, handle: mH, wood: mWood, mirror: sg[3] || [] });
+    else vanityNook(sg[1], sg[2], T, mCab, mWood);
   }
-  // 안방 확장부: 라운지체어 + 사이드테이블 + 스탠드 (세탁부스 문 열림 x4522~5122 피함)
-  { const g = grp(3700, 10050, 'N'); const cm = M(T.seat, { tex: 'fabric', rough: 1 });
-    B(-380, -320, 380, 330, 120, 420, cm, 60, g); B(-380, 180, 380, 340, 380, 880, cm, 70, g); for (const x of [-380, 300]) B(x, -320, x + 80, 340, 120, 620, cm, 40, g);
-    for (const [x, y] of [[-340, -280], [300, -280], [-340, 300], [300, 300]]) cyl(x * 1 + 0, y, 0, 120, 14, 18, M(T.leg, { tex: 'grain' }), 10, g); }
-  cyl(4280, 10280, 0, 520, 160, 160, M(T.desk, { tex: 'grain' }), 32); lamp(4280, 10300, 520, T.lampc || '#efe7d8');
-  curtain(3176, 3600, 10420, 30, 2140, T.curtain); curtain(4680, 5100, 10420, 30, 2140, T.curtain);
+  // 안방 확장부 = 서재: 책장 + 책상 + 의자 (세탁부스 문 열림 x4522~5122 피함)
+  { const sw = M(T.desk, { tex: 'grainV', rough: .5 });
+    B(3176, 9560, 3194, 9980, 0, CEIL, sw); B(3176, 9560, 3476, 9578, 0, CEIL, sw); B(3176, 9962, 3476, 9980, 0, CEIL, sw); B(3176, 9560, 3476, 9980, 0, 18, sw); }
+  { const sw = M(darker(T.desk, .9), { tex: 'grain' }); for (let k = 1; k < 6; k++) B(3190, 9575, 3470, 9965, k * 370, k * 370 + 18, sw).userData.skip = true;
+    for (let k = 0; k < 5; k++) books(3200, 9590, k * 370 + 18, 7 - (k % 3), 'y'); }
+  desk(3500, 10000, 4500, 10480, T); officeChair(4150, 9775, 'S', T.chair); lamp(4350, 10300, 740, T.lampc || '#efe7d8'); books(3560, 10360, 740, 5);
+  curtain(3480, 3800, 10420, 30, 2140, T.curtain); curtain(4680, 5100, 10420, 30, 2140, T.curtain);
+  // 안방 ↔ 서재(확장부) 분리 방식 (컨셉별 V.sep), 오른쪽 x4500~5122는 통로로 비움
+  sepElement(V.sep || 'curtain', T);
   // 세탁 부스 내부: 워시타워 + 세제장 + 벽 선반
   washTower(5710, 9640, 6582, 10326);
   { const g = grp(5447, 10335, 'N'); cabinet(g, 430, 310, 0, 800, { color: T.part, doors: 1, handle: 'groove', toe: 60 }); cabinet(g, 430, 310, 1700, CEIL - 1700, { color: T.part, doors: 1, handle: 'groove', toe: 0 });
@@ -766,6 +776,63 @@ export function buildHouse(scene, T, V) {
   return root;
 }
 
+
+function vanityNook(y1, y2, T, mCab, mWood) { // 붙박이장 사이 화장대 (동쪽 벽, 앞면 서쪽)
+  const vm = M(mCab, { tex: mWood ? 'grainV' : undefined, rough: .5 });
+  B(6122, y1, 6622, y2, 2000, CEIL, vm, 3); B(6600, y1, 6622, y2, 0, 2000, vm);
+  B(6122, y1, 6622, y1 + 20, 0, 2000, vm); B(6122, y2 - 20, 6622, y2, 0, 2000, vm);
+  B(6122, y1 + 20, 6622, y2 - 20, 720, 750, M(T.vanityTop || T.ctop, { rough: .25 }), 4);
+  B(6150, y1 + 40, 6600, y2 - 40, 600, 720, M(darker(mCab, .95), { tex: mWood ? 'grainV' : undefined }), 3);
+  const cy = (y1 + y2) / 2;
+  B(6142, cy - 140, 6150, cy + 140, 640, 652, T.mHandle === 'brass' ? M('#b8955a', { metal: .9, rough: .3 }) : BLACKMETAL());
+  B(6590, y1 + 150, 6600, y2 - 150, 900, 1900, M('#d5dee2', { rough: 0.05, metal: 0.2 }), 6);
+  B(6585, y1 + 130, 6600, y1 + 145, 900, 1900, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 })); B(6585, y2 - 145, 6600, y2 - 130, 900, 1900, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 }));
+  B(6122, y1 + 20, 6622, y2 - 20, 1985, 2000, M('#fff3dc', { emissive: '#ffe6bf', ei: 1 }));
+  for (let i = 0; i < 4; i++) cyl(6450 - (i % 2) * 60, y1 + 200 + i * 70, 750, 750 + 60 + i * 25, 18, 18, M(['#e8d3c0', '#2b2b2b', '#c9a77c', '#f4f1ea'][i], { rough: .3 }));
+  B(6380, y2 - 350, 6560, y2 - 150, 750, 770, M('#b8955a', { metal: .8, rough: .3 }), 4);
+  cyl(5850, cy, 0, 450, 190, 170, M(T.acc, { tex: 'fabric' }), 32);
+}
+function sepElement(kind, T) { // 안방-서재 사이(하리 아래 y9317~9540), x3264~4500
+  const wood = M(T.sepWood || T.desk, { tex: 'grainV', rough: .5 });
+  if (kind === 'curtain') { // 천장 매입 커튼 레일 + 리넨 커튼 (필요할 때만 쳐서 가림)
+    B(3264, 9440, 5122, 9470, 1965, 1980, M('#cfcfcf', { metal: .6, rough: .3 })).userData.wall = true;
+    curtain(3264, 4000, 9455, 30, 1960, T.sepCurtain || T.curtain);
+  } else if (kind === 'slat') { // 우드 간살 스크린(반만), 빛은 통과
+    B(3264, 9415, 4450, 9465, 0, 40, wood); B(3264, 9415, 4450, 9465, 1940, 1980, wood);
+    for (let x = 3290; x < 4430; x += 75) B(x, 9420, x + 32, 9460, 40, 1940, wood);
+  } else if (kind === 'shelf') { // 양면 오픈 책장 파티션 (높이 1.2m)
+    const H = 1200; B(3264, 9390, 3880, 9640, 0, 40, wood); B(3264, 9390, 3880, 9640, H - 25, H, wood);
+    for (const x of [3264, 3560, 3855]) B(x, 9390, x + 25, 9640, 0, H, wood);
+    B(3264, 9390, 3880, 9640, 590, 610, wood);
+    for (const [x, z] of [[3300, 40], [3600, 610], [3600, 40]]) books(x, 9430, z, 6, 'x');
+    plant(3420, 9515, 0.3, H); cyl(3720, 9515, H, H + 200, 60, 50, M('#d8cdbd', { rough: .4 }));
+  } else if (kind === 'shoji') { // 한지 미닫이 창호 2짝 (반투명)
+    B(3264, 9415, 4500, 9480, 1950, 1980, wood); B(3264, 9415, 4500, 9480, 0, 15, wood);
+    for (const [x1, x2, y] of [[3264, 3900, 9420], [3860, 4496, 9450]]) {
+      B(x1, y, x1 + 30, y + 25, 15, 1950, wood); B(x2 - 30, y, x2, y + 25, 15, 1950, wood); B(x1, y, x2, y + 25, 15, 60, wood); B(x1, y, x2, y + 25, 1900, 1950, wood);
+      B(x1 + 30, y + 10, x2 - 30, y + 14, 60, 1900, M('#f7f2e6', { rough: 1, opacity: 0.8 })).castShadow = false;
+      for (let z = 360; z < 1900; z += 300) B(x1 + 30, y + 6, x2 - 30, y + 18, z, z + 15, wood);
+      for (let k = 1; k < 3; k++) { const xx = x1 + k * (x2 - x1) / 3; B(xx - 7, y + 6, xx + 7, y + 18, 60, 1900, wood); }
+    }
+  } else if (kind === 'cane') { // 라탄 캐인 접이식 스크린 3폭
+    [[3300, 3700, 9420], [3700, 4100, 9480], [4100, 4500, 9420]].forEach(([x1, x2, y]) => {
+      B(x1, y, x1 + 30, y + 30, 0, 1800, wood); B(x2 - 30, y, x2, y + 30, 0, 1800, wood); B(x1, y, x2, y + 30, 1770, 1800, wood); B(x1, y, x2, y + 30, 80, 110, wood);
+      B(x1 + 30, y + 10, x2 - 30, y + 20, 110, 1770, M('#c9a77c', { tex: 'cane' }));
+    });
+  } else if (kind === 'cove') { // 서재 바닥만 다른 마감 + 하리 아래 간접조명 띠 (시각적으로만 구분)
+    floorZone(3176, 9540, 5122, 10500, tileTex([196, 186, 172], 300, 2), 0.9, 1200);
+    for (const y of [9325, 9525]) B(3264, y, 5122, y + 10, 1960, 1975, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 })).userData.wall = true;
+    rug(3300, 9650, 4500, 9950, T.rug || '#e3dbd0');
+  }
+}
+function wallTile(x1, y1, x2, y2, z0, z1, col, tw = 300, th = 600) { // 욕실 벽 타일 판
+  const W = Math.max(x2 - x1, y2 - y1), H = z1 - z0;
+  const tex = canvasTex(512, 512, (g, S2) => { g.fillStyle = rgb(col, -22); g.fillRect(0, 0, S2, S2); const r = rnd(41); const nx = 4, ny = 2; const w = S2 / nx, h = S2 / ny;
+    for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) { g.fillStyle = rgb(col, Math.floor((r() - .5) * 8)); g.fillRect(i * w + 2, j * h + 2, w - 4, h - 4); } });
+  tex.repeat.set(W / (tw * 4), H / (th * 2));
+  const m = addMesh(new THREE.BoxGeometry((x2 - x1) * S, H * S, (y2 - y1) * S), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.25 }));
+  m.position.set((x1 + x2) / 2 * S, (z0 + z1) / 2 * S, (y1 + y2) / 2 * S); m.userData.wall = true; return m;
+}
 function tallUnit(T, kind) { // 키큰장(x2340~2840, y863~2341, 앞면 동쪽)
   const col = T.tall, w = !!T.kWood, h = T.khandle || 'groove';
   const box = (z0, z1, opt = {}) => { const g = grp(2590, 1602, 'E'); cabinet(g, 1478, 500, z0, z1 - z0, { color: col, wood: w, handle: h, toe: z0 === 0 ? 100 : 0, ...opt }); };
@@ -820,33 +887,33 @@ function washTower(x1, y1, x2, y2) { // 앞면 서쪽(-x)
   B(x1 + 40, y2 + 15, x2 - 40, y2 + 160, 0, 700, M('#ffffff', { rough: .5 }), 20); // 세제 수납
 }
 function windowBench(T) {
-  const g = grp(1225, 10275, 'N'); cabinet(g, 2450, 450, 0, 380, { color: T.tall, doors: 5, handle: 'groove', toe: 40, wood: !!T.benchWood });
-  B(0, 10050, 2450, 10500, 380, 450, M(T.seat, { tex: 'fabric', rough: 1 }), 30);
+  const g = grp(1525, 10275, 'N'); cabinet(g, 2150, 450, 0, 380, { color: T.tall, doors: 5, handle: 'groove', toe: 40, wood: !!T.benchWood });
+  B(450, 10050, 2600, 10500, 380, 450, M(T.seat, { tex: 'fabric', rough: 1 }), 30);
   const cols = [T.acc, mixc(T.acc, '#ffffff', 0.5), T.back, mixc(T.seat, '#ffffff', .3)];
-  for (let i = 0; i < 4; i++) { const p = B(150 + i * 560, 10300, 580 + i * 560, 10460, 450, 850, M(cols[i], { tex: 'fabric' }), 80); p.rotation.x = 0.2; }
-  books(2000, 10120, 450, 5); plant(300, 10250, 0.3, 450, '#ffffff');
-  playMat(500, 8950, 2300, 9900, T.mat);
+  for (let i = 0; i < 4; i++) { const p = B(560 + i * 500, 10300, 980 + i * 500, 10460, 450, 850, M(cols[i], { tex: 'fabric' }), 80); p.rotation.x = 0.2; }
+  books(2150, 10120, 450, 5); plant(600, 10200, 0.3, 450, '#ffffff');
+  playMat(600, 8950, 2300, 9900, T.mat);
   rug(700, 8900, 2300, 9850, T.rug || '#efe2d0');
   toys(1400, 9400);
 }
 function daybed(T) {
-  const x1 = 0, x2 = 2900, y1 = 9330, y2 = 10500, h = 350;
+  const x1 = 450, x2 = 2600, y1 = 9330, y2 = 10500, h = 350;
   const g = grp((x1 + x2) / 2, (y1 + y2) / 2, 'N');
   cabinet(g, x2 - x1, y2 - y1, 0, h, { color: T.tall, drawers: [h - 40], drawerCols: 4, handle: 'groove', toe: 40, wood: true });
   // 매트 2장(리넨) + 등쿠션 + 볼스터
   const mat = M(T.seat, { tex: 'fabric', rough: 1 });
-  B(20, 9350, 1440, 10480, h, h + 90, mat, 35); B(1460, 9350, 2880, 10480, h, h + 90, mat, 35);
+  B(470, 9350, 1515, 10480, h, h + 90, mat, 35); B(1535, 9350, 2580, 10480, h, h + 90, mat, 35);
   const cols = [T.back, mixc(T.back, '#ffffff', 0.35), T.acc];
-  for (let i = 0; i < 4; i++) { const p = B(80 + i * 700, 10260, 680 + i * 700, 10460, h + 90, h + 560, M(cols[i % 3], { tex: 'fabric' }), 90); p.rotation.x = 0.22; }
-  for (const x of [150, 2740]) { const b = addMesh(new THREE.CylinderGeometry(0.11, 0.11, 0.8, 24), M(T.acc, { tex: 'fabric' })); b.rotation.x = Math.PI / 2; b.position.set(x * S, (h + 200) * S, 9900 * S); }
+  for (let i = 0; i < 4; i++) { const p = B(520 + i * 510, 10260, 980 + i * 510, 10460, h + 90, h + 560, M(cols[i % 3], { tex: 'fabric' }), 90); p.rotation.x = 0.22; }
+  for (const x of [580, 2470]) { const b = addMesh(new THREE.CylinderGeometry(0.11, 0.11, 0.8, 24), M(T.acc, { tex: 'fabric' })); b.rotation.x = Math.PI / 2; b.position.set(x * S, (h + 200) * S, 9900 * S); }
   // 좌식 원형 테이블
-  const tz = h + 90; const tx = 1450, ty = 9800;
+  const tz = h + 90; const tx = 1525, ty = 9800;
   cyl(tx, ty, tz + 280, tz + 310, 330, 330, M(T.table, { tex: 'grain', rough: .45 }), 48);
   for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + Math.PI / 4; cyl(tx + Math.cos(a) * 220, ty + Math.sin(a) * 220, tz, tz + 280, 16, 20, M(T.leg, { tex: 'grain' }), 12); }
   cyl(tx - 80, ty - 60, tz + 310, tz + 400, 40, 36, M('#efe9de', { rough: .3 })); cyl(tx + 100, ty + 40, tz + 310, tz + 330, 120, 120, M('#d9c3a5', { tex: 'rattan' }), 24);
   // 방석 + 접은 담요
-  B(500, 9450, 950, 9900, tz, tz + 70, M(T.acc, { tex: 'fabric' }), 30); B(1950, 9450, 2400, 9900, tz, tz + 70, M(T.back, { tex: 'fabric' }), 30);
-  B(2300, 10050, 2750, 10250, tz, tz + 90, M(mixc(T.seat, '#ffffff', .4), { tex: 'fabric' }), 25);
+  B(700, 9450, 1100, 9850, tz, tz + 70, M(T.acc, { tex: 'fabric' }), 30); B(1950, 9450, 2350, 9850, tz, tz + 70, M(T.back, { tex: 'fabric' }), 30);
+  B(2050, 10050, 2450, 10230, tz, tz + 90, M(mixc(T.seat, '#ffffff', .4), { tex: 'fabric' }), 25);
   // 라탄 바구니, 매트 앞 바닥
   cyl(620, 9110, 0, 380, 200, 170, M('#c9a77c', { tex: 'rattan' }), 24); for (let i = 0; i < 3; i++) { const t = B(520 + i * 25, 9030, 720 - i * 25, 9190, 380 + i * 50, 430 + i * 50, M(['#e9e1d3', '#bfae95', '#a3b18a'][i], { tex: 'fabric' }), 20); t.rotation.y = i * 0.3; }
   rug(600, 7900, 2600, 9150, T.rug || '#e2d6c2');
@@ -859,34 +926,50 @@ function archHari(x1, x2, y1, y2, col) {
   // 양쪽 날개벽
   B(x1, y1, x1 + 120, y2, 0, 1700, M(col, { rough: 0.9 }), 0); B(x2 - 120, y1, x2, y2, 0, 1700, M(col, { rough: 0.9 }), 0);
 }
-function bathroom(T) {
+function bathroom(T) { // 욕실 x4474~6258, y4119~5724. 변기(북서) ↔ 세면대(욕조 옆) 위치 바꿈, 욕조 반만 얇은 돌 벽으로 분리
+  const tc = hex2rgb(T.bathTile || '#e9e6e1');
+  wallTile(4474, 4119, 6258, 4127, 0, CEIL, tc); wallTile(4474, 5716, 6258, 5724, 0, CEIL, tc);
+  wallTile(4474, 4127, 4482, 4975, 0, CEIL, tc); wallTile(6250, 4127, 6258, 5716, 0, CEIL, tc);
   const tub = WHITEPORC();
-  B(5450, 4180, 6220, 5680, 0, 560, tub, 30);
-  B(5520, 4250, 6150, 5610, 420, 562, M('#dfe9ee', { rough: 0.1 }), 60);
-  cyl(6150, 4500, 1700, 1800, 90, 90, METAL(), 24); cyl(6200, 4500, 1800, 2000, 10, 10, METAL());
-  // 세면대
-  const g = grp(4780, 4365, 'S'); cabinet(g, 440, 390, 350, 500, { color: T.vanity, doors: 1, handle: 'groove', toe: 0 });
-  B(4570, 4175, 4990, 4560, 850, 870, WHITEPORC(), 10);
-  B(4630, 4230, 4930, 4500, 870, 990, WHITEPORC(), 60);
-  cyl(4780, 4200, 990, 1150, 12, 12, METAL());
-  B(4560, 4125, 5000, 4170, 1050, 1800, M('#d5dee2', { rough: 0.06, metal: 0.15 }), 6);
-  B(4560, 4124, 5000, 4135, 1810, 1820, M('#fff2d8', { emissive: '#ffeccc', ei: 1.5 }));
-  // 변기
-  B(5090, 4170, 5330, 4360, 380, 780, WHITEPORC(), 30);
-  const bowl = addMesh(new THREE.CylinderGeometry(0.19, 0.15, 0.4, 32), WHITEPORC()); bowl.scale.z = 1.3; bowl.position.set(5210 * S, 0.2, 4560 * S);
-  const seat = addMesh(new THREE.CylinderGeometry(0.19, 0.19, 0.03, 32), WHITEPORC()); seat.scale.z = 1.3; seat.position.set(5210 * S, 0.415, 4560 * S);
-  // 수건
-  B(5080, 4125, 5340, 4330, 1500, 1520, M('#e9e6e0', { rough: .4 })); for (let i = 0; i < 3; i++) B(5100 + i * 75, 4140, 5165 + i * 75, 4320, 1520, 1600, M(['#e8dccb', '#ffffff', '#d9e3e6'][i], { tex: 'fabric' }), 25);
+  // 욕조 700 x 1500
+  B(5450, 4180, 6150, 5680, 0, 560, tub, 30);
+  B(5520, 4250, 6080, 5610, 420, 562, M('#dfe9ee', { rough: 0.1 }), 60);
+  // 욕조 뒤 벽: 100mm 덧벽에 긴 수납 니치 2줄 (샴푸·바디용품)
+  const st = M(T.bathStone || '#e3ded6', { rough: .3 });
+  const fw = (y1, y2, z0, z1) => { B(6150, y1, 6250, y2, z0, z1, st).userData.wall = true; };
+  fw(4127, 5716, 560, 1000); fw(4127, 4300, 1000, 1300); fw(5560, 5716, 1000, 1300); fw(4127, 5716, 1300, 1500); fw(4127, 4300, 1500, 1720); fw(5000, 5716, 1500, 1720); fw(4127, 5716, 1720, CEIL);
+  B(6160, 4300, 6250, 5560, 1140, 1152, M('#e8f0f2', { rough: .05, opacity: .6 })).userData.skip = true; // 니치 중간 유리 선반
+  B(6160, 4310, 6175, 5550, 1288, 1296, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 })).userData.wall = true;
+  const bc = ['#ffffff', '#c9b49a', '#9fb2bf', '#e8d3c0', '#5d6b74', '#f4f1ea'];
+  for (let i = 0; i < 9; i++) { const y = 4350 + i * 135; cyl(6205, y, 1000, 1000 + 120 + (i % 3) * 15, 28, 28, M(bc[i % 6], { rough: .3 }), 16).userData.skip = true; }
+  for (let i = 0; i < 7; i++) { const y = 4360 + i * 160; cyl(6205, y, 1152, 1152 + 100 + (i % 2) * 20, 25, 25, M(bc[(i + 2) % 6], { rough: .3 }), 16).userData.skip = true; }
+  for (let i = 0; i < 4; i++) { const y = 4360 + i * 150; cyl(6205, y, 1500, 1500 + 150, 30, 30, M(bc[(i + 4) % 6], { rough: .3 }), 16).userData.skip = true; }
+  // 욕조 반만 분리: 얇은 돌 벽 30mm (물때 적게), 길이 750, 높이 2.0m
+  B(5420, 4127, 5450, 4930, 0, 2000, M(T.bathStone || '#e3ded6', { rough: .3 }), 4);
+  // 수전·샤워 (북쪽 벽)
+  B(5780, 4127, 5850, 4145, 950, 1050, METAL(), 6); cyl(5815, 4235, 1880, 1900, 90, 90, METAL(), 24); B(5810, 4127, 5820, 4160, 1050, 1990, METAL()); B(5810, 4127, 5820, 4240, 1980, 1990, METAL());
+  // 변기 (북서, 옛 세면대 자리)
+  B(4610, 4127, 4850, 4317, 380, 780, WHITEPORC(), 30);
+  const bowl = addMesh(new THREE.CylinderGeometry(0.19, 0.15, 0.4, 32), WHITEPORC()); bowl.scale.z = 1.3; bowl.position.set(4730 * S, 0.2, 4530 * S);
+  const seat = addMesh(new THREE.CylinderGeometry(0.19, 0.19, 0.03, 32), WHITEPORC()); seat.scale.z = 1.3; seat.position.set(4730 * S, 0.415, 4530 * S);
+  B(4484, 4560, 4500, 4700, 750, 760, METAL()); cyl(4545, 4630, 700, 760, 55, 55, M('#ffffff'), 20).rotation.z = Math.PI / 2;
+  // 세면대 (욕조 옆, 옛 변기 자리) + 거울장
+  { const g = grp(5195, 4322, 'S'); cabinet(g, 410, 390, 350, 500, { color: T.vanity, doors: 1, handle: 'groove', toe: 0, wood: !!T.mWood }); }
+  B(4995, 4130, 5395, 4520, 850, 870, WHITEPORC(), 10);
+  B(5045, 4190, 5345, 4460, 870, 980, WHITEPORC(), 60);
+  cyl(5195, 4150, 980, 1140, 12, 12, METAL());
+  B(4990, 4127, 5400, 4260, 1050, 1800, M(T.vanity, { tex: T.mWood ? 'grainV' : undefined }), 4); B(5000, 4260, 5390, 4266, 1060, 1790, M('#dfe6e9', { rough: 0.04, metal: 0.3 }), 3);
+  B(5000, 4255, 5390, 4266, 1040, 1048, M('#fff2d8', { emissive: '#ffeccc', ei: 1.5 })).userData.wall = true;
+  rug(4520, 4980, 5100, 5420, '#e6e1d8');
 }
-
 // ---------- 간섭 점검 (개발용) ----------
 export const DOOR_SWINGS = { '아이방1 문': [1250, 3175, 2040, 3965, 2040, 3965, 790], '아이방2 문': [4704, 3030, 5554, 3880, 4704, 3880, 850], '욕실 문': [4474, 4975, 5149, 5650, 4474, 5650, 675], '안방 문': [3264, 5951, 4164, 6851, 3264, 5951, 900], '세탁부스 문': [4522, 9580, 5122, 10180, 5122, 9580, 600] };
 export const USE_ZONES = {
   '싱크 앞 서는 자리(60cm)': [2880, 885, 3840, 1463], '건조대 앞(손 닿는 자리)': [2865, 885, 3300, 1300], '쿡탑 앞(60cm)': [3255, 1380, 3835, 1960], '냉장고 문 열림(60cm)': [3070, 2341, 3640, 4170], '키큰장 문 열림(50cm)': [2865, 890, 3340, 2341],
-  '신발장 앞': [0, 4540, 1200, 4900], '분리수거장 앞': [450, 5490, 850, 5910], '현관→중문 동선': [0, 4560, 1190, 5400], '중문 앞 복도': [1250, 4400, 1800, 5750],
-  '식탁 의자 빼는 자리(옆)': [2060, 6900, 2460, 8110], '식탁 끝 의자 빼는 자리': [820, 8930, 1280, 9250], '의자 뒤 거실 통로(책장 앞)': [2060, 6000, 2760, 9250],
-  '안방 침대 북쪽 옆': [3720, 6900, 5450, 7300], '안방 침대 남쪽 옆': [3720, 8960, 5450, 9317], '침대 발치~붙박이장(북)': [5470, 5951, 5995, 7300], '침대 발치~붙박이장(남)': [5470, 8400, 5995, 9317],
-  '세탁기 문 앞·세제장 앞': [5232, 9640, 5680, 10170], '세면대 앞': [4560, 4560, 5000, 4960], '변기 앞': [5030, 4810, 5390, 5250],
+  '신발장 앞': [0, 4540, 1200, 4900], '현관→중문 동선': [0, 4560, 1190, 5120], '중문 앞 복도': [1250, 4400, 1800, 5750],
+  '식탁 의자 빼는 자리(옆)': [2060, 6790, 2460, 8000], '식탁 끝 의자 빼는 자리': [820, 8830, 1280, 9150], '의자 뒤 거실 통로(책장 앞)': [2060, 6000, 2760, 9250],
+  '안방 침대 북쪽 옆': [3720, 6900, 5450, 7300], '안방 침대 남쪽 옆': [3720, 8960, 5450, 9317],
+  '세탁기 문 앞·세제장 앞': [5232, 9640, 5680, 10170], '세면대 앞': [4995, 4525, 5395, 4920], '변기 앞': [4550, 4790, 4910, 5200], '안방→서재 통로': [4500, 9330, 5100, 9575], '분리수거 통 빼는 자리': [0, 5130, 1150, 5525],
   '아이방1 침대~붙박이장 통로': [1090, 1700, 1560, 3600], '아이방2 침대~붙박이장 통로': [5160, 1500, 5530, 3400]
 };
 export function audit() {
@@ -909,12 +992,13 @@ export function audit() {
       if (ox > 15 && oy > 15 && oz > 15) out.push(`[벽] 벽(${a},${b})-(${c},${d}) ↔ 물체 (${Math.round(x1)},${Math.round(y1)})-(${Math.round(x2)},${Math.round(y2)}) h${Math.round(z0)}~${Math.round(z1)}`);
     }
   });
-  // 사용 공간
+  // 사용 공간 (+ 붙박이장 앞 통로는 현재 구성대로)
+  const ZONES = { ...USE_ZONES }; for (const sg of CUR_SEGS) if (sg[0] === 'wd') ZONES[`붙박이장 앞(${sg[1]}~${sg[2]})`] = [5470, sg[1], 5995, sg[2]];
   root.traverse(o => {
     if (!o.isMesh || o.userData.wall || o.userData.door || o.userData.skip || SKY.includes(o)) return;
     bb.setFromObject(o); const x1 = bb.min.x * 1000, x2 = bb.max.x * 1000, y1 = bb.min.z * 1000, y2 = bb.max.z * 1000, z0 = bb.min.y * 1000, z1 = bb.max.y * 1000;
     if (z1 - z0 < 70 && z0 < 30) return; if (z0 > 1950) return;
-    for (const [k, [a, b, c, d]] of Object.entries(USE_ZONES)) if (x1 < c - 10 && x2 > a + 10 && y1 < d - 10 && y2 > b + 10) out.push(`[사용공간] ${k} ↔ 물체 (${Math.round(x1)},${Math.round(y1)})-(${Math.round(x2)},${Math.round(y2)}) h${Math.round(z0)}~${Math.round(z1)}`);
+    for (const [k, [a, b, c, d]] of Object.entries(ZONES)) if (x1 < c - 10 && x2 > a + 10 && y1 < d - 10 && y2 > b + 10) out.push(`[사용공간] ${k} ↔ 물체 (${Math.round(x1)},${Math.round(y1)})-(${Math.round(x2)},${Math.round(y2)}) h${Math.round(z0)}~${Math.round(z1)}`);
   });
   // 가구끼리 겹침 (root 직속 물체 단위)
   const items = [];

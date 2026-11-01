@@ -60,10 +60,11 @@
     <ul>
       <li><b>확장</b> 발코니 1·2·3 전부 확장, 샷시 전체 교체, 거실 둥근 창 → 일자 통창. 거실·안방 사이 확장부에 새 벽(단열·흡음재).</li>
       <li><b>주방</b> ㄱ자 유지 + 오른쪽 다리를 아이방 2 문 앞까지 연장. 싱크볼 960(키큰장 앞면~코너 사이), 싱크 왼쪽(키큰장 옆 안쪽 칸)에 코스트코 2단 대형 건조대 + 그 위 상부장, 오른쪽은 전부 상부장(후드 일체). 주방 창은 싱크 위 약 0.92m로 줄임(같은 평면 ECI 사례). 왼쪽 벽: 키큰장(깊이 500, 가전 칸) + 냉장고장(1도어 3대).</li>
-      <li><b>거실·식탁</b> 큰 소파·TV 없음. 전실 벽 뒤 + 왼쪽 벽 ㄱ자 붙박이 소파(식탁 의자 겸용), 식탁 1,600×800. 오른쪽 벽은 끝에서 끝까지 아기 책장·장난감장(높이 약 1.5m, 깊이 30cm). 창가 확장부는 컨셉별로 놀이 매트 / 수납 벤치 / 평상 / 좌식 라운지.</li>
-      <li><b>안방</b> 방문 쪽은 비우고, 침대 머리는 서쪽(거실 쪽) 벽, 동쪽 벽 전체를 붙박이장으로 하고 가운데에 화장대(거울·조명·서랍)를 짜 넣음. 확장부 창가는 라운지체어.</li>
+      <li><b>거실·식탁</b> 큰 소파·TV 없음. 전실 벽 뒤(가로 1.05m로 줄임) + 왼쪽 벽 ㄱ자 붙박이 소파(식탁 의자 겸용), 식탁 1,600×800은 가로 소파 좌판 앞 4cm까지 당김. 거실 창 양쪽에 키큰장(샷시 교체 때 창 양끝을 벽으로 막아 거실 창 약 2.15m). 오른쪽 벽은 끝에서 끝까지 아기 책장·장난감장(높이 약 1.5m, 깊이 30cm). 창가 확장부는 컨셉별로 놀이 매트 / 수납 벤치 / 평상 / 좌식 라운지.</li>
+      <li><b>안방</b> 방문 쪽은 비우고, 침대 머리는 서쪽(거실 쪽) 벽, 동쪽 벽 전체를 붙박이장으로 하고 화장대(거울·조명·서랍)를 짜 넣음. 일부 장 문은 전신거울. 확장부는 서재(책장·책상). 안방↔서재는 벽 대신 커튼·간살 스크린·반높이 책장·한지 미닫이·접이식 스크린·바닥 마감/조명 중 선택(컨셉별 예시).</li>
+      <li><b>욕실</b> 변기(문 쪽 구석) ↔ 세면대(욕조 옆) 위치 바꿈. 욕조(700×1,500)는 절반(750)만 얇은 돌 벽 30mm로 분리(유리 아님, 물때 적게). 욕조 뒤 100mm 덧벽에 긴 수납 니치 2줄 + 가운데 선반·간접등.</li>
       <li><b>아이방</b> 2곳 모두 붙박이장 + 침대(책상 없음, 이층 침대는 안 함).</li>
-      <li><b>현관</b> 중문을 거실 쪽으로 키워 전실로. 3연동 중문 + 신발장 + 분리수거함 40×40 5단(거의 천장까지).</li>
+      <li><b>현관</b> 중문을 거실 쪽으로 키워 전실로. 3연동 중문 + 신발장 + 분리수거장: 캔·플라스틱·병 세로형 통 3개(통 폭 340·깊이 400·높이 약 1,000) 아래장, 가운데 30cm 열린 칸(간접등·차 키 트레이), 위는 천장까지 상부장.</li>
       <li><b>세탁</b> 창고 자리 세탁 부스를 안방 쪽으로 약 45cm 더 내밀어 세제장(문 달린 키큰 수납 + 열린 선반)과 벽 선반 확보, 방음문 600(바깥으로 열림). 삼성 세탁기·건조기 직렬.</li>
       <li><b>난방</b> 개별난방(LNG). 확장부 바닥 난방 배관 연장 필요.</li>
     </ul>
@@ -105,6 +106,6 @@ document.getElementById('cases').innerHTML=CASES.map(([img,t,u,b])=>`<article><h
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));window.dispatchEvent(new Event('resize'));});
 const lb=document.getElementById('lightbox');document.addEventListener('click',e=>{if(e.target.matches('.cards img,.cases img')){lb.querySelector('img').src=e.target.src;lb.classList.add('on');}else if(e.target.closest('#lightbox'))lb.classList.remove('on');});
 </script>
-<script type="module" src="js/app.js?v=4"></script>
+<script type="module" src="js/app.js?v=6"></script>
 </body>
 </html>

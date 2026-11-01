@@ -8,8 +8,8 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 RectAreaLightUniformsLib.init();
-import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, audit } from './house.js?v=4';
-import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=4';
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, audit } from './house.js?v=6';
+import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=6';
 
 const wrap = document.getElementById('viewer');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -96,6 +96,7 @@ function renderInfo(c) {
     <div class="pal">${c.pal.map(([h, n]) => `<div><i style="background:${h}"></i><span>${n}</span></div>`).join('')}</div>
     <div class="cols"><div><h3>인테리어 포인트</h3><ul>${c.inter.map(x => `<li>${x}</li>`).join('')}</ul></div>
     <div><h3>공간 활용</h3><ul>${c.eff.map(x => `<li>${x}</li>`).join('')}</ul></div></div>
+    <div class="sep"><b>안방·서재 분리 / 붙박이장</b> ${c.sep || ''}</div>
     <p class="ref">참고 사례: ${c.ref}</p>
     <p class="quick">이 컨셉 핵심 장면 → ${c.views.map(v => `<button data-v="${v}">${VIEWS[v][0]}</button>`).join(' ')}</p>`;
   el.querySelectorAll('.quick button').forEach(b => b.onclick = () => { goView(b.dataset.v); wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); });

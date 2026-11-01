@@ -45,3 +45,5 @@ figcaption{padding:12px 14px;font-size:14px;line-height:1.5;color:#555}figcaptio
 #lightbox.on{display:block}#lightbox img{display:block;max-width:none;width:min(1700px,100%);margin:0 auto}
 footer{text-align:center;color:#9a9288;font-size:12px;padding:20px}
 @media (max-width:700px){.cols{grid-template-columns:1fr}.cards,.cases{grid-template-columns:1fr}#viewer{height:62vh}.hint{display:none}h1{font-size:17px}}
+
+.sep{background:#f6efe4;border-radius:10px;padding:10px 14px;margin:14px 0 4px;font-size:14.5px;line-height:1.6}.sep b{margin-right:6px}
