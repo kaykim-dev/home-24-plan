@@ -790,28 +790,27 @@ export function buildHouse(scene, T, V) {
 }
 
 
-function vanityNook(y1, y2, T, mCab, mWood, hidden = false) { // 서서 쓰는 화장대(상판 900) + 아래 장 + 거울·조명 + 위 장. hidden=파우더룸(문 닫으면 장처럼)
-  const vm = M(mCab, { tex: mWood ? 'grainV' : undefined, rough: .5 });
+function vanityNook(y1, y2, T, mCab, mWood, hidden = false) { // 서서 쓰는 좁은 화장대(폭 약 60cm, 상판 900) + 아래 서랍 + 거울·조명 + 위 장. hidden=파우더룸
+  const vm = M(mCab, { tex: mWood ? 'grainV' : undefined, rough: .5 }); const w = y2 - y1;
   B(6122, y1, 6622, y2, 2000, CEIL, vm, 3); B(6600, y1, 6622, y2, 0, 2000, vm);
   B(6022, y1, 6622, y1 + 20, 0, CEIL, vm); B(6022, y2 - 20, 6622, y2, 0, CEIL, vm);
-  { const g = grp(6372, (y1 + y2) / 2, 'W'); cabinet(g, y2 - y1 - 40, 500, 0, 880, { color: mCab, drawers: [260, 260, 260], drawerCols: 2, handle: 'groove', toe: 100, wood: mWood }); }
+  { const g = grp(6372, (y1 + y2) / 2, 'W'); cabinet(g, w - 40, 500, 0, 880, { color: mCab, drawers: [260, 260, 260], drawerCols: 1, handle: 'groove', toe: 100, wood: mWood }); }
   B(6112, y1 + 20, 6622, y2 - 20, 880, 910, M(T.vanityTop || T.ctop, { rough: .25 }), 4);
-  B(6590, y1 + 140, 6600, y2 - 140, 1000, 1950, M('#d5dee2', { rough: 0.05, metal: 0.2 }), 6);
-  B(6585, y1 + 120, 6600, y1 + 135, 1000, 1950, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 })); B(6585, y2 - 135, 6600, y2 - 120, 1000, 1950, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 }));
+  B(6590, y1 + 60, 6600, y2 - 60, 1000, 1950, M('#d5dee2', { rough: 0.05, metal: 0.2 }), 6);
+  B(6585, y1 + 40, 6600, y1 + 52, 1000, 1950, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 })); B(6585, y2 - 52, 6600, y2 - 40, 1000, 1950, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 }));
   B(6122, y1 + 20, 6622, y2 - 20, 1985, 2000, M('#fff3dc', { emissive: '#ffe6bf', ei: 1 }));
-  for (let i = 0; i < 4; i++) cyl(6470 - (i % 2) * 60, y1 + 180 + i * 70, 910, 910 + 60 + i * 25, 18, 18, M(['#e8d3c0', '#2b2b2b', '#c9a77c', '#f4f1ea'][i], { rough: .3 })).userData.skip = true;
-  B(6400, y2 - 330, 6570, y2 - 150, 910, 925, M('#b8955a', { metal: .8, rough: .3 }), 4).userData.skip = true;
-  if (hidden) { // 포켓도어 2짝: 한 짝은 옆 포켓으로 밀어 넣고(열림), 한 짝은 닫힌 모습 → 닫으면 붙박이장과 똑같이 보임
-    const dm = M(mCab, { tex: mWood ? 'grainV' : undefined, rough: .5 }); const h = (y2 - y1 - 40) / 2;
-    B(6000, y2 - 20 - h, 6020, y2 - 20, 20, CEIL - 20, dm, 2).userData.door = true;
-    B(5998, y2 - 20 - h + 40, 6000, y2 - 20 - h + 52, 900, 1500, M('#3a3a3a')).userData.door = true;
-    B(6000, y1 + 20, 6022, y1 + 40, 20, CEIL - 20, dm).userData.door = true; // 포켓에 들어간 문 끝
+  for (let i = 0; i < 3; i++) cyl(6480 - (i % 2) * 50, y1 + 120 + i * 60, 910, 910 + 60 + i * 25, 16, 16, M(['#e8d3c0', '#2b2b2b', '#c9a77c'][i], { rough: .3 })).userData.skip = true;
+  B(6420, y2 - 220, 6570, y2 - 90, 910, 925, M('#b8955a', { metal: .8, rough: .3 }), 4).userData.skip = true;
+  if (hidden) { // 포켓도어 1짝: 대부분 옆 포켓으로 밀어 넣은 모습(닫으면 장과 똑같이 보임)
+    const dm = M(mCab, { tex: mWood ? 'grainV' : undefined, rough: .5 });
+    B(6000, y2 - 20 - w * 0.35, 6020, y2 - 20, 20, CEIL - 20, dm, 2).userData.door = true;
+    B(5998, y2 - 20 - w * 0.35 + 30, 6000, y2 - 20 - w * 0.35 + 42, 900, 1500, M('#3a3a3a')).userData.door = true;
   }
 }
 function slidingPartition(kind, T) { // 안방↔서재 3짝 슬라이딩 도어 (하리 아래 y9320~9390), 오른쪽 x4570~5172 열어 둔 모습
   const wood = M(T.sepWood || T.desk, { tex: 'grainV', rough: .45 });
   B(3264, 9320, 5172, 9390, 1965, 1980, M('#9a9a9a', { metal: .6, rough: .3 })).userData.wall = true; B(3264, 9320, 5172, 9390, 0, 6, M('#9a9a9a', { metal: .6, rough: .3 })).userData.wall = true;
-  const frameM = { glass: M('#2b2b2b', { metal: .5, rough: .4 }), fluted: M('#6b5a44', { metal: .6, rough: .35 }), wood, shoji: wood, cane: wood, slat: wood }[kind] || wood;
+  const frameM = { glass: M('#2b2b2b', { metal: .5, rough: .4 }), fluted: M('#6b5a44', { metal: .6, rough: .35 }), wood, shoji: wood, cane: wood, slat: wood, gansal: wood }[kind] || wood;
   const panels = [[3264, 3954, 9325], [3914, 4604, 9360], [3874, 4564, 9325]]; // 3번째 짝은 2번째 뒤로 겹쳐 열린 상태
   for (const [x1, x2, y] of panels.slice(0, kind === 'shoji' ? 2 : 3)) {
     const yy = y, t = 28;
@@ -822,6 +821,11 @@ function slidingPartition(kind, T) { // 안방↔서재 3짝 슬라이딩 도어
     else if (kind === 'shoji') { B(x1 + 40, yy + 12, x2 - 40, yy + 16, 60, 1925, M('#f7f2e6', { rough: 1, opacity: .8 })).castShadow = false; for (let z = 360; z < 1925; z += 300) B(x1 + 40, yy + 6, x2 - 40, yy + 22, z, z + 14, wood); for (let k = 1; k < 3; k++) { const xx = x1 + k * (x2 - x1) / 3; B(xx - 7, yy + 6, xx + 7, yy + 22, 60, 1925, wood); } }
     else if (kind === 'cane') { B(x1 + 40, yy + 10, x2 - 40, yy + 18, 60, 1925, M('#c9a77c', { tex: 'cane' })); B(x1 + 40, yy, x2 - 40, yy + t, 960, 990, wood); }
     else if (kind === 'slat') { for (let xx = x1 + 50; xx < x2 - 50; xx += 60) B(xx, yy + 2, xx + 30, yy + t - 2, 60, 1925, wood); }
+    else if (kind === 'gansal') { // 간살: 18mm 세로 간살 @36mm + 뒤 모루유리, 가운데 가로 띠
+      B(x1 + 40, yy + 4, x2 - 40, yy + 8, 60, 1925, M('#eef1ee', { rough: .6, opacity: .6 })).castShadow = false;
+      for (let xx = x1 + 52; xx < x2 - 58; xx += 36) B(xx, yy + 10, xx + 18, yy + t, 60, 1925, wood);
+      B(x1 + 40, yy + 8, x2 - 40, yy + t, 1000, 1030, wood);
+    }
   }
 }
 function wallTile(x1, y1, x2, y2, z0, z1, col, tw = 300, th = 600) { // 욕실 벽 타일 판
@@ -992,8 +996,14 @@ function bathroom(T) { // 욕실 x4474~6258, y4119~5724. 변기(북서) ↔ 세�
   B(4995, 4130, 5395, 4520, 850, 870, WHITEPORC(), 10);
   B(5045, 4190, 5345, 4460, 870, 980, WHITEPORC(), 60);
   cyl(5195, 4150, 980, 1140, 12, 12, METAL());
-  B(4990, 4127, 5400, 4260, 1050, 1800, M(T.vanity, { tex: T.mWood ? 'grainV' : undefined }), 4); B(5000, 4260, 5390, 4266, 1060, 1790, M('#dfe6e9', { rough: 0.04, metal: 0.3 }), 3);
-  B(5000, 4255, 5390, 4266, 1040, 1048, M('#fff2d8', { emissive: '#ffeccc', ei: 1.5 })).userData.wall = true;
+  // 세면대 위 → 변기 위까지 긴 거울장(폭 약 0.9m, 깊이 13cm, 거울문 3짝) + 아래 간접등
+  B(4490, 4127, 5400, 4257, 1050, 1850, M(T.vanity, { tex: T.mWood ? 'grainV' : undefined }), 4).userData.wall = true;
+  for (let i = 0; i < 3; i++) { const x1 = 4495 + i * 302; B(x1, 4257, x1 + 298, 4263, 1056, 1844, M('#dfe6e9', { rough: 0.04, metal: 0.3 }), 3).userData.wall = true; }
+  B(4495, 4250, 5395, 4258, 1040, 1048, M('#fff2d8', { emissive: '#ffeccc', ei: 1.8 })).userData.wall = true;
+  // 욕조 위 전용 조명(방습 다운라이트 2개) + 니치 간접등은 위 · 욕실 천장 등
+  for (const y of [4600, 5250]) { const d = addMesh(new THREE.CylinderGeometry(0.04, 0.04, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.8 }), null, false); d.position.set(5.8, (CEIL - 4) * S, y * S); CEIL_ONLY.push(d); }
+  { const L = new THREE.PointLight('#fff1dc', 0.8, 3, 2); L.position.set(5.8, 2.05, 4.95); root.add(L); }
+  { const d = addMesh(new THREE.CylinderGeometry(0.05, 0.05, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.6 }), null, false); d.position.set(4.95, (CEIL - 4) * S, 4.85); CEIL_ONLY.push(d); }
   rug(4520, 4980, 5100, 5420, '#e6e1d8');
 }
 // ---------- 간섭 점검 (개발용) ----------
