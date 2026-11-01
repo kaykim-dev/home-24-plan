@@ -665,7 +665,7 @@ export function buildHouse(scene, T, V) {
   countertop(2330, 253, 4465, 885, 870, T.ctop); countertop(3835, 885, 4465, 3025, 870, T.ctop);
   // 벽 타일 (상판~상부장)
   const spl = M(T.splash || '#f1efea', { rough: 0.18 });
-  B(2340, 263, 2900, 275, 900, 1500, spl); B(3820, 263, 4455, 275, 900, 1500, spl); B(2900, 263, 3820, 275, 900, 1100, spl);
+  B(2340, 263, 2900, 275, 900, 1500, spl); B(3820, 263, 4455, 275, 900, 1500, spl); B(3820, 263, 4105, 275, 1500, 2140, spl); B(2900, 263, 3820, 275, 900, 1100, spl);
   B(4443, 275, 4455, 3010, 900, 1500, spl);
   // 싱크 960 (키큰장 앞면 2840과 코너 3855 사이)
   B(2880, 330, 3840, 794, 885, 902, M('#a9b0b6', { rough: 0.35, metal: 0.8 }), 6);
@@ -675,10 +675,10 @@ export function buildHouse(scene, T, V) {
   dishRack(2365, 300, 2845, 780, 900);
   // 상부장: 건조대 위 + 오른쪽 전부 (후드 일체형)
   { const g = grp(2590, 563, 'E'); cabinet(g, 600, 500, 1500, CEIL - 1500, { color: T.upper || T.kup, doors: 1, handle: 'none', toe: 0 }); } // 건조대 위: 키큰장 폭(500)으로 벽까지, 문은 창 쪽(동쪽)으로
-  { const g = grp(4147, 438, 'S'); cabinet(g, 615, 350, 1500, CEIL - 1500, { color: T.kup, doors: 1, handle: 'none', toe: 0, wood: !!T.kupWood }); }
-  { const g = grp(4280, (613 + 3010) / 2, 'W'); cabinet(g, 3010 - 613, 350, 1500, CEIL - 1500, { color: T.kup, doors: 4, handle: 'none', toe: 0, wood: !!T.kupWood }); }
+  // 오른쪽 상부장: 창 쪽으로 튀어나온 코너장 없이, 오른쪽 벽 깊이(350) 그대로 창벽~끝까지 일자
+  { const g = grp(4280, (263 + 3010) / 2, 'W'); cabinet(g, 3010 - 263, 350, 1500, CEIL - 1500, { color: T.kup, doors: 5, handle: 'none', toe: 0, wood: !!T.kupWood }); }
   B(4105, 1380, 4440, 1960, 1480, 1500, M('#cfd2d5', { metal: .6, rough: .3 })); // 슬라이드 후드
-  for (const [x1, y1, x2, y2] of [[2830, 275, 2840, 850], [3845, 590, 4450, 605], [4110, 615, 4125, 3000]]) B(x1, y1, x2, y2, 1490, 1496, M('#fff8e8', { emissive: '#fff1d0', ei: 1.6 })).userData.wall = true;
+  for (const [x1, y1, x2, y2] of [[2830, 275, 2840, 850], [4110, 275, 4125, 3000]]) B(x1, y1, x2, y2, 1490, 1496, M('#fff8e8', { emissive: '#fff1d0', ei: 1.6 })).userData.wall = true;
   // 인덕션
   B(3940, 1380, 4400, 1960, 900, 907, M('#111111', { rough: 0.1 }), 4);
   for (const [x, y, r] of [[4060, 1520, 95], [4260, 1520, 80], [4160, 1800, 110]]) { const t = addMesh(new THREE.TorusGeometry(r * S, 0.0015, 4, 40), M('#555')); t.rotation.x = Math.PI / 2; t.position.set(x * S, 0.909, y * S); }

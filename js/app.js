@@ -8,7 +8,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 RectAreaLightUniformsLib.init();
-import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, audit } from './house.js?v=10';
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, audit } from './house.js?v=11';
 import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=10';
 
 const wrap = document.getElementById('viewer');
