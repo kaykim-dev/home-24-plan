@@ -8,8 +8,8 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 RectAreaLightUniformsLib.init();
-import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, audit } from './house.js?v=6';
-import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=6';
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, audit } from './house.js?v=7';
+import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=7';
 
 const wrap = document.getElementById('viewer');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -48,8 +48,10 @@ controls.addEventListener('change', () => { needs = true; });
 
 // 라벨
 const labelObjs = [];
-function addLabels(group) {
-  for (const [t, x, y] of LABELS) {
+function addLabels(group, V = {}) {
+  const win = (V.living || '').startsWith('diningWin');
+  const L = win ? LABELS.filter(l => l[0] !== '식탁' && l[0] !== '거실·놀이').concat([['창가 식탁', 1525, 9500], ['놀이방', 1100, 7100]]) : LABELS;
+  for (const [t, x, y] of L) {
     const d = document.createElement('div'); d.className = 'lbl'; d.textContent = t;
     const o = new CSS2DObject(d); o.position.set(x / 1000, 2.45, y / 1000); group.add(o); labelObjs.push(o);
   }
@@ -82,7 +84,7 @@ function setConcept(i) {
   document.getElementById('loading').style.display = 'flex';
   setTimeout(() => {
     labelObjs.forEach(o => o.element.remove()); labelObjs.length = 0;
-    const g = buildHouse(scene, c.T, c.V); addLabels(g);
+    const g = buildHouse(scene, c.T, c.V); addLabels(g, c.V);
     renderInfo(c); needs = true;
     document.getElementById('loading').style.display = 'none';
     history.replaceState(null, '', '#c' + c.id);
