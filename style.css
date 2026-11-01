@@ -1,0 +1,47 @@
+*{box-sizing:border-box}
+body{margin:0;font-family:Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;background:#f7f5f1;color:#222;-webkit-font-smoothing:antialiased}
+header{background:#22272e;color:#fff;position:sticky;top:0;z-index:20}
+.hwrap{max-width:1280px;margin:0 auto;padding:16px 20px 6px}
+h1{font-size:20px;margin:0 0 4px;font-weight:700}
+header p{margin:0;color:#b9c0c8;font-size:13px}
+#tabs{max-width:1280px;margin:0 auto;display:flex;gap:4px;padding:8px 14px 0;overflow-x:auto}
+#tabs button{background:none;border:0;color:#aab2bb;font:600 15px Pretendard,sans-serif;padding:10px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+#tabs button.on{color:#fff;border-color:#e6b980}
+main{max-width:1280px;margin:0 auto;padding:16px}
+.tab{display:none}.tab.on{display:block}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}
+.chips button{flex:none;border:1px solid #d9d3c9;background:#fff;border-radius:999px;padding:9px 14px;font:500 14px Pretendard,sans-serif;cursor:pointer;color:#333}
+.chips button b{color:#a47a4a;margin-right:4px}
+.chips button.on{background:#2b3138;color:#fff;border-color:#2b3138}.chips button.on b{color:#e6b980}
+#viewer{position:relative;height:min(72vh,760px);min-height:420px;border-radius:16px;overflow:hidden;background:#eef0f1;box-shadow:0 2px 14px rgba(0,0,0,.08)}
+#viewer canvas{display:block;touch-action:none}
+.labels{position:absolute;top:0;left:0;pointer-events:none}
+.lbl{background:rgba(34,39,46,.82);color:#fff;font:600 12px Pretendard,sans-serif;padding:4px 9px;border-radius:999px;white-space:nowrap}
+#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(238,240,241,.85);font-weight:600;color:#555;z-index:5}
+.hint{position:absolute;left:12px;bottom:10px;background:rgba(255,255,255,.85);border-radius:8px;padding:5px 9px;font-size:12px;color:#555;pointer-events:none}
+.views{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.views button{border:1px solid #d9d3c9;background:#fff;border-radius:10px;padding:8px 12px;font:500 14px Pretendard,sans-serif;cursor:pointer}
+.views button.on{background:#e6b980;border-color:#e6b980;color:#222;font-weight:700}
+.info{background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 1px 8px rgba(0,0,0,.05)}
+.info h2{margin:0 0 6px;font-size:22px}.info .tag{margin:0 0 16px;color:#6f675d}
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-bottom:16px}
+.pal div{display:flex;align-items:center;gap:10px;font-size:14px}.pal i{width:40px;height:40px;border-radius:10px;border:1px solid #ddd6cc;flex:none}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.info h3{font-size:16px;margin:4px 0 8px}.info ul{margin:0;padding-left:18px;line-height:1.65;font-size:15px}
+.ref{color:#8a8278;font-size:13px;margin:14px 0 6px}
+.quick button{border:0;background:#f1e6d6;border-radius:8px;padding:6px 10px;margin:2px;font:600 13px Pretendard,sans-serif;cursor:pointer}
+.note{font-size:12.5px;color:#8a8278;line-height:1.6}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
+figure{margin:0;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.05)}
+figure img{width:100%;display:block;cursor:zoom-in;background:#fff}
+figcaption{padding:12px 14px;font-size:14px;line-height:1.5;color:#555}figcaption b{display:block;color:#222;font-size:15px;margin-bottom:2px}
+.cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px}
+.cases article{background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 8px rgba(0,0,0,.05)}
+.cases h3{margin:0 0 4px;font-size:17px}.cases a{font-size:13px;color:#a46f35}
+.cases ul{font-size:14px;line-height:1.6;padding-left:18px}.cases img{width:100%;border-radius:8px;cursor:zoom-in}
+.notes{background:#fff;border-radius:16px;padding:8px 24px 20px;max-width:900px}
+.notes h2{font-size:19px;margin:20px 0 8px}.notes li{line-height:1.7;margin-bottom:4px}
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;z-index:50;overflow:auto;cursor:zoom-out}
+#lightbox.on{display:block}#lightbox img{display:block;max-width:none;width:min(1700px,100%);margin:0 auto}
+footer{text-align:center;color:#9a9288;font-size:12px;padding:20px}
+@media (max-width:700px){.cols{grid-template-columns:1fr}.cards,.cases{grid-template-columns:1fr}#viewer{height:62vh}.hint{display:none}h1{font-size:17px}}
