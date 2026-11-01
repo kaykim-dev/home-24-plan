@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { buildHouse, LABELS, CEIL_ONLY } from './house.js';
+import { buildHouse, LABELS, CEIL_ONLY, audit } from './house.js';
 import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js';
 
 const wrap = document.getElementById('viewer');
@@ -112,4 +112,4 @@ const start = Math.max(0, CONCEPTS.findIndex(c => location.hash === '#c' + c.id)
 const qv = new URLSearchParams(location.search).get('v');
 setConcept(start); goView(qv && VIEWS[qv] ? qv : 'overview', true);
 requestAnimationFrame(loop);
-window.__goView = goView; window.__setConcept = setConcept;
+window.__audit = audit; window.__goView = goView; window.__setConcept = setConcept;
