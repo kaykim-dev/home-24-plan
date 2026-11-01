@@ -2,14 +2,20 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { buildHouse, LABELS, CEIL_ONLY, audit } from './house.js?v=3';
-import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=3';
+import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+RectAreaLightUniformsLib.init();
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, audit } from './house.js?v=4';
+import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=4';
 
 const wrap = document.getElementById('viewer');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.92;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.82;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 wrap.appendChild(renderer.domElement);
 const labelR = new CSS2DRenderer(); labelR.domElement.className = 'labels'; wrap.appendChild(labelR.domElement);
@@ -28,6 +34,14 @@ Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near:
 sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02; sun.shadow.radius = 3;
 
 const camera = new THREE.PerspectiveCamera(45, 1, 0.05, 200);
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const gtao = new GTAOPass(scene, camera, 800, 600);
+gtao.updateGtaoMaterial({ radius: 0.35, distanceExponent: 1.5, thickness: 1.2, scale: 1.0, samples: 16, distanceFallOff: 1.0 });
+gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 16 });
+gtao.blendIntensity = 0.9;
+composer.addPass(gtao);
+composer.addPass(new OutputPass());
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; controls.dampingFactor = 0.08; controls.maxDistance = 40;
 controls.addEventListener('change', () => { needs = true; });
@@ -44,7 +58,7 @@ function addLabels(group) {
 let needs = true, current = null, curView = 'overview', tween = null;
 function resize() {
   const w = wrap.clientWidth, h = wrap.clientHeight;
-  renderer.setSize(w, h); labelR.setSize(w, h); camera.aspect = w / h;
+  renderer.setSize(w, h); composer.setSize(w, h); labelR.setSize(w, h); camera.aspect = w / h;
   setFov(); needs = true;
 }
 window.addEventListener('resize', resize);
@@ -103,8 +117,9 @@ function loop(now) {
   controls.update();
   if (!needs) return; needs = false;
   const over = camera.position.y > 5;
-  labelObjs.forEach(o => o.visible = over); CEIL_ONLY.forEach(o => o.visible = camera.position.y < 2.25);
-  renderer.render(scene, camera); labelR.render(scene, camera);
+  labelObjs.forEach(o => o.visible = over); CEIL_ONLY.forEach(o => o.visible = camera.position.y < 2.25); OUTSIDE.forEach(o => o.visible = camera.position.y < 3);
+  scene.background.set(over ? '#eef0f1' : '#dfe8ee');
+  composer.render(); labelR.render(scene, camera);
 }
 
 resize();
@@ -112,4 +127,4 @@ const start = Math.max(0, CONCEPTS.findIndex(c => location.hash === '#c' + c.id)
 const qv = new URLSearchParams(location.search).get('v');
 setConcept(start); goView(qv && VIEWS[qv] ? qv : 'overview', true);
 requestAnimationFrame(loop);
-window.__audit = audit; window.__concepts = CONCEPTS; window.__views = VIEWS; window.__goView = goView; window.__setConcept = setConcept;
+window.__ao = gtao; window.__audit = audit; window.__concepts = CONCEPTS; window.__views = VIEWS; window.__goView = goView; window.__setConcept = setConcept;
