@@ -6,6 +6,7 @@ export const CEIL = 2300;
 const S = 0.001;
 let root;
 export const CEIL_ONLY = [];
+export const LIGHT_PLAN = []; // 조명 보기용 목록 {k, x1,y1,x2,y2 | x,y}
 export const WALLS = [];
 const CUR_SEGS = [];
 const CUR_LAYOUT = { win: false, sofa: false, dresser: false };
@@ -242,6 +243,7 @@ function chair(cx, cy, facing, T, style = 'wood') {
   return g;
 }
 function pendant(cx, cy, zBottom, col = '#e9e2d5', style = 'dome') {
+  LIGHT_PLAN.push({ k: 'pend', x: cx, y: cy });
   CEIL_ONLY.push(cyl(cx, cy, zBottom + 150, CEIL, 2.5, 2.5, M('#333'), 6));
   CEIL_ONLY.push(cyl(cx, cy, CEIL - 10, CEIL, 45, 45, M('#eeeeee'), 20));
   const mat = M(col, { rough: 0.5, side: true });
@@ -252,13 +254,16 @@ function pendant(cx, cy, zBottom, col = '#e9e2d5', style = 'dome') {
   const L = new THREE.PointLight('#ffe2b0', 2.2, 4.5, 2); L.position.set(cx * S, (zBottom - 40) * S, cy * S); root.add(L);
 }
 function coveRoom(x1, y1, x2, y2) { // 방 천장 둘레 전체 간접등(우물천장/등박스 라인)
+  LIGHT_PLAN.push({ k: 'room', x1, y1, x2, y2 });
   const w = 30; cove(x1, y1, x2, y1 + w); cove(x1, y2 - w, x2, y2); cove(x1, y1 + w, x1 + w, y2 - w); cove(x2 - w, y1 + w, x2, y2 - w);
 }
 function toeLight(x1, y1, x2, y2) { // 붙박이장·하부장 아래 띄움 간접등
+  LIGHT_PLAN.push({ k: 'toe', x1, y1, x2, y2 });
   B(x1, y1, x2, y2, 12, 20, M('#ffdcaa', { emissive: '#ffc884', ei: 2.4 })).userData.wall = true;
 }
 function sconce(x, y, z, nx, ny) { // 벽등: 브라스 받침 + 오팔 유리 갓, (nx,ny)=벽에서 나오는 방향
   const br = M('#b8955a', { metal: .9, rough: .3 }), op = M('#ffe9cc', { emissive: '#ffcf8f', ei: 1.4, rough: .3 });
+  LIGHT_PLAN.push({ k: 'wall', x: x + nx * 70, y: y + ny * 70 });
   const bx = x - nx * 6, by = y - ny * 6;
   B(bx - (ny ? 45 : 6), by - (nx ? 45 : 6), bx + (ny ? 45 : 6), by + (nx ? 45 : 6), z - 90, z + 90, br, 4).userData.wall = true;
   const gx = x + nx * 70, gy = y + ny * 70;
@@ -267,6 +272,7 @@ function sconce(x, y, z, nx, ny) { // 벽등: 브라스 받침 + 오팔 유리 �
   const L = new THREE.PointLight('#ffcf8f', 0.5, 2.5, 2); L.position.set(gx * S, z * S, gy * S); root.add(L);
 }
 function ceilingFan(cx, cy) { // 거실 실링팬(밀착형, 날개 3, 아래 LED)
+  LIGHT_PLAN.push({ k: 'fan', x: cx, y: cy });
   const bm = M('#f4f2ee', { rough: .5 }), wm = M('#c9a77c', { tex: 'grain', rough: .5 });
   cyl(cx, cy, CEIL - 60, CEIL, 75, 75, bm, 24).userData.wall = true;
   cyl(cx, cy, CEIL - 230, CEIL - 60, 115, 95, bm, 32).userData.wall = true;
@@ -274,6 +280,7 @@ function ceilingFan(cx, cy) { // 거실 실링팬(밀착형, 날개 3, 아래 LE
   for (let i = 0; i < 3; i++) { const a = i * Math.PI * 2 / 3 + 0.4; const m = addMesh(new THREE.BoxGeometry(0.5, 0.008, 0.13), wm); m.position.set((cx + Math.cos(a) * 360) * S, (CEIL - 175) * S, (cy + Math.sin(a) * 360) * S); m.rotation.y = -a; m.userData.wall = true; }
 }
 function magRail(x1, y1, x2, y2, n) { // 11/2 아내 레퍼런스: 마그네틱 레일(천장 매입) + 스팟 n개
+  LIGHT_PLAN.push({ k: 'rail', x1, y1, x2, y2, n });
   const rm = M('#1f1f1f', { rough: 0.5 }); const r = B(x1, y1, x2, y2, CEIL - 8, CEIL, rm); r.userData.wall = true; CEIL_ONLY.push(r);
   const along = (x2 - x1) > (y2 - y1);
   for (let i = 0; i < n; i++) { const t = (i + 0.5) / n; const cx = along ? x1 + (x2 - x1) * t : (x1 + x2) / 2, cy = along ? (y1 + y2) / 2 : y1 + (y2 - y1) * t;
@@ -281,6 +288,7 @@ function magRail(x1, y1, x2, y2, n) { // 11/2 아내 레퍼런스: 마그네틱 
     const g = cyl(cx, cy, CEIL - 97, CEIL - 95, 18, 18, M('#fff6e0', { emissive: '#ffe8c0', ei: 2 }), 16); g.userData.wall = true; }
 }
 function downlight(cx, cy) { // 11/2: 방은 2인치 안티글레어(작게)
+  LIGHT_PLAN.push({ k: 'down', x: cx, y: cy });
   const d = addMesh(new THREE.CylinderGeometry(0.027, 0.027, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.6 }), null, false); d.position.set(cx * S, (CEIL - 4) * S, cy * S); CEIL_ONLY.push(d);
 }
 function lamp(cx, cy, z, col = '#efe7d8') {
@@ -481,6 +489,7 @@ function windowLight(x, y, z, w, h, rotY, intensity = 4) { // rotY=PI: 북쪽 �
 }
 function cove(x1, y1, x2, y2) { // 천장 간접조명 띠 (11/2 케이: 2700K 주황빛, 밝게)
   const m = M('#ffdcaa', { emissive: '#ffc884', ei: 2.6 });
+  LIGHT_PLAN.push({ k: 'cove', x1, y1, x2, y2 });
   B(x1, y1, x2, y2, CEIL - 120, CEIL - 100, m).userData.wall = true;
 }
 function nsBox(x1, y1, x2, y2, T, lampOn = true, wood = true) { // 협탁 (절대좌표)
@@ -608,7 +617,7 @@ function readingNook(x1, y1, x2, y2, T) { // 창가 쿠션 벤치 + 책 (앞면 
 
 export function buildHouse(scene, T, V) {
   if (root) { scene.remove(root); root.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
-  root = new THREE.Group(); scene.add(root); CEIL_ONLY.length = 0; WALLS.length = 0; SKY.length = 0;
+  root = new THREE.Group(); scene.add(root); CEIL_ONLY.length = 0; LIGHT_PLAN.length = 0; WALLS.length = 0; SKY.length = 0;
   const wallM = M(T.wall, { rough: 0.92, tex: 'paint' }); const capM = M('#4d4b47', { rough: 0.9 });
   const wallMats = [wallM, wallM, capM, wallM, wallM, wallM];
   const partM = M(T.part, { rough: 0.9, tex: 'paint' }); const partMats = [partM, partM, capM, partM, partM, partM];
@@ -696,6 +705,7 @@ export function buildHouse(scene, T, V) {
   coveRoom(2360, 3985, 4230, 5700); coveRoom(2900, 950, 3800, 3700); coveRoom(3290, 6020, 5050, 9300); coveRoom(3200, 9560, 5150, 10480);
   coveRoom(20, 1437, 2097, 3945); coveRoom(952, 283, 2097, 1397); coveRoom(4724, 283, 6602, 3941); coveRoom(4494, 4139, 6238, 5704); coveRoom(5242, 9560, 6602, 10480);
   toeLight(2340, 862, 3855, 872); toeLight(3846, 885, 3856, 3010); toeLight(600, 1510, 610, 3900); toeLight(5154, 1360, 5164, 3010); toeLight(5062, 6551, 5072, 9317);
+  LIGHT_PLAN.push({ k: 'toe', x1: 4110, y1: 275, x2: 4125, y2: 3000 }, { k: 'toe', x1: 2830, y1: 275, x2: 2840, y2: 850 }, { k: 'toe', x1: 10, y1: 4490, x2: 1190, y2: 4520 }, { k: 'toe', x1: 30, y1: 5540, x2: 1120, y2: 5560 }); // 상부장 아래·니치
   sconce(3046, 7000, 1850, -1, 0); sconce(3046, 8700, 1850, -1, 0); // 거실 책장 위 벽등
   if (!V.headPanel) { sconce(3290, 7090, 1300, 1, 0); sconce(3290, 9130, 1300, 1, 0); } // 안방 침대 양옆 벽등(헤드월 컨셉은 이미 있음)
 
@@ -1128,7 +1138,7 @@ function bathroom(T) { // 욕실 x4474~6258, y4119~5724. 변기(북서) ↔ 세�
   for (let i = 0; i < 3; i++) { const x1 = 4495 + i * 302; B(x1, 4257, x1 + 298, 4263, 1456, CEIL - 10, M('#dfe6e9', { rough: 0.04, metal: 0.3 }), 3).userData.wall = true; }
   B(4495, 4250, 5395, 4258, 1440, 1448, M('#fff2d8', { emissive: '#ffeccc', ei: 1.8 })).userData.wall = true;
   // 욕조 위 전용 조명(방습 다운라이트 2개) + 니치 간접등은 위 · 욕실 천장 등
-  for (const y of [4600, 5250]) { const d = addMesh(new THREE.CylinderGeometry(0.04, 0.04, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.8 }), null, false); d.position.set(5.8, (CEIL - 4) * S, y * S); CEIL_ONLY.push(d); }
+  for (const y of [4600, 5250]) { LIGHT_PLAN.push({ k: 'down', x: 5800, y }); const d = addMesh(new THREE.CylinderGeometry(0.04, 0.04, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.8 }), null, false); d.position.set(5.8, (CEIL - 4) * S, y * S); CEIL_ONLY.push(d); }
   { const L = new THREE.PointLight('#fff1dc', 0.8, 3, 2); L.position.set(5.8, 2.05, 4.95); root.add(L); }
   { const d = addMesh(new THREE.CylinderGeometry(0.05, 0.05, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.6 }), null, false); d.position.set(4.95, (CEIL - 4) * S, 4.85); CEIL_ONLY.push(d); }
   rug(4520, 4980, 5100, 5420, '#e6e1d8');

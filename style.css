@@ -50,3 +50,10 @@ footer{text-align:center;color:#9a9288;font-size:12px;padding:20px}
 
 .md{max-width:1100px}.md table{border-collapse:collapse;width:100%;font-size:13.5px;margin:10px 0 18px}.md th,.md td{border:1px solid #e3ddd3;padding:6px 8px;vertical-align:top}.md th{background:#f6efe4}.md h1{font-size:22px}.md h2{font-size:19px;margin-top:26px}.md li{line-height:1.65}
 @media (max-width:700px){.md table{display:block;overflow-x:auto}}
+
+.lightbar{align-items:center}.lightbar span{font:700 14px Pretendard,sans-serif;color:#555;margin-right:4px}
+.lightbar button.on{background:#2b2f3a;border-color:#2b2f3a;color:#ffcf8f}
+.legend{position:absolute;left:12px;top:12px;z-index:5;background:rgba(20,22,28,.86);color:#f3efe8;border-radius:12px;padding:10px 12px;font:500 12.5px Pretendard,sans-serif;display:flex;flex-direction:column;gap:5px;max-width:240px}
+.legend b{font-size:13.5px;margin-bottom:2px}.legend span{display:flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:22px;height:7px;border-radius:2px}.legend i.dot{width:11px;height:11px;border-radius:50%;border:2px solid #111}
+.legend i.ring{width:12px;height:12px;border-radius:50%;border:3px solid #3b7dd8;background:transparent}

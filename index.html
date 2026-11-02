@@ -9,7 +9,7 @@
 <meta property="og:description" content="돌려 보는 3D 컨셉 6가지, 계획 도면, 같은 평면 시공 사례">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
 <body>
@@ -33,11 +33,13 @@
   <div id="chips" class="chips"></div>
   <div id="viewer">
     <div id="loading">3D 불러오는 중…</div>
+    <div id="legend" class="legend" style="display:none"><b>천장 조명 평면도</b><span><i style="background:#ff8a1f"></i>천장 간접등(우물·커튼박스)</span><span><i style="background:#ffb347"></i>가구 아래·상부장 아래·니치 간접등</span><span><i style="background:#2b2b2b;outline:2px solid #fff3d6"></i>마그네틱 레일 + 스팟</span><span><i class="dot" style="background:#fff"></i>매입등(직접등)</span><span><i class="dot" style="background:#d94f9a"></i>벽등</span><span><i class="dot" style="background:#f2c230"></i>펜던트</span><span><i class="ring"></i>실링팬</span></div>
     <div class="hint">드래그: 돌리기 · 두 손가락/휠: 확대 · 우클릭/두 손가락 끌기: 이동</div>
   </div>
+  <div id="lightbar" class="views lightbar"><span>조명 보기</span><button data-m="day" class="on">낮</button><button data-m="night">밤 · 간접등만</button><button data-m="nightAll">밤 · 전부 켬</button><button data-m="plan">천장 조명 평면도</button></div>
   <div id="views" class="views"></div>
   <article id="info" class="info"></article>
-  <p class="note">· 배치 점검: 모든 문이 열리는 자리(아이방·욕실·안방·세탁부스), 싱크·쿡탑 앞 60cm, 냉장고·키큰장 문 열림, 식탁 의자 빼는 자리, 침대 양옆·발치 통로, 세탁기·세면대·변기 앞 공간에 가구가 겹치지 않게 6개 컨셉 모두 자동으로 확인했어요.<br>· 천장은 3D에서 걷어 내 보이지 않아 조명이 비어 보이지만, 거실·욕조 위·화장대 등 조명 위치는 표시해 두었어요.<br>· 벽 높이는 천장 2.3m로 가정했어요(실측 천장고·하리 높이 받으면 수정). 평면 치수는 실측 CAD 기준이고 가구는 예시입니다.<br>· 주소창의 #c01~#c06 으로 컨셉을 바로 열 수 있어요. 예) 이 페이지 주소 끝에 #c05</p>
+  <p class="note">· 배치 점검: 모든 문이 열리는 자리(아이방·욕실·안방·세탁부스), 싱크·쿡탑 앞 60cm, 냉장고·키큰장 문 열림, 식탁 의자 빼는 자리, 침대 양옆·발치 통로, 세탁기·세면대·변기 앞 공간에 가구가 겹치지 않게 6개 컨셉 모두 자동으로 확인했어요.<br>· 천장 조명은 3D 아래 '조명 보기' 버튼으로 보세요: <b>밤 · 간접등만</b>(평소 분위기), <b>밤 · 전부 켬</b>(직접등까지), <b>천장 조명 평면도</b>(위에서 본 조명 위치·종류 색 구분).<br>· 벽 높이는 천장 2.3m로 가정했어요(실측 천장고·하리 높이 받으면 수정). 평면 치수는 실측 CAD 기준이고 가구는 예시입니다.<br>· 주소창의 #c01~#c06 으로 컨셉을 바로 열 수 있어요. 예) 이 페이지 주소 끝에 #c05</p>
 </section>
 
 <section id="tplan" class="tab">
@@ -115,6 +117,6 @@ const lb=document.getElementById('lightbox');document.addEventListener('click',e
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
 <script>fetch("scope.md?v=7").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>fetch("elements.md?v=1").then(r=>r.text()).then(t=>{document.getElementById("elem").innerHTML=marked.parse(t);document.querySelectorAll("#elem a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
-<script type="module" src="js/app.js?v=21"></script>
+<script type="module" src="js/app.js?v=22"></script>
 </body>
 </html>
