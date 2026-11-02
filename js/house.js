@@ -251,6 +251,28 @@ function pendant(cx, cy, zBottom, col = '#e9e2d5', style = 'dome') {
   const bulb = addMesh(new THREE.SphereGeometry(0.04, 16, 8), M('#fff6e0', { emissive: '#ffe8b8', ei: 2.5 }), null, false); bulb.position.set(cx * S, (zBottom + 30) * S, cy * S);
   const L = new THREE.PointLight('#ffe2b0', 2.2, 4.5, 2); L.position.set(cx * S, (zBottom - 40) * S, cy * S); root.add(L);
 }
+function coveRoom(x1, y1, x2, y2) { // 방 천장 둘레 전체 간접등(우물천장/등박스 라인)
+  const w = 30; cove(x1, y1, x2, y1 + w); cove(x1, y2 - w, x2, y2); cove(x1, y1 + w, x1 + w, y2 - w); cove(x2 - w, y1 + w, x2, y2 - w);
+}
+function toeLight(x1, y1, x2, y2) { // 붙박이장·하부장 아래 띄움 간접등
+  B(x1, y1, x2, y2, 12, 20, M('#ffdcaa', { emissive: '#ffc884', ei: 2.4 })).userData.wall = true;
+}
+function sconce(x, y, z, nx, ny) { // 벽등: 브라스 받침 + 오팔 유리 갓, (nx,ny)=벽에서 나오는 방향
+  const br = M('#b8955a', { metal: .9, rough: .3 }), op = M('#ffe9cc', { emissive: '#ffcf8f', ei: 1.4, rough: .3 });
+  const bx = x - nx * 6, by = y - ny * 6;
+  B(bx - (ny ? 45 : 6), by - (nx ? 45 : 6), bx + (ny ? 45 : 6), by + (nx ? 45 : 6), z - 90, z + 90, br, 4).userData.wall = true;
+  const gx = x + nx * 70, gy = y + ny * 70;
+  B(x - (ny ? 8 : 0) + Math.min(0, nx * 70), y - (nx ? 8 : 0) + Math.min(0, ny * 70), x + (ny ? 8 : 0) + Math.max(0, nx * 70), y + (nx ? 8 : 0) + Math.max(0, ny * 70), z - 8, z + 8, br, 3).userData.wall = true;
+  const g = addMesh(new THREE.SphereGeometry(0.075, 24, 16), op, null, false); g.position.set(gx * S, z * S, gy * S); g.userData.wall = true;
+  const L = new THREE.PointLight('#ffcf8f', 0.5, 2.5, 2); L.position.set(gx * S, z * S, gy * S); root.add(L);
+}
+function ceilingFan(cx, cy) { // 거실 실링팬(밀착형, 날개 3, 아래 LED)
+  const bm = M('#f4f2ee', { rough: .5 }), wm = M('#c9a77c', { tex: 'grain', rough: .5 });
+  cyl(cx, cy, CEIL - 60, CEIL, 75, 75, bm, 24).userData.wall = true;
+  cyl(cx, cy, CEIL - 230, CEIL - 60, 115, 95, bm, 32).userData.wall = true;
+  cyl(cx, cy, CEIL - 240, CEIL - 230, 90, 90, M('#ffe7c2', { emissive: '#ffd49a', ei: 1.8 }), 32).userData.wall = true;
+  for (let i = 0; i < 3; i++) { const a = i * Math.PI * 2 / 3 + 0.4; const m = addMesh(new THREE.BoxGeometry(0.5, 0.008, 0.13), wm); m.position.set((cx + Math.cos(a) * 360) * S, (CEIL - 175) * S, (cy + Math.sin(a) * 360) * S); m.rotation.y = -a; m.userData.wall = true; }
+}
 function magRail(x1, y1, x2, y2, n) { // 11/2 아내 레퍼런스: 마그네틱 레일(천장 매입) + 스팟 n개
   const rm = M('#1f1f1f', { rough: 0.5 }); const r = B(x1, y1, x2, y2, CEIL - 8, CEIL, rm); r.userData.wall = true; CEIL_ONLY.push(r);
   const along = (x2 - x1) > (y2 - y1);
@@ -457,8 +479,8 @@ function skyline() { // 창밖 풍경 (원통 안쪽 면)
 function windowLight(x, y, z, w, h, rotY, intensity = 4) { // rotY=PI: 북쪽 창(남쪽으로 비춤), 0: 남쪽 창(북쪽으로)
   const L = new THREE.RectAreaLight('#fff6ea', intensity, w * S, h * S); L.position.set(x * S, z * S, y * S); L.lookAt(x * S, z * S, (y + (rotY ? 1000 : -1000)) * S); root.add(L);
 }
-function cove(x1, y1, x2, y2) { // 천장 간접조명 띠
-  const m = M('#fff3dc', { emissive: '#ffe6bf', ei: 2.2 });
+function cove(x1, y1, x2, y2) { // 천장 간접조명 띠 (11/2 케이: 2700K 주황빛, 밝게)
+  const m = M('#ffdcaa', { emissive: '#ffc884', ei: 2.6 });
   B(x1, y1, x2, y2, CEIL - 120, CEIL - 100, m).userData.wall = true;
 }
 function nsBox(x1, y1, x2, y2, T, lampOn = true, wood = true) { // 협탁 (절대좌표)
@@ -666,10 +688,16 @@ export function buildHouse(scene, T, V) {
   magRail(400, 9780, 2600, 9805, 4); magRail(2390, 6300, 2415, 8700, 3); magRail(3290, 700, 3315, 3800, 4);
   for (const [x, y] of [[620, 5000], [3600, 4700], [3800, 9900], [4700, 7300], [4700, 8400]]) downlight(x, y);
   cove(0, 10440, 2900, 10460); // 거실 커튼박스 간접등(전 컨셉)
-  for (const [x, y, i] of [[1500, 9600, 1.4], [3300, 2200, 1.4], [4700, 7700, 1.2], [1100, 2600, 1.1], [5700, 2200, 1.1], [600, 5000, 0.9], [3300, 4800, 0.9], [5300, 5000, 0.8], [5900, 10000, 0.6]]) { const L = new THREE.PointLight('#fff1dc', i, 5, 2); L.position.set(x * S, 2.1, y * S); root.add(L); }
+  for (const [x, y, i] of [[1500, 9600, 1.4], [3300, 2200, 1.4], [4700, 7700, 1.2], [1100, 2600, 1.1], [5700, 2200, 1.1], [600, 5000, 0.9], [3300, 4800, 0.9], [5300, 5000, 0.8], [5900, 10000, 0.6]]) { const L = new THREE.PointLight('#ffd9a8', i * 1.25, 5.5, 2); L.position.set(x * S, 2.1, y * S); root.add(L); }
   // 시스템 에어컨(11/2): 거실 4웨이 1대 + 안방·아이방1·아이방2 1웨이 각 1대, 주방 없음
-  sysAC(1250, 7600, 650, 650, true); sysAC(5300, 7800, 400, 1000); sysAC(1350, 850, 1000, 400); sysAC(5750, 1550, 900, 380);
-  if (V.cove) { cove(20, 6000, 60, 9250); cove(20, 9350, 2880, 9390); cove(3290, 6000, 3330, 9290); }
+  sysAC(1250, 6900, 650, 650, true); ceilingFan(1500, 8450); // 11/2 케이: 거실 실링팬, 에어컨은 북쪽으로 sysAC(5300, 7800, 400, 1000); sysAC(1350, 850, 1000, 400); sysAC(5750, 1550, 900, 380);
+  // 11/2 케이: 간접등을 집 전체에(스탠드가 필요 없을 만큼). 방마다 천장 둘레 간접등 + 가구 아래 간접등 + 벽등
+  coveRoom(20, 6020, 3040, 9240); coveRoom(20, 9345, 2880, 10430); coveRoom(20, 4190, 1180, 5930); coveRoom(1270, 4190, 3040, 5700);
+  coveRoom(2360, 3985, 4230, 5700); coveRoom(2900, 950, 3800, 3700); coveRoom(3290, 6020, 5050, 9300); coveRoom(3200, 9560, 5150, 10480);
+  coveRoom(20, 1437, 2097, 3945); coveRoom(952, 283, 2097, 1397); coveRoom(4724, 283, 6602, 3941); coveRoom(4494, 4139, 6238, 5704); coveRoom(5242, 9560, 6602, 10480);
+  toeLight(2340, 862, 3855, 872); toeLight(3846, 885, 3856, 3010); toeLight(600, 1510, 610, 3900); toeLight(5154, 1360, 5164, 3010); toeLight(5062, 6551, 5072, 9317); toeLight(10, 4540, 1190, 4550); toeLight(10, 5536, 1150, 5546);
+  sconce(3046, 7000, 1850, -1, 0); sconce(3046, 8700, 1850, -1, 0); // 거실 책장 위 벽등
+  if (!V.headPanel) { sconce(3290, 7090, 1300, 1, 0); sconce(3290, 9130, 1300, 1, 0); } // 안방 침대 양옆 벽등(헤드월 컨셉은 이미 있음)
 
   // ---------- 주방 ----------
   const K = T.klow, kWood = !!T.kWood, kH = T.khandle || 'groove';
@@ -779,7 +807,7 @@ export function buildHouse(scene, T, V) {
     for (const y of [7150, 9130]) { B(3300, y - 40, 3340, y + 40, 1250, 1290, M('#b8955a', { metal: .9, rough: .3 }), 4); cyl(3370, y, 1150, 1250, 55, 70, M('#f2e8d8', { emissive: '#ffdca0', ei: .5, side: true }), 20); }
   }
   bed(4429, 8130, 1600, 2050, 'E', T, { channel: T.channel, frame: T.head });
-  nsBox(3310, 6880, 3710, 7300, T, !V.headPanel); nsBox(3310, 8960, 3710, 9300, T, !V.headPanel);
+  nsBox(3310, 6880, 3710, 7300, T, false); nsBox(3310, 8960, 3710, 9300, T, false); // 11/2: 스탠드 대신 벽등
   // 동쪽 벽: 붙박이장 + 화장대 (구성은 컨셉별 V.wd), 일부 문은 전신 거울
   const mCab = T.mCab || T.tall, mWood = !!T.mWood, mH = T.mHandle || 'groove';
   const segs = V.wd || [['wd', 5951, 7300, []], ['van', 7300, 8400], ['wd', 8400, 9317, []]]; CUR_SEGS.length = 0; CUR_SEGS.push(...segs);
