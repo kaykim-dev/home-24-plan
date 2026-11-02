@@ -717,9 +717,10 @@ export function buildHouse(scene, T, V) {
   rug(150, 4650, 1050, 5300, '#cfc6b8');
 
   // ---------- 거실·식탁 ----------
-  const winDining = V.living === 'diningWin' || V.living === 'diningWinSofa';
-  if (winDining) { playroom(T, V.living === 'diningWinSofa' ? 8300 : 8050); diningAtWindow(T, V.living === 'diningWinSofa'); }
-  else {
+  // 고정(11/2 형 지시): 식탁은 모든 안에서 거실 창가, 창 쪽·왼쪽 벽 ㄱ자 붙박이 벤치. 가운데(옛 식탁 자리)는 매트 깔고 아기 놀이 공간
+  const winDining = true;
+  playroom(T, 8350); diningCorner(T);
+  if (false) {
   sofaBanquette(T);
   table(650, 6590, 1450, 8190, T); // 1,600×800, 가로 소파 좌판 앞 4cm까지 당김
   chair(1830, 7010, 'W', T, T.chairStyle); chair(1830, 7770, 'W', T, T.chairStyle); chair(1050, 8570, 'N', T, T.chairStyle);
@@ -731,7 +732,7 @@ export function buildHouse(scene, T, V) {
   kidsBookshelf(2766, 6020, 3066, 9180, 1500, T);
   // 거실 키큰장: 창 오른쪽(아기 책장 쪽) 벽에 길게. 위 장(화이트) + 가운데 니치(간접등·콘센트) + 아래 서랍(우드)
   livingNicheCabinet(T);
-  const LV = V.living || 'corner'; CUR_LAYOUT.win = winDining; CUR_LAYOUT.sofa = LV === 'diningWinSofa'; CUR_LAYOUT.dresser = !!V.dresser;
+  const LV = 'diningCorner'; CUR_LAYOUT.win = true; CUR_LAYOUT.sofa = true; CUR_LAYOUT.dresser = !!V.dresser;
   if (LV === 'daybed') daybed(T);
   else if (LV === 'floor') floorLounge(T);
   else if (winDining) { /* 창가 다이닝 */ }
@@ -842,6 +843,23 @@ function wallTile(x1, y1, x2, y2, z0, z1, col, tw = 300, th = 600) { // 욕실 �
   m.position.set((x1 + x2) / 2 * S, (z0 + z1) / 2 * S, (y1 + y2) / 2 * S); m.userData.wall = true; return m;
 }
 
+function diningCorner(T) { // 창가 ㄱ자 붙박이 벤치(창 쪽 2.15m + 왼쪽 벽 1.2m, 좌판 아래 서랍) + 식탁 1,600×800 + 맞은편 의자 2
+  const base = M(T.benchBase || T.tall || T.base, { tex: 'grain', rough: .6 }), seat = M(T.seat, { tex: 'fabric', rough: .95 }), back = M(T.back, { tex: 'fabric', rough: .95 });
+  // 창 쪽 다리 x0~2150, y9950~10440 / 왼쪽 벽 다리 x0~490, y8750~9950
+  B(20, 9980, 2130, 10430, 0, 80, M(darker(T.base, .6))); B(0, 9950, 2150, 10440, 80, 400, base, 6);
+  B(20, 8770, 470, 9950, 0, 80, M(darker(T.base, .6))); B(0, 8750, 490, 9950, 80, 400, base, 6);
+  for (let i = 0; i < 3; i++) B(10 + i * 712, 9955, 712 + i * 712, 10330, 400, 470, seat, 40);
+  for (const [a, b] of [[8760, 9350], [9360, 9945]]) B(5, a, 380, b, 400, 470, seat, 40);
+  for (let i = 0; i < 3; i++) { const m = B(150 + i * 665, 10300, 805 + i * 665, 10440, 470, 900, back, 60); m.rotation.x = 0.1; }
+  for (const [a, b] of [[8760, 9350], [9360, 9940]]) { const m = B(30, a, 170, b, 470, 900, back, 60); m.rotation.z = -0.1; }
+  for (let i = 0; i < 3; i++) B(80 + i * 700, 9948, 700 + i * 700, 9952, 230, 240, M('#555'));
+  B(488, 8820, 492, 9880, 230, 240, M('#555'));
+  for (const [x, y, w, d, ry, c] of [[200, 10170, 400, 130, 0.2, T.acc], [1500, 10170, 400, 130, -0.15, mixc(T.acc, '#ffffff', .4)], [140, 9000, 130, 400, 0.15, T.back]]) { const p = B(x, y, x + w, y + d, 470, 820, M(c, { tex: 'fabric' }), 70); p.rotation.y = ry; }
+  table(520, 9120, 2120, 9920, T);
+  for (const x of [920, 1720]) chair(x, 8890, 'S', T, T.chairStyle);
+  pendant(1320, 9520, 1500, T.pendant || '#e9e2d5', T.pendantStyle || 'dome');
+  cyl(1170, 9520, 750, 950, 45, 55, M('#e8e1d4', { rough: .3 })); cyl(1470, 9520, 750, 790, 140, 110, M('#f2efe8', { rough: .3 }), 32);
+}
 function diningAtWindow(T, withSofa) { // 거실 확장부 창가 식탁 1,600×800 (창과 나란히)
   if (withSofa) { // 창가 긴 붙박이 소파 + 식탁 + 반대편 의자 3
     const base = M(T.base, { rough: .7 }), seat = M(T.seat, { tex: 'fabric', rough: .95 }), back = M(T.back, { tex: 'fabric', rough: .95 });
@@ -1077,7 +1095,7 @@ export function audit() {
   // 사용 공간 (+ 붙박이장 앞 통로는 현재 구성대로)
   const ZONES = { ...USE_ZONES };
   if (CUR_LAYOUT.dresser) ZONES['아이방2 서랍장 앞'] = [5300, 870, 6300, 1300];
-  if (CUR_LAYOUT.win) { for (const k of ['식탁 의자 빼는 자리(옆)', '식탁 끝 의자 빼는 자리', '의자 뒤 거실 통로(책장 앞)']) delete ZONES[k]; ZONES['놀이방 앞 책장 통로'] = [2420, 6000, 2760, 8300]; ZONES['창가 식탁 의자 빼는 자리'] = CUR_LAYOUT.sofa ? [725, 8330, 2325, 8590] : [725, 8080, 2325, 8340]; } for (const sg of CUR_SEGS) if (sg[0] === 'wd') ZONES[`붙박이장 앞(${sg[1]}~${sg[2]})`] = [5470, sg[1], 5995, sg[2]];
+  if (CUR_LAYOUT.win) { for (const k of ['식탁 의자 빼는 자리(옆)', '식탁 끝 의자 빼는 자리', '의자 뒤 거실 통로(책장 앞)']) delete ZONES[k]; ZONES['놀이방 앞 책장 통로'] = [2420, 6000, 2760, 8300]; ZONES['창가 식탁 의자 빼는 자리'] = [700, 8380, 2100, 8640]; ZONES['벤치 앞 식탁 아래 무릎 자리'] = [500, 9930, 2120, 9940]; } for (const sg of CUR_SEGS) if (sg[0] === 'wd') ZONES[`붙박이장 앞(${sg[1]}~${sg[2]})`] = [5470, sg[1], 5995, sg[2]];
   root.traverse(o => {
     if (!o.isMesh || o.userData.wall || o.userData.door || o.userData.skip || SKY.includes(o)) return;
     bb.setFromObject(o); const x1 = bb.min.x * 1000, x2 = bb.max.x * 1000, y1 = bb.min.z * 1000, y2 = bb.max.z * 1000, z0 = bb.min.y * 1000, z1 = bb.max.y * 1000;
