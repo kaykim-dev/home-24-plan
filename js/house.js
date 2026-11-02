@@ -695,7 +695,7 @@ export function buildHouse(scene, T, V) {
   coveRoom(20, 6020, 3040, 9240); coveRoom(20, 9345, 2880, 10430); coveRoom(20, 4190, 1180, 5930); coveRoom(1270, 4190, 3040, 5700);
   coveRoom(2360, 3985, 4230, 5700); coveRoom(2900, 950, 3800, 3700); coveRoom(3290, 6020, 5050, 9300); coveRoom(3200, 9560, 5150, 10480);
   coveRoom(20, 1437, 2097, 3945); coveRoom(952, 283, 2097, 1397); coveRoom(4724, 283, 6602, 3941); coveRoom(4494, 4139, 6238, 5704); coveRoom(5242, 9560, 6602, 10480);
-  toeLight(2340, 862, 3855, 872); toeLight(3846, 885, 3856, 3010); toeLight(600, 1510, 610, 3900); toeLight(5154, 1360, 5164, 3010); toeLight(5062, 6551, 5072, 9317); toeLight(10, 4540, 1190, 4550); toeLight(10, 5536, 1150, 5546);
+  toeLight(2340, 862, 3855, 872); toeLight(3846, 885, 3856, 3010); toeLight(600, 1510, 610, 3900); toeLight(5154, 1360, 5164, 3010); toeLight(5062, 6551, 5072, 9317); toeLight(10, 4540, 1190, 4550);
   sconce(3046, 7000, 1850, -1, 0); sconce(3046, 8700, 1850, -1, 0); // 거실 책장 위 벽등
   if (!V.headPanel) { sconce(3290, 7090, 1300, 1, 0); sconce(3290, 9130, 1300, 1, 0); } // 안방 침대 양옆 벽등(헤드월 컨셉은 이미 있음)
 
@@ -755,19 +755,20 @@ export function buildHouse(scene, T, V) {
   { const ec = T.entryCab || T.tall, ew = !!T.entryWood; const g = grp(575, 5740, 'N');
     // 아래: 5분류 인출장(문을 당기면 통이 같이 나옴, 투입구 없음). 종량제(뚜껑 통) 300 | 플라스틱 320 | 위 비닐·아래 캔/유리 280 | 종이 세움칸 160
     { const cw = M(T.tall, { tex: 'grainV', rough: .55 }), dk = M('#3a3530', { rough: .6 });
-      B(0, 5545, 1150, 5950, 60, 1050, M(darker(T.tall, .92), { tex: 'grainV' })); B(20, 5560, 1130, 5950, 0, 60, M(darker(T.tall, .55)));
-      const fr = [[18, 318, 60, 1050], [336, 656, 60, 1050], [674, 954, 520, 1050], [674, 954, 60, 502], [972, 1132, 60, 1050]];
+      B(0, 5545, 1150, 5950, 300, 1100, M(darker(T.tall, .92), { tex: 'grainV' })); /* 11/2 케이: 신발장처럼 300 띄움 → 아래에 목 높은 운동화 */ B(10, 5546, 1140, 5556, 290, 298, M('#ffdcaa', { emissive: '#ffc884', ei: 2.4 })).userData.wall = true;
+      for (const [x1, c] of [[60, '#f2f2f0'], [250, '#3d3d3d'], [470, '#c9b79c'], [700, '#ffffff'], [900, '#8a6a52']]) { B(x1, 5640, x1 + 150, 5900, 0, 170, M(c, { rough: .7 }), 25).userData.skip = true; }
+      const fr = [[18, 318, 300, 1100], [336, 656, 300, 1100], [674, 954, 708, 1100], [674, 954, 300, 690], [972, 1132, 300, 1100]];
       for (const [x1, x2, z0, z1] of fr) { B(x1 + 2, 5527, x2 - 2, 5545, z0 + 2, z1 - 2, cw); B(x1 + 2, 5524, x2 - 2, 5528, z1 - 34, z1 - 24, dk); }
-      for (const x of [0, 318, 656, 954, 1132]) B(x, 5527, x + 18, 5545, 60, 1050, M(darker(T.tall, .85), { tex: 'grainV' }));
-      const tags = [[168, 1000, '#6b6b6b'], [496, 1000, '#9fbf8f'], [814, 1000, '#c9c2e0'], [814, 452, '#7ea6c9'], [1052, 1000, '#e2c48b']];
+      for (const x of [0, 318, 656, 954, 1132]) B(x, 5527, x + 18, 5545, 300, 1100, M(darker(T.tall, .85), { tex: 'grainV' }));
+      const tags = [[168, 1060, '#6b6b6b'], [496, 1060, '#9fbf8f'], [814, 1060, '#c9c2e0'], [814, 650, '#7ea6c9'], [1052, 1060, '#e2c48b']];
       for (const [cx, z, c] of tags) B(cx - 40, 5521, cx + 40, 5525, z - 30, z, M(c, { rough: .4 }), 2).userData.skip = true; }
-    cabinet(g, 1150, 420, 1350, CEIL - 1350, { color: T.upper || '#f3f1ec', doors: 3, handle: 'none', toe: 0 });
+    cabinet(g, 1150, 420, 1400, CEIL - 1400, { color: T.upper || '#f3f1ec', doors: 3, handle: 'none', toe: 0 });
     const nm = M(T.niche || T.tall, { tex: 'grainV', rough: .5 });
-    B(0, 5530, 1150, 5950, 1050, 1068, nm); B(0, 5930, 1150, 5950, 1050, 1350, nm); B(0, 5530, 18, 5950, 1050, 1350, nm); B(1132, 5530, 1150, 5950, 1050, 1350, nm); B(0, 5530, 1150, 5950, 1332, 1350, nm);
-    B(30, 5540, 1120, 5560, 1322, 1328, M('#fff4dc', { emissive: '#ffe9c0', ei: 2.2 })).userData.wall = true;
-    B(150, 5700, 450, 5880, 1068, 1085, M(T.table || '#c9a272', { tex: 'grain' }), 6).userData.skip = true; // 키 트레이
-    B(250, 5760, 300, 5800, 1085, 1095, METAL(), 3).userData.skip = true;
-    cyl(850, 5800, 1068, 1220, 45, 55, M('#d9cfc2', { rough: .4 })).userData.skip = true;
+    B(0, 5530, 1150, 5950, 1100, 1118, nm); B(0, 5930, 1150, 5950, 1100, 1400, nm); B(0, 5530, 18, 5950, 1100, 1400, nm); B(1132, 5530, 1150, 5950, 1100, 1400, nm); B(0, 5530, 1150, 5950, 1382, 1400, nm);
+    B(30, 5540, 1120, 5560, 1372, 1378, M('#fff4dc', { emissive: '#ffe9c0', ei: 2.2 })).userData.wall = true;
+    B(150, 5700, 450, 5880, 1118, 1135, M(T.table || '#c9a272', { tex: 'grain' }), 6).userData.skip = true; // 키 트레이
+    B(250, 5760, 300, 5800, 1135, 1145, METAL(), 3).userData.skip = true;
+    cyl(850, 5800, 1118, 1270, 45, 55, M('#d9cfc2', { rough: .4 })).userData.skip = true;
   }
   rug(150, 4650, 1050, 5300, '#cfc6b8');
 
