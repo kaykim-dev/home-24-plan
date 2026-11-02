@@ -23,6 +23,7 @@
     <button data-t="tplan">계획 도면</button>
     <button data-t="tcase">비슷한 집 사례</button>
     <button data-t="tnote">정리 · 확인할 것</button>
+    <button data-t="tscope">공사 범위(업체용)</button>
     <button data-t="telem">인테리어 요소 사전</button>
   </nav>
 </header>
@@ -61,6 +62,7 @@
     <ul>
       <li><b>확장</b> 발코니 1·2·3 전부 확장, 샷시 전체 교체, 거실 둥근 창 → 일자 통창(양끝은 벽 + 키큰장, 거실 창 약 2.15m). 거실·안방 사이 확장부에 새 벽.</li>
       <li><b>투톤 원칙</b> 상부장·장 윗부분은 화이트로 가볍게, 하부장·서랍·니치는 우드로 무게감(주방·키큰장·신발장·분리수거장·거실장 공통).</li>
+      <li><b>주방 가전</b> 전자레인지는 싱크 기준 오른쪽 상판 끝(전용 콘센트), 얼음정수기는 왼쪽 키큰장 가운데 칸(싱크에서 급수). <b>시스템 에어컨</b> 거실 4웨이 1 + 안방·아이방1·아이방2 1웨이 각 1, 주방 없음.</li>
       <li><b>주방</b> ㄱ자 + 오른쪽 연장. 오른쪽 상부장은 창 쪽 코너장 없이 오른쪽 벽에 깊이 35cm 일자. 싱크볼 960, 싱크 왼쪽 2단 건조대 위 상부장은 키큰장 폭(50cm)으로 벽까지 이어서 문이 창 쪽으로 열림. 오른쪽 전부 상부장(후드 일체). 키큰장 가운데는 모든 컨셉에서 열린 칸(홈카페). 주방 창은 싱크 위 약 0.92m.</li>
       <li><b>거실·식탁 (고정)</b> 모든 안 공통: 식탁 1,600×800은 거실 창가로, 창 쪽 2.15m + 왼쪽 벽 1.2m ㄱ자 붙박이 벤치(좌판 아래 서랍) + 맞은편 의자 2. 가운데(옛 식탁 자리)는 매트 깔고 아기 놀이 공간(낮은 장난감장·티피·미끄럼틀·아이 테이블). 창 오른쪽(책장 쪽) 벽에 니치 키큰장: 위 장(화이트)·가운데 간접등 니치+콘센트·아래 서랍(우드). 창은 로만쉐이드.</li>
       <li><b>안방</b> 침대 머리 서쪽 벽, 동쪽 벽 전체 미닫이 붙박이장. 화장대는 폭 60cm, 서서 쓰는 높이(상판 90cm) + 아래 서랍, 모든 안에서 방문 쪽(왼쪽) 끝, 문 닫으면 장처럼 보이는 파우더룸형(02·06·08)도 있음. 일부 장문은 전신거울. 확장부는 서재(1.5m 책상), 안방과는 3짝 슬라이딩 도어로 분리(유리·플루티드·간살·한지·라탄 등).</li>
@@ -88,6 +90,7 @@
     </ul>
   </div>
 </section>
+<section id="tscope" class="tab"><article id="scope" class="notes md">불러오는 중…</article></section>
 <section id="telem" class="tab"><article id="elem" class="notes md">불러오는 중…</article></section>
 </main>
 
@@ -110,7 +113,8 @@ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.que
 const lb=document.getElementById('lightbox');document.addEventListener('click',e=>{if(e.target.matches('.cards img,.cases img')){lb.querySelector('img').src=e.target.src;lb.classList.add('on');}else if(e.target.closest('#lightbox'))lb.classList.remove('on');});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script>fetch("scope.md?v=1").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>fetch("elements.md?v=1").then(r=>r.text()).then(t=>{document.getElementById("elem").innerHTML=marked.parse(t);document.querySelectorAll("#elem a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
-<script type="module" src="js/app.js?v=14"></script>
+<script type="module" src="js/app.js?v=15"></script>
 </body>
 </html>

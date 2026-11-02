@@ -101,9 +101,10 @@ export const VIEWS = {
   kids1: ['아이방 1', [1.75, 1.55, 4.55], [0.8, 0.9, 1.3]],
   kids2: ['아이방 2', [5.0, 1.55, 3.6], [6.0, 0.85, 1.0]],
   bath: ['욕실', [4.40, 1.65, 5.5], [5.9, 0.95, 4.45]],
+  ac: ['천장 에어컨(거실)', [2.6, 1.2, 9.3], [1.25, 2.3, 7.4]],
   livingCab: ['거실 키큰장(니치)', [1.0, 1.55, 9.2], [2.95, 1.05, 9.95]],
   play: ['가운데 놀이 매트', [2.55, 1.55, 8.6], [0.6, 0.6, 6.4]],
   study: ['서재(안방 확장)', [4.95, 1.55, 8.75], [3.9, 0.9, 10.2]],
   laundry: ['세탁 부스', [4.2, 1.5, 9.95], [6.3, 1.0, 10.0]],
 };
-export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'dining', 'play', 'entry', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'kids2', 'bath', 'laundry'];
+export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'kids2', 'bath', 'laundry'];

@@ -656,6 +656,8 @@ export function buildHouse(scene, T, V) {
   const ceil = addMesh(new THREE.PlaneGeometry(6.622, 10.5), M('#fbfaf7', { rough: 1 }), null, false); ceil.rotation.x = Math.PI / 2; ceil.position.set(3.311, CEIL * S - 0.001, 5.25);
   for (const [x, y] of [[700, 9800], [1700, 9800], [2400, 9800], [2400, 6800], [2400, 8000], [3300, 1200], [3300, 2600], [3600, 3700], [620, 4600], [620, 5500], [3600, 4700], [3800, 9900], [4700, 7000], [4700, 8600]]) downlight(x, y);
   for (const [x, y, i] of [[1500, 9600, 1.4], [3300, 2200, 1.4], [4700, 7700, 1.2], [1100, 2600, 1.1], [5700, 2200, 1.1], [600, 5000, 0.9], [3300, 4800, 0.9], [5300, 5000, 0.8], [5900, 10000, 0.6]]) { const L = new THREE.PointLight('#fff1dc', i, 5, 2); L.position.set(x * S, 2.1, y * S); root.add(L); }
+  // 시스템 에어컨(11/2): 거실 4웨이 1대 + 안방·아이방1·아이방2 1웨이 각 1대, 주방 없음
+  sysAC(1250, 7600, 650, 650, true); sysAC(5300, 7800, 400, 1000); sysAC(1350, 850, 1000, 400); sysAC(5750, 1550, 900, 380);
   if (V.cove) { cove(20, 6000, 60, 9250); cove(20, 9350, 2880, 9390); cove(3290, 6000, 3330, 9290); }
 
   // ---------- 주방 ----------
@@ -684,7 +686,11 @@ export function buildHouse(scene, T, V) {
   B(3940, 1380, 4400, 1960, 900, 907, M('#111111', { rough: 0.1 }), 4);
   for (const [x, y, r] of [[4060, 1520, 95], [4260, 1520, 80], [4160, 1800, 110]]) { const t = addMesh(new THREE.TorusGeometry(r * S, 0.0015, 4, 40), M('#555')); t.rotation.x = Math.PI / 2; t.position.set(x * S, 0.909, y * S); }
   // 상판 소품
-  B(3950, 2300, 4350, 2650, 900, 925, M(T.table, { tex: 'grain' }), 8); cyl(4250, 2800, 900, 1080, 55, 55, M('#e9e4da', { rough: .3 })); cyl(4120, 2800, 900, 1000, 40, 40, M('#c9b49a', { rough: .3 }));
+  B(3950, 2020, 4300, 2300, 900, 925, M(T.table, { tex: 'grain' }), 8); cyl(4370, 2080, 900, 1080, 45, 45, M('#e9e4da', { rough: .3 })); cyl(4370, 2200, 900, 1000, 35, 35, M('#c9b49a', { rough: .3 }));
+  // 전자레인지: 싱크 기준 오른쪽(ㄱ자 오른쪽 끝 상판, 11/2) + 전용 콘센트
+  B(4020, 2430, 4430, 2930, 900, 1190, M('#dcdfe2', { rough: 0.35, metal: .4 }), 10);
+  B(4016, 2470, 4022, 2800, 930, 1160, M('#1d1d1d', { rough: .1 }), 3); B(4016, 2830, 4022, 2900, 950, 1150, M('#b9bec3', { metal: .6 }), 3);
+  B(4440, 2600, 4443, 2680, 1250, 1320, M('#f4f4f2', { rough: .3 })).userData.skip = true;
   // 키큰장 변형
   tallUnit(T, V.tall || 'closed');
   // 냉장고장
@@ -931,6 +937,13 @@ function dresser(x1, y1, x2, y2, facing, T) { // 기성 서랍장 1000x500x1100
   B(-W / 2, -D / 2, W / 2, D / 2, 1100, 1120, M(T.dresserTop || T.desk, { tex: 'grain' }), 4, g);
   return g;
 }
+function sysAC(cx, cy, w, d, four = false) { // 천장형 시스템 에어컨(1웨이/4웨이 패널)
+  const g = M('#f7f7f5', { rough: .45 }), sl = M('#9aa0a4', { rough: .5 });
+  const m = B(cx - w / 2, cy - d / 2, cx + w / 2, cy + d / 2, CEIL - 28, CEIL, g, 6); m.userData.wall = true;
+  if (four) { for (const [a, b, c, e] of [[-w / 2 + 40, -d / 2 + 40, w / 2 - 40, -d / 2 + 70], [-w / 2 + 40, d / 2 - 70, w / 2 - 40, d / 2 - 40], [-w / 2 + 40, -d / 2 + 90, -w / 2 + 70, d / 2 - 90], [w / 2 - 70, -d / 2 + 90, w / 2 - 40, d / 2 - 90]]) B(cx + a, cy + b, cx + c, cy + e, CEIL - 32, CEIL - 27, sl).userData.wall = true;
+    B(cx - w / 2 + 120, cy - d / 2 + 120, cx + w / 2 - 120, cy + d / 2 - 120, CEIL - 31, CEIL - 27, M('#eceeee', { rough: .6 })).userData.wall = true; }
+  else { const long = w >= d; B(long ? cx - w / 2 + 50 : cx - w / 2 + 40, long ? cy - d / 2 + 40 : cy - d / 2 + 50, long ? cx + w / 2 - 50 : cx - w / 2 + 120, long ? cy - d / 2 + 120 : cy + d / 2 - 50, CEIL - 33, CEIL - 27, sl).userData.wall = true; }
+}
 function tallUnit(T, kind) { // 키큰장(x2340~2840, y863~2341, 앞면 동쪽)
   const col = T.tall, w = !!T.kWood, h = T.khandle || 'groove';
   const box = (z0, z1, opt = {}) => { const g = grp(2590, 1602, 'E'); cabinet(g, 1478, 500, z0, z1 - z0, { color: col, wood: w, handle: h, toe: z0 === 0 ? 100 : 0, ...opt }); };
@@ -967,11 +980,15 @@ function appliances(x0, y0, z) { // 키큰장 홈카페 칸 (앞면 +x)
   // 토스터
   B(x0 + 60, y0 + 480, x0 + 380, y0 + 840, z, z + 210, M('#f2f0eb', { rough: 0.35 }), 25);
   B(x0 + 378, y0 + 520, x0 + 382, y0 + 760, z + 50, z + 170, M('#222', { rough: .1 }), 5);
-  // 전자레인지
-  B(x0 + 40, y0 + 960, x0 + 420, y0 + 1440, z, z + 290, M('#dcdfe2', { rough: 0.35, metal: .4 }), 10);
-  B(x0 + 418, y0 + 990, x0 + 422, y0 + 1320, z + 30, z + 260, M('#1d1d1d', { rough: .1 }), 3);
+  // 얼음정수기(전자레인지 자리, 11/2): 폭 약 28cm x 깊이 45cm x 높이 47cm 가정, 싱크에서 급수관 연결
+  { const px1 = x0 + 30, px2 = x0 + 480, py1 = y0 + 1000, py2 = y0 + 1280;
+    B(px1, py1, px2, py2, z, z + 470, M('#f1f2f2', { rough: 0.3 }), 20);
+    B(px2 - 6, py1 + 30, px2 + 2, py2 - 30, z + 300, z + 440, M('#2b2f33', { rough: .15 }), 6);
+    B(px2 - 90, py1 + 90, px2 - 10, py2 - 90, z + 150, z + 250, M('#c9ced2', { metal: .7, rough: .3 }), 5);
+    B(px2 - 180, py1 + 40, px2 + 5, py2 - 40, z, z + 20, M('#9aa2a8', { metal: .5, rough: .3 }), 4);
+    cyl(px2 - 60, (py1 + py2) / 2, z + 20, z + 130, 35, 30, M('#e9f2f5', { rough: .05, opacity: .6 })); }
   // 컵·병
-  for (let i = 0; i < 3; i++) cyl(x0 + 120 + i * 70, y0 + 1440 - 60, z + 330, z + 420, 32, 28, M(['#f4f1ea', '#d8cdbd', '#8e9c90'][i], { rough: .3 }));
+  for (let i = 0; i < 3; i++) cyl(x0 + 120 + i * 70, y0 + 1400, z + 0, z + 90, 32, 28, M(['#f4f1ea', '#d8cdbd', '#8e9c90'][i], { rough: .3 }));
 }
 function washTower(x1, y1, x2, y2) { // 앞면 서쪽(-x)
   const body = M('#e9eced', { rough: 0.35 }), dark = M('#2a3036', { rough: 0.1 });
