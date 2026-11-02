@@ -695,7 +695,7 @@ export function buildHouse(scene, T, V) {
   coveRoom(20, 6020, 3040, 9240); coveRoom(20, 9345, 2880, 10430); coveRoom(20, 4190, 1180, 5930); coveRoom(1270, 4190, 3040, 5700);
   coveRoom(2360, 3985, 4230, 5700); coveRoom(2900, 950, 3800, 3700); coveRoom(3290, 6020, 5050, 9300); coveRoom(3200, 9560, 5150, 10480);
   coveRoom(20, 1437, 2097, 3945); coveRoom(952, 283, 2097, 1397); coveRoom(4724, 283, 6602, 3941); coveRoom(4494, 4139, 6238, 5704); coveRoom(5242, 9560, 6602, 10480);
-  toeLight(2340, 862, 3855, 872); toeLight(3846, 885, 3856, 3010); toeLight(600, 1510, 610, 3900); toeLight(5154, 1360, 5164, 3010); toeLight(5062, 6551, 5072, 9317); toeLight(10, 4540, 1190, 4550);
+  toeLight(2340, 862, 3855, 872); toeLight(3846, 885, 3856, 3010); toeLight(600, 1510, 610, 3900); toeLight(5154, 1360, 5164, 3010); toeLight(5062, 6551, 5072, 9317);
   sconce(3046, 7000, 1850, -1, 0); sconce(3046, 8700, 1850, -1, 0); // 거실 책장 위 벽등
   if (!V.headPanel) { sconce(3290, 7090, 1300, 1, 0); sconce(3290, 9130, 1300, 1, 0); } // 안방 침대 양옆 벽등(헤드월 컨셉은 이미 있음)
 
@@ -740,17 +740,18 @@ export function buildHouse(scene, T, V) {
   for (let i = 0; i < 12; i++) B(2920, 190, 3800, 205, 1800 + i * 20, 1805 + i * 20, M('#f6f4ef', { rough: 0.8 }));
 
   // ---------- 전실 ----------
+  // 11/2 케이: 신발장·분리수거장 높이선 통일(300 띄움 / 아래장 300~1,100 / 니치 1,100~1,400 / 위 장 1,400~천장)
   { const g = grp(600, 4355, 'S'); const tc = T.entryCab || T.tall;
-    cabinet(g, 1200, 370, 250, 650, { color: T.tall, doors: 3, handle: 'none', toe: 0, wood: true });
-    cabinet(g, 1200, 370, 1250, CEIL - 1250, { color: T.upper || '#f3f1ec', doors: 3, handle: 'none', toe: 0 });
-    B(0, 4170, 1200, 4540, 1235, 1250, M(darker(T.upper || '#f3f1ec', .95))); B(0, 4170, 1200, 4540, 890, 900, M(T.tall, { tex: 'grain' })); B(0, 4170, 18, 4540, 900, 1235, M(T.tall, { tex: 'grainV' })); B(0, 4170, 1200, 4190, 900, 1235, M(T.tall, { tex: 'grainV' }));
-    B(10, 4500, 1190, 4520, 1225, 1230, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 })); B(10, 4490, 1190, 4520, 240, 245, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 }));
-    cyl(300, 4380, 900, 1080, 50, 60, M('#cdbfa8', { rough: .4 })).userData.skip = true; B(700, 4300, 900, 4420, 900, 920, M('#2b2b2b', { rough: .3 }), 4);
+    cabinet(g, 1200, 370, 300, 800, { color: T.tall, doors: 3, handle: 'none', toe: 0, wood: true });
+    cabinet(g, 1200, 370, 1400, CEIL - 1400, { color: T.upper || '#f3f1ec', doors: 3, handle: 'none', toe: 0 });
+    B(0, 4170, 1200, 4540, 1385, 1400, M(darker(T.upper || '#f3f1ec', .95))); B(0, 4170, 1200, 4540, 1100, 1110, M(T.tall, { tex: 'grain' })); B(0, 4170, 18, 4540, 1110, 1385, M(T.tall, { tex: 'grainV' })); B(0, 4170, 1200, 4190, 1110, 1385, M(T.tall, { tex: 'grainV' }));
+    B(10, 4500, 1190, 4520, 1375, 1380, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 })); B(10, 4490, 1190, 4520, 290, 295, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 }));
+    cyl(300, 4380, 1110, 1290, 50, 60, M('#cdbfa8', { rough: .4 })).userData.skip = true; B(700, 4300, 900, 4420, 1110, 1130, M('#2b2b2b', { rough: .3 }), 4);
     for (let i = 0; i < 3; i++) B(150 + i * 300, 4400, 400 + i * 300, 4520, 0, 90, M(['#5a5a5a', '#e8e1d6', '#9a7b62'][i]), 30);
     // 11/2 아내 레퍼런스(현관 팬트리): 니치 왼쪽 = 아이 가방·외출용품 칸(후크 2개 + 어린이집 가방)
-    for (const hx of [120, 330]) { B(hx - 8, 4180, hx + 8, 4230, 1180, 1196, METAL(), 3).userData.skip = true; }
-    B(60, 4200, 220, 4300, 950, 1170, M('#e3a35c', { rough: .6 }), 30).userData.skip = true; B(270, 4200, 400, 4290, 1000, 1170, M('#8fb3c9', { rough: .6 }), 30).userData.skip = true;
-    B(430, 4175, 440, 4520, 900, 1235, M(T.tall, { tex: 'grainV' })).userData.skip = true; }
+    for (const hx of [120, 330]) { B(hx - 8, 4180, hx + 8, 4230, 1330, 1346, METAL(), 3).userData.skip = true; }
+    B(60, 4200, 220, 4300, 1120, 1320, M('#e3a35c', { rough: .6 }), 30).userData.skip = true; B(270, 4200, 400, 4290, 1150, 1320, M('#8fb3c9', { rough: .6 }), 30).userData.skip = true;
+    B(430, 4175, 440, 4520, 1110, 1385, M(T.tall, { tex: 'grainV' })).userData.skip = true; }
   // 분리수거장(5분류): 종량제·플라스틱·비닐/캔유리(2단)·종이 세움칸 인출장 + 가운데 30cm 열린 칸(간접등·키 트레이) + 위 상부장(봉투·장바구니)
   { const ec = T.entryCab || T.tall, ew = !!T.entryWood; const g = grp(575, 5740, 'N');
     // 아래: 5분류 인출장(문을 당기면 통이 같이 나옴, 투입구 없음). 종량제(뚜껑 통) 300 | 플라스틱 320 | 위 비닐·아래 캔/유리 280 | 종이 세움칸 160

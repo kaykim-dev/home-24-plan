@@ -94,6 +94,7 @@ export const VIEWS = {
   entry: ['현관·전실', [2.4, 1.5, 7.4], [0.35, 0.95, 4.8]],
   kitchen: ['주방', [3.5, 1.55, 4.95], [3.0, 1.1, 0.6]],
   sink: ['싱크·건조대', [3.36, 1.6, 2.95], [3.36, 1.35, 0.3]],
+  entryBoth: ['신발장·분리수거장(양쪽)', [1.17, 1.75, 5.05], [-0.4, 0.55, 5.05]],
   recycle: ['분리수거장', [0.75, 1.45, 4.55], [0.55, 0.75, 5.9]],
   cafe: ['키큰장', [3.75, 1.45, 2.75], [2.45, 1.15, 1.5]],
   master: ['안방', [3.75, 1.6, 6.2], [6.0, 0.8, 8.3]],
@@ -109,4 +110,4 @@ export const VIEWS = {
   study: ['서재(안방 확장)', [4.95, 1.55, 8.75], [3.9, 0.9, 10.2]],
   laundry: ['세탁 부스', [4.2, 1.5, 9.95], [6.3, 1.0, 10.0]],
 };
-export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'boiler', 'kids2', 'bath', 'laundry'];
+export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'entryBoth', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'boiler', 'kids2', 'bath', 'laundry'];
