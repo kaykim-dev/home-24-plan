@@ -701,9 +701,16 @@ export function buildHouse(scene, T, V) {
     B(10, 4500, 1190, 4520, 1225, 1230, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 })); B(10, 4490, 1190, 4520, 240, 245, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 }));
     cyl(300, 4380, 900, 1080, 50, 60, M('#cdbfa8', { rough: .4 })).userData.skip = true; B(700, 4300, 900, 4420, 900, 920, M('#2b2b2b', { rough: .3 }), 4);
     for (let i = 0; i < 3; i++) B(150 + i * 300, 4400, 400 + i * 300, 4520, 0, 90, M(['#5a5a5a', '#e8e1d6', '#9a7b62'][i]), 30); }
-  // 분리수거장: 캔·플라스틱·병 세로형 인출 통 3개(폭 340 x 깊이 400 x 높이 약 1,000) + 가운데 30cm 열린 칸(간접등·키 트레이) + 위 상부장
+  // 분리수거장(5분류): 종량제·플라스틱·비닐/캔유리(2단)·종이 세움칸 인출장 + 가운데 30cm 열린 칸(간접등·키 트레이) + 위 상부장(봉투·장바구니)
   { const ec = T.entryCab || T.tall, ew = !!T.entryWood; const g = grp(575, 5740, 'N');
-    cabinet(g, 1150, 420, 0, 1050, { color: T.tall, doors: 3, handle: 'groove', toe: 60, wood: true });
+    // 아래: 5분류 인출장(문을 당기면 통이 같이 나옴, 투입구 없음). 종량제(뚜껑 통) 300 | 플라스틱 320 | 위 비닐·아래 캔/유리 280 | 종이 세움칸 160
+    { const cw = M(T.tall, { tex: 'grainV', rough: .55 }), dk = M('#3a3530', { rough: .6 });
+      B(0, 5545, 1150, 5950, 60, 1050, M(darker(T.tall, .92), { tex: 'grainV' })); B(20, 5560, 1130, 5950, 0, 60, M(darker(T.tall, .55)));
+      const fr = [[18, 318, 60, 1050], [336, 656, 60, 1050], [674, 954, 520, 1050], [674, 954, 60, 502], [972, 1132, 60, 1050]];
+      for (const [x1, x2, z0, z1] of fr) { B(x1 + 2, 5527, x2 - 2, 5545, z0 + 2, z1 - 2, cw); B(x1 + 2, 5524, x2 - 2, 5528, z1 - 34, z1 - 24, dk); }
+      for (const x of [0, 318, 656, 954, 1132]) B(x, 5527, x + 18, 5545, 60, 1050, M(darker(T.tall, .85), { tex: 'grainV' }));
+      const tags = [[168, 1000, '#6b6b6b'], [496, 1000, '#9fbf8f'], [814, 1000, '#c9c2e0'], [814, 452, '#7ea6c9'], [1052, 1000, '#e2c48b']];
+      for (const [cx, z, c] of tags) B(cx - 40, 5521, cx + 40, 5525, z - 30, z, M(c, { rough: .4 }), 2).userData.skip = true; }
     cabinet(g, 1150, 420, 1350, CEIL - 1350, { color: T.upper || '#f3f1ec', doors: 3, handle: 'none', toe: 0 });
     const nm = M(T.niche || T.tall, { tex: 'grainV', rough: .5 });
     B(0, 5530, 1150, 5950, 1050, 1068, nm); B(0, 5930, 1150, 5950, 1050, 1350, nm); B(0, 5530, 18, 5950, 1050, 1350, nm); B(1132, 5530, 1150, 5950, 1050, 1350, nm); B(0, 5530, 1150, 5950, 1332, 1350, nm);
@@ -711,9 +718,7 @@ export function buildHouse(scene, T, V) {
     B(150, 5700, 450, 5880, 1068, 1085, M(T.table || '#c9a272', { tex: 'grain' }), 6).userData.skip = true; // 키 트레이
     B(250, 5760, 300, 5800, 1085, 1095, METAL(), 3).userData.skip = true;
     cyl(850, 5800, 1068, 1220, 45, 55, M('#d9cfc2', { rough: .4 })).userData.skip = true;
-    // 맨 오른쪽 통은 살짝 빼 둔 모습(통 3개: 캔·플라스틱·병)
-    const lab = ['#7ea6c9', '#9fbf8f', '#e2b86b'];
-    for (let i = 0; i < 3; i++) B(60 + i * 380, 5532, 380 + i * 380, 5536, 880, 960, M(lab[i], { rough: .4 }), 3).userData.skip = true; }
+  }
   rug(150, 4650, 1050, 5300, '#cfc6b8');
 
   // ---------- 거실·식탁 ----------
