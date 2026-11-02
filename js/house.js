@@ -674,11 +674,12 @@ export function buildHouse(scene, T, V) {
   // 싱크 왼쪽: 2단 대형 건조대 (키큰장 옆 안쪽 칸)
   dishRack(2365, 300, 2845, 780, 900);
   // 상부장: 건조대 위 + 오른쪽 전부 (후드 일체형)
-  { const g = grp(2590, 563, 'E'); cabinet(g, 600, 500, 1500, CEIL - 1500, { color: T.upper || T.kup, doors: 1, handle: 'none', toe: 0 }); } // 건조대 위: 키큰장 폭(500)으로 벽까지, 문은 창 쪽(동쪽)으로
+  { const g = grp(2590, 563, 'E'); cabinet(g, 600, 500, 1650, CEIL - 1650, { color: T.upper || T.kup, doors: 1, handle: 'none', toe: 0 }); } // 11/2: 건조대 답답함 → 1,650으로 올림(상판 위 약 75cm), 키큰장 윗장과 선 맞춤 // 건조대 위: 키큰장 폭(500)으로 벽까지, 문은 창 쪽(동쪽)으로
   // 오른쪽 상부장: 창 쪽으로 튀어나온 코너장 없이, 오른쪽 벽 깊이(350) 그대로 창벽~끝까지 일자
   { const g = grp(4280, (263 + 3010) / 2, 'W'); cabinet(g, 3010 - 263, 350, 1500, CEIL - 1500, { color: T.kup, doors: 5, handle: 'none', toe: 0, wood: !!T.kupWood }); }
   B(4105, 1380, 4440, 1960, 1480, 1500, M('#cfd2d5', { metal: .6, rough: .3 })); // 슬라이드 후드
-  for (const [x1, y1, x2, y2] of [[2830, 275, 2840, 850], [4110, 275, 4125, 3000]]) B(x1, y1, x2, y2, 1490, 1496, M('#fff8e8', { emissive: '#fff1d0', ei: 1.6 })).userData.wall = true;
+  for (const [x1, y1, x2, y2] of [[4110, 275, 4125, 3000]]) B(x1, y1, x2, y2, 1490, 1496, M('#fff8e8', { emissive: '#fff1d0', ei: 1.6 })).userData.wall = true;
+  B(2830, 275, 2840, 850, 1640, 1646, M('#fff8e8', { emissive: '#fff1d0', ei: 1.6 })).userData.wall = true; // 건조대 위 조명
   // 인덕션
   B(3940, 1380, 4400, 1960, 900, 907, M('#111111', { rough: 0.1 }), 4);
   for (const [x, y, r] of [[4060, 1520, 95], [4260, 1520, 80], [4160, 1800, 110]]) { const t = addMesh(new THREE.TorusGeometry(r * S, 0.0015, 4, 40), M('#555')); t.rotation.x = Math.PI / 2; t.position.set(x * S, 0.909, y * S); }
@@ -934,22 +935,22 @@ function tallUnit(T, kind) { // 키큰장(x2340~2840, y863~2341, 앞면 동쪽)
   const col = T.tall, w = !!T.kWood, h = T.khandle || 'groove';
   const box = (z0, z1, opt = {}) => { const g = grp(2590, 1602, 'E'); cabinet(g, 1478, 500, z0, z1 - z0, { color: col, wood: w, handle: h, toe: z0 === 0 ? 100 : 0, ...opt }); };
   if (kind === 'closed') { box(0, CEIL, { doors: 3 }); return; }
-  // 공통: 아래 서랍, 위 장, 가운데 890~1500 열린 칸
-  box(0, 860, { drawers: [380, 380], drawerCols: 2, wood: true }); box(1520, CEIL, { doors: kind === 'cane' ? 3 : 2, cane: kind === 'cane', color: kind === 'cane' ? col : (T.upper || '#f3f1ec'), wood: kind === 'cane' });
+  // 공통: 아래 서랍, 위 장(1,650부터), 가운데 890~1,630 열린 칸
+  box(0, 860, { drawers: [380, 380], drawerCols: 2, wood: true }); box(1650, CEIL, { doors: kind === 'cane' ? 3 : 2, cane: kind === 'cane', color: kind === 'cane' ? col : (T.upper || '#f3f1ec'), wood: kind === 'cane' });
   const inner = kind === 'bar' ? M('#2a2724', { rough: .5 }) : M(T.niche || darker(col, .95), { tex: T.nicheWood ? 'grainV' : undefined, rough: .5 });
   B(2340, 863, 2840, 2341, 860, 890, M(T.ctop, { rough: 0.3 }), 2);
-  B(2340, 863, 2360, 2341, 890, 1520, inner); B(2340, 863, 2840, 883, 890, 1520, inner); B(2340, 2321, 2840, 2341, 890, 1520, inner);
-  B(2340, 863, 2840, 2341, 1500, 1520, M(darker(col, .9)));
-  B(2600, 885, 2840, 2320, 1494, 1500, M('#fff7e0', { emissive: '#ffefc8', ei: 1.8 })).userData.wall = true;
+  B(2340, 863, 2360, 2341, 890, 1650, inner); B(2340, 863, 2840, 883, 890, 1650, inner); B(2340, 2321, 2840, 2341, 890, 1650, inner);
+  B(2340, 863, 2840, 2341, 1630, 1650, M(darker(col, .9)));
+  B(2600, 885, 2840, 2320, 1624, 1630, M('#fff7e0', { emissive: '#ffefc8', ei: 1.8 })).userData.wall = true;
   if (kind === 'bar') { // 거울 뒷벽 + 유리 선반 + 잔
-    B(2360, 883, 2366, 2321, 900, 1490, M('#c9d0d4', { rough: .05, metal: .3 }));
+    B(2360, 883, 2366, 2321, 900, 1620, M('#c9d0d4', { rough: .05, metal: .3 }));
     B(2366, 883, 2600, 2321, 1200, 1210, M('#e6f0f3', { rough: .05, opacity: .4 }));
     for (let i = 0; i < 8; i++) { cyl(2440 + (i % 2) * 80, 1000 + i * 150, 1210, 1330, 30, 22, M('#e9f2f5', { rough: .05, opacity: .5 })); }
     for (let i = 0; i < 4; i++) cyl(2450, 1900 + i * 90, 890, 1150, 35, 35, M(['#3c5a3a', '#6b2d2d', '#2d3e5a', '#c9a77c'][i], { rough: .2 }));
     B(2830, 883, 2840, 2321, 1050, 1060, M('#b8955a', { metal: .9, rough: .3 }));
   } else if (kind === 'cafeGlass') { // 플루티드 유리 포켓도어(한 짝 열림) + 선반 머그
     for (let i = 0; i < 2; i++) { const y0 = i ? 1602 : 870, y1 = i ? 2330 : 1590; const x = i ? 2800 : 2815;
-      const fm = M(T.dframe || '#b8955a', { rough: .3, metal: .6 }); B(x, y0, x + 18, y0 + 20, 900, 1490, fm, 2); B(x, y1 - 20, x + 18, y1, 900, 1490, fm, 2); B(x, y0, x + 18, y1, 900, 915, fm, 2); B(x, y0, x + 18, y1, 1475, 1490, fm, 2);
+      const fm = M(T.dframe || '#b8955a', { rough: .3, metal: .6 }); B(x, y0, x + 18, y0 + 20, 900, 1620, fm, 2); B(x, y1 - 20, x + 18, y1, 900, 1620, fm, 2); B(x, y0, x + 18, y1, 900, 915, fm, 2); B(x, y0, x + 18, y1, 1605, 1620, fm, 2);
       for (let k = 0; k < 18; k++) cyl(x + 9, y0 + 20 + k * (y1 - y0 - 40) / 17, 910, 1480, 9, 9, M('#eef3f3', { rough: .25, opacity: .45 }), 8); }
     B(2366, 883, 2560, 2321, 1250, 1265, M(T.niche || darker(col, .9), { tex: 'grain' }));
     for (let i = 0; i < 6; i++) cyl(2450, 980 + i * 220, 1265, 1350, 40, 34, M(['#f4f1ea', '#d9cbb5', '#9fb2bf', '#e8d3c0', '#ffffff', '#c9a77c'][i], { rough: .25 }));
