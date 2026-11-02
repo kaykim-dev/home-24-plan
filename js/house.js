@@ -251,8 +251,15 @@ function pendant(cx, cy, zBottom, col = '#e9e2d5', style = 'dome') {
   const bulb = addMesh(new THREE.SphereGeometry(0.04, 16, 8), M('#fff6e0', { emissive: '#ffe8b8', ei: 2.5 }), null, false); bulb.position.set(cx * S, (zBottom + 30) * S, cy * S);
   const L = new THREE.PointLight('#ffe2b0', 2.2, 4.5, 2); L.position.set(cx * S, (zBottom - 40) * S, cy * S); root.add(L);
 }
-function downlight(cx, cy) {
-  const d = addMesh(new THREE.CylinderGeometry(0.045, 0.045, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.6 }), null, false); d.position.set(cx * S, (CEIL - 4) * S, cy * S); CEIL_ONLY.push(d);
+function magRail(x1, y1, x2, y2, n) { // 11/2 아내 레퍼런스: 마그네틱 레일(천장 매입) + 스팟 n개
+  const rm = M('#1f1f1f', { rough: 0.5 }); const r = B(x1, y1, x2, y2, CEIL - 8, CEIL, rm); r.userData.wall = true; CEIL_ONLY.push(r);
+  const along = (x2 - x1) > (y2 - y1);
+  for (let i = 0; i < n; i++) { const t = (i + 0.5) / n; const cx = along ? x1 + (x2 - x1) * t : (x1 + x2) / 2, cy = along ? (y1 + y2) / 2 : y1 + (y2 - y1) * t;
+    const sp = cyl(cx, cy, CEIL - 95, CEIL - 8, 22, 22, M('#1f1f1f', { rough: .4 }), 16); sp.userData.wall = true;
+    const g = cyl(cx, cy, CEIL - 97, CEIL - 95, 18, 18, M('#fff6e0', { emissive: '#ffe8c0', ei: 2 }), 16); g.userData.wall = true; }
+}
+function downlight(cx, cy) { // 11/2: 방은 2인치 안티글레어(작게)
+  const d = addMesh(new THREE.CylinderGeometry(0.027, 0.027, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.6 }), null, false); d.position.set(cx * S, (CEIL - 4) * S, cy * S); CEIL_ONLY.push(d);
 }
 function lamp(cx, cy, z, col = '#efe7d8') {
   cyl(cx, cy, z, z + 20, 70, 70, M('#3a3a3a', { rough: 0.4, metal: .4 }));
@@ -398,13 +405,10 @@ function doorLeaf(x1, y1, x2, y2, col, side = 0) { // side: 손잡이 방향(-1/
   if (along) { const hx = x2 - 80; B(hx, y1 - lo, hx + 20, y2 + hi, 980, 1000, m, 5).userData.door = true; }
   else { const hy = y2 - 80; B(x1 - lo, hy, x2 + hi, hy + 20, 980, 1000, m, 5).userData.door = true; }
 }
-function casing(x1, y1, x2, y2, col) { // 개구부 주위 몰딩
-  const m = M(col, { rough: 0.5 }); const t = 45;
-  if ((x2 - x1) > (y2 - y1)) { // 벽이 x 방향(문은 y로 통과)
-    for (const yy of [y1 - 12, y2]) { B(x1 - t, yy, x1, yy + 12, 0, 2100 + t, m); B(x2, yy, x2 + t, yy + 12, 0, 2100 + t, m); B(x1 - t, yy, x2 + t, yy + 12, 2100, 2100 + t, m); }
-  } else {
-    for (const xx of [x1 - 12, x2]) { B(xx, y1 - t, xx + 12, y1, 0, 2100 + t, m); B(xx, y2, xx + 12, y2 + t, 0, 2100 + t, m); B(xx, y1 - t, xx + 12, y2 + t, 2100, 2100 + t, m); }
-  }
+function casing(x1, y1, x2, y2, col) { // 11/2 아내 레퍼런스: 무몰딩(문선 없음). 벽과 같은 면, 문 위에 얇은 그림자 줄눈만
+  const m = M('#9a958d', { rough: 0.8 }); const t = 6;
+  if ((x2 - x1) > (y2 - y1)) { for (const yy of [y1 - 2, y2]) B(x1, yy, x2, yy + 2, 2100, 2100 + t, m).userData.wall = true; }
+  else { for (const xx of [x1 - 2, x2]) B(xx, y1, xx + 2, y2, 2100, 2100 + t, m).userData.wall = true; }
 }
 function windowSet(x1, x2, yWall, sill, top, frameCol = '#f4f4f2', panes = 2, depth = 60) {
   const fm = M(frameCol, { rough: 0.4 }); const n0 = root.children.length;
@@ -634,7 +638,7 @@ export function buildHouse(scene, T, V) {
   wall(3066, 9540, 3176, 10500);
   // 세탁 부스: 정면 전체 4짝 폴딩도어(흡음 패널) → 열면 앞이 다 트여 세탁기 문이 끝까지 열림
   wall(5172, 9480, 5672, 9540); B(5172, 9540, 5222, 10500, 2050, CEIL, wallM).userData.wall = true;
-  { const pm = M(T.part, { rough: 0.5 }); const pan = (ax, ay, bx, by) => { const L = Math.hypot(bx - ax, by - ay); const m = addMesh(new THREE.BoxGeometry(22 * S, 2030 * S, L * S), pm); m.position.set((ax + bx) / 2 * S, 1.03, (ay + by) / 2 * S); m.rotation.y = Math.atan2(bx - ax, by - ay); m.userData.door = true; };
+  { const pm = M('#f6f5f2', { rough: 0.6 }); /* 11/2 아내 레퍼런스: 세탁실 문짝은 무광 화이트(어두우면 답답) */ const pan = (ax, ay, bx, by) => { const L = Math.hypot(bx - ax, by - ay); const m = addMesh(new THREE.BoxGeometry(22 * S, 2030 * S, L * S), pm); m.position.set((ax + bx) / 2 * S, 1.03, (ay + by) / 2 * S); m.rotation.y = Math.atan2(bx - ax, by - ay); m.userData.door = true; };
     pan(5197, 9545, 4972, 9627); pan(4972, 9627, 5197, 9709); pan(5197, 10495, 4972, 10413); pan(4972, 10413, 5197, 10331);
     B(5172, 9540, 5222, 10500, 2040, 2050, M('#b9b9b9', { metal: .6, rough: .3 })).userData.wall = true; }
   // 전실 벽 + 3연동 중문
@@ -650,15 +654,18 @@ export function buildHouse(scene, T, V) {
   { const bm = M('#f2f2f0', { rough: .4 }); B(80, 330, 480, 630, 1150, 1850, bm, 8); cyl(280, 480, 1850, CEIL, 50, 50, M('#c9ced2', { metal: .6, rough: .3 })); B(120, 360, 440, 600, 1100, 1150, M('#9aa0a4', { metal: .5 })); }
   doorLeaf(2077, 3290, 2117, 3965, doorCol, -1); doorLeaf(4704, 3840, 5380, 3880, doorCol); doorLeaf(4474, 5640, 5100, 5680, doorCol); doorLeaf(3264, 5951, 3304, 6750, doorCol, 1);
   casing(1250, 3965, 2040, 4170, doorCol); casing(4455, 3030, 4704, 3880, doorCol); casing(4250, 4975, 4474, 5650, doorCol); casing(3264, 5724, 4211, 5951, doorCol);
-  // 걸레받이
-  const base = M(darker(T.wall, 0.9), { rough: 0.5 });
+  // 걸레받이: 11/2 아내 레퍼런스(3cm 걸레받이 후회 → 마이너스 걸레받이). 벽 안으로 들어간 얇은 그림자 줄
+  const base = M('#7d786f', { rough: 0.7 });
   const nb = root.children.length;
-  for (const [x1, y1, x2, y2] of [[0, 6000, 12, 9255], [3054, 5951, 3066, 6000], [3264, 5951, 3276, 6800], [12, 10488, 2900, 10500]]) B(x1, y1, x2, y2, 0, 70, base);
+  for (const [x1, y1, x2, y2] of [[0, 6000, 3, 9255], [3063, 5951, 3066, 6000], [3264, 5951, 3267, 6800], [12, 10497, 2900, 10500]]) B(x1, y1, x2, y2, 0, 12, base);
   for (let i = nb; i < root.children.length; i++) root.children[i].userData.wall = true;
 
   // 천장 (아래에서만 보임) + 조명
   const ceil = addMesh(new THREE.PlaneGeometry(6.622, 10.5), M('#fbfaf7', { rough: 1 }), null, false); ceil.rotation.x = Math.PI / 2; ceil.position.set(3.311, CEIL * S - 0.001, 5.25);
-  for (const [x, y] of [[700, 9800], [1700, 9800], [2400, 9800], [2400, 6800], [2400, 8000], [3300, 1200], [3300, 2600], [3600, 3700], [620, 4600], [620, 5500], [3600, 4700], [3800, 9900], [4700, 7000], [4700, 8600]]) downlight(x, y);
+  // 11/2 아내 레퍼런스: 거실·주방은 마그네틱 레일, 방·현관·복도는 2인치 매입등 최소 개수
+  magRail(400, 9780, 2600, 9805, 4); magRail(2390, 6300, 2415, 8700, 3); magRail(3290, 700, 3315, 3800, 4);
+  for (const [x, y] of [[620, 5000], [3600, 4700], [3800, 9900], [4700, 7300], [4700, 8400]]) downlight(x, y);
+  cove(0, 10440, 2900, 10460); // 거실 커튼박스 간접등(전 컨셉)
   for (const [x, y, i] of [[1500, 9600, 1.4], [3300, 2200, 1.4], [4700, 7700, 1.2], [1100, 2600, 1.1], [5700, 2200, 1.1], [600, 5000, 0.9], [3300, 4800, 0.9], [5300, 5000, 0.8], [5900, 10000, 0.6]]) { const L = new THREE.PointLight('#fff1dc', i, 5, 2); L.position.set(x * S, 2.1, y * S); root.add(L); }
   // 시스템 에어컨(11/2): 거실 4웨이 1대 + 안방·아이방1·아이방2 1웨이 각 1대, 주방 없음
   sysAC(1250, 7600, 650, 650, true); sysAC(5300, 7800, 400, 1000); sysAC(1350, 850, 1000, 400); sysAC(5750, 1550, 900, 380);
@@ -711,7 +718,11 @@ export function buildHouse(scene, T, V) {
     B(0, 4170, 1200, 4540, 1235, 1250, M(darker(T.upper || '#f3f1ec', .95))); B(0, 4170, 1200, 4540, 890, 900, M(T.tall, { tex: 'grain' })); B(0, 4170, 18, 4540, 900, 1235, M(T.tall, { tex: 'grainV' })); B(0, 4170, 1200, 4190, 900, 1235, M(T.tall, { tex: 'grainV' }));
     B(10, 4500, 1190, 4520, 1225, 1230, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 })); B(10, 4490, 1190, 4520, 240, 245, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 }));
     cyl(300, 4380, 900, 1080, 50, 60, M('#cdbfa8', { rough: .4 })).userData.skip = true; B(700, 4300, 900, 4420, 900, 920, M('#2b2b2b', { rough: .3 }), 4);
-    for (let i = 0; i < 3; i++) B(150 + i * 300, 4400, 400 + i * 300, 4520, 0, 90, M(['#5a5a5a', '#e8e1d6', '#9a7b62'][i]), 30); }
+    for (let i = 0; i < 3; i++) B(150 + i * 300, 4400, 400 + i * 300, 4520, 0, 90, M(['#5a5a5a', '#e8e1d6', '#9a7b62'][i]), 30);
+    // 11/2 아내 레퍼런스(현관 팬트리): 니치 왼쪽 = 아이 가방·외출용품 칸(후크 2개 + 어린이집 가방)
+    for (const hx of [120, 330]) { B(hx - 8, 4180, hx + 8, 4230, 1180, 1196, METAL(), 3).userData.skip = true; }
+    B(60, 4200, 220, 4300, 950, 1170, M('#e3a35c', { rough: .6 }), 30).userData.skip = true; B(270, 4200, 400, 4290, 1000, 1170, M('#8fb3c9', { rough: .6 }), 30).userData.skip = true;
+    B(430, 4175, 440, 4520, 900, 1235, M(T.tall, { tex: 'grainV' })).userData.skip = true; }
   // 분리수거장(5분류): 종량제·플라스틱·비닐/캔유리(2단)·종이 세움칸 인출장 + 가운데 30cm 열린 칸(간접등·키 트레이) + 위 상부장(봉투·장바구니)
   { const ec = T.entryCab || T.tall, ew = !!T.entryWood; const g = grp(575, 5740, 'N');
     // 아래: 5분류 인출장(문을 당기면 통이 같이 나옴, 투입구 없음). 종량제(뚜껑 통) 300 | 플라스틱 320 | 위 비닐·아래 캔/유리 280 | 종이 세움칸 160
@@ -783,6 +794,9 @@ export function buildHouse(scene, T, V) {
   slidingPartition(V.sep || 'glass', T);
   // 세탁 부스 내부: 워시타워 + 세제장 + 벽 선반
   washTower(5740, 9575, 6612, 10261);
+  { // 11/2 아내 레퍼런스: 누수 점검 가능하게 배관 점검구(세제장 옆 벽, 350×350 열리는 판)
+    const am = M('#f2f1ee', { rough: .5 }); B(6400, 10478, 6600, 10490, 150, 500, am).userData.wall = true;
+    B(6400, 10476, 6600, 10478, 150, 154, M('#9a958d')).userData.wall = true; B(6400, 10476, 6600, 10478, 496, 500, M('#9a958d')).userData.wall = true; }
   { // 세탁기 옆 빼서 쓰는 세제 틈새장(폭 210, 깊이 600, 앞으로 당겨 둔 모습) + 위 선반
     const fm = M(T.part, { rough: .45 }); const x1 = 5780, x2 = 6380, y1 = 10275, y2 = 10490;
     B(x1, y1, x1 + 18, y2, 40, 1800, fm); B(x2 - 12, y1, x2, y2, 40, 1800, fm); B(x1, y1, x2, y2, 40, 60, fm); B(x1, y1, x2, y2, 1780, 1800, fm);
