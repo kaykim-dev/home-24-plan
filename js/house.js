@@ -610,6 +610,15 @@ function kidsWardrobe(x1, y1, x2, y2, facing, T) { // 아이 붙박이장: 위 �
   B(W / 2 - cw, D / 2 - 20, W / 2, D / 2 + 1, 100, 520, M(darker(col, .85)), 0, g);
   for (let i = 0; i < 2; i++) B(W / 2 - cw + 20 + i * (cw / 2), D / 2 - 330, W / 2 - cw + (i + 1) * (cw / 2) - 10, D / 2 - 30, 110, 420, M(['#e7d8c6', '#cfdcd2', '#efe0b8'][i], { tex: 'fabric' }), 25, g);
 }
+function bumperBed(cx, cy, col = '#eee8df') { // 11/3 케이: 비비엔다 범퍼침대(바닥형) 외경 1,200×1,700×350, 바닥 매트 5cm, 범퍼 두께 10cm 4개(긴 것 2 + 짧은 것 2)
+  const x1 = cx - 600, x2 = cx + 600, y1 = cy - 850, y2 = cy + 850;
+  const fab = M(col, { tex: 'fabric', rough: 1 }), seam = M(darker(col, .9), { tex: 'fabric', rough: 1 });
+  B(x1 + 100, y1 + 100, x2 - 100, y2 - 100, 0, 50, M('#f7f4ee', { tex: 'fabric', rough: 1 }), 20); // 바닥 매트 1,000×1,500×50
+  for (const x of [x1, x2 - 100]) { B(x, y1, x + 100, y2, 0, 350, fab, 48); B(x + 2, y1 + 20, x + 98, y2 - 20, 345, 352, seam, 4).userData.skip = true; } // 긴 범퍼
+  for (const y of [y1, y2 - 100]) { B(x1 + 100, y, x2 - 100, y + 100, 0, 350, fab, 48); } // 짧은 범퍼
+  B(cx - 220, y1 + 140, cx + 220, y1 + 420, 50, 130, M('#ffffff', { tex: 'fabric' }), 40).userData.skip = true; // 베개
+  B(x1 + 140, cy - 100, x2 - 140, y2 - 140, 50, 90, M(mixc(col, '#c9d6e3', .35), { tex: 'fabric' }), 30).userData.skip = true; // 이불
+}
 function kidBed(cx, cy, T, style) { // 1000x2000, 머리 북쪽
   if (style === 'floor') { // 몬테소리 하우스 바닥 침대
     const w = M(T.kidFrame || T.desk, { tex: 'grain', rough: .5 }); const x1 = cx - 520, x2 = cx + 520, y1 = cy - 1025, y2 = cy + 1025;
@@ -880,9 +889,9 @@ export function buildHouse(scene, T, V) {
   const KS = V.kids || 'single';
   if (V.dresser) { kidsWardrobe(0, 2520, 600, 3900, 'E', T); dresser(0, 1510, 500, 2510, 'E', T); B(0, 1520, 20, 2500, 1300, 1900, M('#d5dee2', { rough: .05, metal: .2 }), 4); }
   else kidsWardrobe(0, 1510, 600, 3900, 'E', T); // 아이방1: 붙박이장(깊이 600, 미닫이)을 서쪽 벽으로, 침대는 동쪽(창 안 가림)
-  kidBed(KS === 'floor' ? 1570 : 1590, 2125, T, KS === 'floor' ? 'floor' : 'single');
+  bumperBed(1517, 2325, T.kidBumper || '#eee8df'); // 도면상 방 길이가 1.5cm 모자라 북서쪽 벽 모서리에 범퍼가 살짝 눌림(실측 확인) // 11/3 케이: 두 방 모두 비비엔다 범퍼침대 120×170(바닥형)
   kidsWardrobe(4704, 1360, 5154, 3010, 'E', T);
-  kidBed(KS === 'floor' ? 6060 : 6100, 2475, T, KS === 'floor' ? 'floor' : 'single');
+  bumperBed(6002, 2450, T.kidBumper || '#e6ece6');
   if (V.dresser) { // 기성 서랍장(1000x500x1100): 아이방2 창가, 아이방1은 붙박이장 앞쪽 1m 대신
     dresser(5300, 340, 6300, 840, 'S', T); plant(6420, 600, 0.35, 0);
   } else if (KS === 'nook') { readingNook(5100, 300, 6500, 700, T); }
@@ -1173,7 +1182,7 @@ export const USE_ZONES = {
   '식탁 의자 빼는 자리(옆)': [2060, 6790, 2460, 8000], '식탁 끝 의자 빼는 자리': [820, 8830, 1280, 9150], '의자 뒤 거실 통로(책장 앞)': [2060, 6000, 2760, 9250],
   '안방 침대 북쪽 옆': [3720, 6900, 5450, 7300], '안방 침대 남쪽 옆': [3720, 8960, 5450, 9317],
   '세탁기 문 앞(부스 안·앞)': [5050, 9640, 5700, 10250], '세탁부스 앞(폴딩도어 펼침)': [5360, 9545, 5570, 10495], '세제 틈새장 빼는 자리': [5170, 10275, 5770, 10490], '세면대 앞': [4995, 4525, 5395, 4920], '변기 앞': [4550, 4790, 4910, 5200], '안방→서재 통로': [4610, 9317, 5160, 9540], '팬트리 문 여는 자리': [2180, 9560, 2720, 10300], '분리수거 통 빼는 자리': [0, 5130, 1150, 5525],
-  '아이방1 침대~붙박이장 통로': [610, 1600, 1020, 3150],  '아이방2 침대~붙박이장 통로': [5160, 1500, 5530, 3400]
+  '아이방1 침대~붙박이장 통로': [610, 1600, 910, 3150],  '아이방2 침대~붙박이장 통로': [5160, 1500, 5395, 3400]
 };
 export function audit() {
   const out = []; const bb = new THREE.Box3();
