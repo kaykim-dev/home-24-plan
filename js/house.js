@@ -130,7 +130,7 @@ function M(color, o = {}) {
   if (o.opacity !== undefined) { p.transparent = true; p.opacity = o.opacity; p.depthWrite = o.opacity > 0.6; }
   if (o.emissive) { p.emissive = new THREE.Color(o.emissive); p.emissiveIntensity = o.ei ?? 1; }
   if (o.side) p.side = THREE.DoubleSide;
-  const m = new THREE.MeshStandardMaterial(p);
+  const m = new THREE.MeshStandardMaterial(p); m.name = key; // 렌더(Blender)에서 재질 종류 판별용
   matCache.set(key, m); return m;
 }
 const darker = (h, f = 0.8) => '#' + hex2rgb(h).map(v => Math.round(v * f).toString(16).padStart(2, '0')).join('');
@@ -452,11 +452,11 @@ function windowSet(x1, x2, yWall, sill, top, frameCol = '#f4f4f2', panes = 2, de
 }
 
 // ---------- floor ----------
-function floorZone(x1, y1, x2, y2, tex, rough = 0.6, rep = 2000) {
+function floorZone(x1, y1, x2, y2, tex, rough = 0.6, rep = 2000, name = 'FLOOR') {
   const t = tex.clone(); t.needsUpdate = true; t.repeat.set((x2 - x1) / rep, (y2 - y1) / rep); t.offset.set(x1 / rep, y1 / rep);
   const m = new THREE.MeshStandardMaterial({ map: t, roughness: rough });
   const p = addMesh(new THREE.PlaneGeometry((x2 - x1) * S, (y2 - y1) * S), m, null, false);
-  p.rotation.x = -Math.PI / 2; p.position.set((x1 + x2) / 2 * S, 0.001, (y1 + y2) / 2 * S);
+  p.rotation.x = -Math.PI / 2; p.position.set((x1 + x2) / 2 * S, 0.001, (y1 + y2) / 2 * S); p.name = name; m.name = name;
 }
 
 // ---------- house ----------
@@ -630,10 +630,10 @@ export function buildHouse(scene, T, V) {
   const rep = T.floor === 'tile' ? 1200 : 2000;
   for (const z of [[0, 4170, 3066, 10500], [2340, 263, 4455, 4170], [2340, 3961, 4250, 5724], [3066, 5724, 6622, 10500], [0, 1417, 2117, 3965], [932, 263, 2117, 1417], [4704, 263, 6622, 3961]])
     floorZone(...z, floorTex, T.floor === 'tile' ? 0.35 : 0.5, rep);
-  floorZone(4474, 4119, 6258, 5724, tileTex([228, 231, 232], 300, 3), 0.3, 1200);
-  floorZone(0, 4170, 1250, 6000, T.entryTex === 'terrazzo' ? terrazzoTex(T.entry) : tileTex(T.entry, 600, 3), 0.35, 1200);
-  floorZone(0, 263, 832, 1417, tileTex([214, 214, 212], 300, 3), 0.5, 1200);
-  floorZone(5222, 9540, 6622, 10500, tileTex([226, 232, 234], 300, 3), 0.4, 1200); floorZone(5172, 9540, 5222, 10500, tileTex([226, 232, 234], 300, 3), 0.4, 1200);
+  floorZone(4474, 4119, 6258, 5724, tileTex([228, 231, 232], 300, 3), 0.3, 1200, 'TILE');
+  floorZone(0, 4170, 1250, 6000, T.entryTex === 'terrazzo' ? terrazzoTex(T.entry) : tileTex(T.entry, 600, 3), 0.35, 1200, 'TILE');
+  floorZone(0, 263, 832, 1417, tileTex([214, 214, 212], 300, 3), 0.5, 1200, 'TILE');
+  floorZone(5222, 9540, 6622, 10500, tileTex([226, 232, 234], 300, 3), 0.4, 1200, 'TILE'); floorZone(5172, 9540, 5222, 10500, tileTex([226, 232, 234], 300, 3), 0.4, 1200, 'TILE');
 
   // 내부 벽 (천장까지)
   for (const w of [[832, 263, 932, 420], [832, 1000, 932, 1417], [0, 1417, 932, 1500], [2117, 263, 2340, 3965], [0, 3965, 1250, 4170], [2040, 3965, 2340, 4170], [4455, 263, 4704, 1348], [4455, 1348, 4704, 3030], [4455, 3880, 4704, 3961], [4250, 3961, 6622, 4119], [4704, 263, 5022, 1348], [4250, 3961, 4474, 4975], [4250, 5650, 4474, 5724], [6258, 4119, 6622, 5724], [3066, 5724, 3264, 5951], [4211, 5724, 6622, 5951], [3066, 5724, 3264, 9317], [2900, 9200, 3264, 9540], [5672, 9317, 6622, 9540]]) wall(...w);

@@ -180,4 +180,4 @@ const start = Math.max(0, CONCEPTS.findIndex(c => location.hash === '#c' + c.id)
 const qv = new URLSearchParams(location.search).get('v');
 setConcept(start); goView(qv && VIEWS[qv] ? qv : 'overview', true);
 requestAnimationFrame(loop);
-window.__ao = gtao; window.__audit = audit; window.__concepts = CONCEPTS; window.__views = VIEWS; window.__goView = goView; window.__setConcept = setConcept; window.__setLightMode = setLightMode;
+window.__ao = gtao; window.__audit = audit; window.__concepts = CONCEPTS; window.__views = VIEWS; window.__goView = goView; window.__setConcept = setConcept; window.__setLightMode = setLightMode; window.__scene = scene; window.__camera = camera; window.__lightPlan = LIGHT_PLAN; window.__ceil = CEIL_ONLY; window.__outside = OUTSIDE;

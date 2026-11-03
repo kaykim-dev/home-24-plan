@@ -20,6 +20,7 @@
   </div>
   <nav id="tabs">
     <button data-t="t3d" class="on">3D 컨셉</button>
+    <button data-t="trender">사진 렌더</button>
     <button data-t="tplan">계획 도면</button>
     <button data-t="tcase">비슷한 집 사례</button>
     <button data-t="tnote">정리 · 확인할 것</button>
@@ -42,6 +43,12 @@
   <p class="note">· 배치 점검: 모든 문이 열리는 자리(아이방·욕실·안방·세탁부스), 싱크·쿡탑 앞 60cm, 냉장고·키큰장 문 열림, 식탁 의자 빼는 자리, 침대 양옆·발치 통로, 세탁기·세면대·변기 앞 공간에 가구가 겹치지 않게 6개 컨셉 모두 자동으로 확인했어요.<br>· 천장 조명은 3D 아래 '조명 보기' 버튼으로 보세요: <b>밤 · 간접등만</b>(평소 분위기), <b>밤 · 전부 켬</b>(직접등까지), <b>천장 조명 평면도</b>(위에서 본 조명 위치·종류 색 구분).<br>· 벽 높이는 천장 2.3m로 가정했어요(실측 천장고·하리 높이 받으면 수정). 평면 치수는 실측 CAD 기준이고 가구는 예시입니다.<br>· 주소창의 #c01~#c06 으로 컨셉을 바로 열 수 있어요. 예) 이 페이지 주소 끝에 #c05</p>
 </section>
 
+<section id="trender" class="tab">
+  <div class="rhead"><h2>사진처럼 렌더 (컨셉 01 화이트 오크 미니멀 기준)</h2>
+  <p>3D 모델을 실제 빛 계산(Blender Cycles: 빛 반사·그림자·햇빛)으로 다시 그린 장면이에요. 배치·치수는 3D와 같아요. 바닥·원목·패브릭은 실제 재질 사진 질감(Poly Haven), 화분·바구니·화병 같은 소품은 실제 3D 모델이고, 가구 모양은 3D 계획 그대로예요. <b>낮</b>은 남쪽 창 햇빛, <b>밤</b>은 2700K 간접등만 켠 평소 저녁 모습이에요(매입등·레일은 끈 상태).</p>
+  <div class="rtog"><button data-r="day" class="on">낮</button><button data-r="night">밤 · 간접등</button><button data-r="both">낮·밤 나란히</button></div></div>
+  <div id="rgrid" class="rgrid"></div>
+</section>
 <section id="tplan" class="tab">
   <div class="cards">
     <figure><img loading="lazy" src="img/plan_color.jpg"><figcaption><b>가구 배치 평면도</b> 붙박이 ㄱ자 소파 + 식탁 1,600×800, 전실 분리수거, 세탁 부스</figcaption></figure>
@@ -117,6 +124,12 @@ const lb=document.getElementById('lightbox');document.addEventListener('click',e
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
 <script>fetch("scope.md?v=7").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>fetch("elements.md?v=1").then(r=>r.text()).then(t=>{document.getElementById("elem").innerHTML=marked.parse(t);document.querySelectorAll("#elem a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
+<script>
+const NOWIN=['bath','entryBoth']; // 창 없는 공간은 낮에도 조명 켠 모습
+const RV=[['living','창가 식탁(ㄱ자 벤치)'],['play','가운데 놀이 매트'],['livingCab','거실 니치 키큰장'],['kitchen','주방'],['master','안방'],['study','서재(안방 확장)'],['kids1','아이방 1'],['kids2','아이방 2'],['bath','욕실'],['entryBoth','현관 신발장·분리수거장']];
+function rdraw(m){const g=document.getElementById('rgrid');g.className='rgrid'+(m==='both'?' both':'');g.innerHTML=RV.map(([k,t])=>m==='both'?`<figure><div class="pair"><img loading="lazy" src="img/render/${k}_day.jpg"><img loading="lazy" src="img/render/${k}_night.jpg"></div><figcaption>${t} · 낮 / 밤</figcaption></figure>`:(()=>{const mm=(m==='day'&&NOWIN.includes(k))?'night':m;return `<figure><a href="img/render/${k}_${mm}.jpg" target="_blank"><img loading="lazy" src="img/render/${k}_${mm}.jpg"></a><figcaption>${t}${mm!==m?' (창이 없어 조명 켠 모습)':''}</figcaption></figure>`})()).join('');}
+document.querySelectorAll('.rtog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.rtog button').forEach(x=>x.classList.toggle('on',x===b));rdraw(b.dataset.r);});rdraw('day');
+</script>
 <script type="module" src="js/app.js?v=22"></script>
 </body>
 </html>
