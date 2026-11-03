@@ -125,15 +125,15 @@ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.que
 const lb=document.getElementById('lightbox');document.addEventListener('click',e=>{if(e.target.matches('.cards img,.cases img')){lb.querySelector('img').src=e.target.src;lb.classList.add('on');}else if(e.target.closest('#lightbox'))lb.classList.remove('on');});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
-<script>fetch("scope.md?v=16").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
+<script>fetch("scope.md?v=17").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>fetch("elements.md?v=1").then(r=>r.text()).then(t=>{document.getElementById("elem").innerHTML=marked.parse(t);document.querySelectorAll("#elem a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>
 const NOWIN=['bath','entryBoth']; // 창 없는 공간은 낮에도 조명 켠 모습
-const RV=[['living','창가 식탁(ㄱ자 소파)'],['play','거실 가운데'],['livingCab','거실 키큰장'],['kitchen','주방'],['master','안방'],['study','서재(안방 확장)'],['kids1','아이방 1'],['kids2','아이방 2'],['bath','욕실'],['entryBoth','현관 신발장·분리수거장']];
+const RV=[['living','창가 식탁(ㄱ자 소파)'],['play','거실 가운데'],['livingCab','거실 팬트리장'],['kitchen','주방'],['master','안방'],['study','서재(안방 확장)'],['kids1','아이방 1'],['kids2','아이방 2'],['bath','욕실'],['entryBoth','현관 신발장·분리수거장']];
 function rdraw(m){const g=document.getElementById('rgrid');g.className='rgrid'+(m==='both'?' both':'');g.innerHTML=RV.map(([k,t])=>m==='both'?`<figure><div class="pair"><img loading="lazy" src="img/render/${k}_day.jpg"><img loading="lazy" src="img/render/${k}_night.jpg"></div><figcaption>${t} · 낮 / 밤</figcaption></figure>`:(()=>{const mm=(m==='day'&&NOWIN.includes(k))?'night':m;return `<figure><a href="img/render/${k}_${mm}.jpg" target="_blank"><img loading="lazy" src="img/render/${k}_${mm}.jpg"></a><figcaption>${t}${mm!==m?' (창이 없어 조명 켠 모습)':''}</figcaption></figure>`})()).join('');}
 document.querySelectorAll('.rtog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.rtog button').forEach(x=>x.classList.toggle('on',x===b));rdraw(b.dataset.r);});rdraw('day');
 addEventListener('DOMContentLoaded',()=>{if(location.hash==='#render')document.querySelector('#tabs button[data-t=trender]').click();});
 </script>
-<script type="module" src="js/app.js?v=41"></script>
+<script type="module" src="js/app.js?v=45"></script>
 </body>
 </html>
