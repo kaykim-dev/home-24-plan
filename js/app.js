@@ -151,9 +151,8 @@ document.querySelectorAll('#panobar button[data-p]').forEach(b => b.onclick = ()
 document.getElementById('panoExit').onclick = exitPano;
 
 // ---------- 실사 소품(Poly Haven CC0 3D 모델, 사진 렌더와 같은 자리) ----------
-const DECOR = [
-  ['pachira_aquatica_01', 2700, 10120, 0, 1500, 0.4], ['potted_plant_04', 2650, 6250, 1500, 260, 0], ['ceramic_vase_03', 2650, 7600, 1500, 220, 0],
-  ['wicker_basket_01', 2550, 7300, 0, 280, 0.3], ['ceramic_vase_04', 3510, 7090, 520, 230, 0], ['calathea_orbifolia_01', 5450, 10250, 0, 700, 0], ['wicker_basket_01', 1700, 3400, 0, 280, 0],
+const DECOR = [ // 11/3 케이: 라탄 바구니·바닥 큰 화분 등 정신 사나운 소품 뺌. 책장 위(높이 1,150) 작은 화분·화병, 안방 협탁 화병만
+  ['potted_plant_04', 2850, 6250, 1150, 260, 0], ['ceramic_vase_03', 2850, 7600, 1150, 220, 0], ['ceramic_vase_04', 3510, 7090, 520, 230, 0],
 ];
 const gltfCache = {}; const gl = new GLTFLoader();
 function loadModel(name) {
