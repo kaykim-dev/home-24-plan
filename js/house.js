@@ -1059,17 +1059,27 @@ function livingNicheCabinet(T) { // 11/3 케이: 기둥 옆 튀어나옴 없이 
   B(X0, Y0 - 20, 3066, Y0, 0, CEIL, body); B(X0, Y1, 3066, Y1 + 20, 0, CEIL, body); // 양옆 판
   B(X0, Y0, 3066, Y1, CEIL - 20, CEIL, body); B(X0 + 20, Y0, CW, Y0 + 340, 0, 100, M(darker(white, .8))); B(X0 + 20, Y0 + 340, 3066, Y1, 0, 100, M(darker(white, .8))); // 천장판·걸레받이(기둥 피함)
   B(X0 + 60, Y0, CW, Y0 + 340, 100, CEIL - 20, inner).userData.wall = true; B(3046, Y0 + 340, 3066, Y1, 100, CEIL - 20, inner).userData.wall = true; // 안쪽 면(기둥 앞 / 벽)
-  // 가로 선반: 기둥 앞은 얕게(약 17cm), 나머지는 깊이 약 32cm
-  for (let z = 100; z < CEIL - 200; z += 340) { B(X0 + 20, Y0, CW, Y0 + 340, z, z + 18, wh).userData.skip = true; B(X0 + 20, Y0 + 340, 3046, Y1, z, z + 18, wh).userData.skip = true; }
-  // 선반 위 물건(병·통·바구니)
+  // 11/3 아내 레퍼런스(팬트리 문 뒤 수납): 모든 문 안쪽에 얕은 도어 랙(깊이 110, 철망 선반) + 안쪽 선반은 랙이 닫힐 자리만큼 뒤로(깊이 약 17cm)
+  //   기둥 앞(깊이 17cm)은 안쪽 선반 없이 문 랙만, 벽 쪽(깊이 34cm)은 문 랙 + 안쪽 얕은 선반
+  const SX = X0 + 20 + 130; // 랙 110 + 여유 20 뒤부터 안쪽 선반
+  for (let z = 100; z < CEIL - 200; z += 340) B(SX, Y0 + 340, 3046, Y1, z, z + 18, wh).userData.skip = true;
   const cols = ['#e8dcc6', '#c9a77c', '#f2efe8', '#9fb2bf', '#d9cbb5', '#b8c4a8'];
-  let k = 0; for (let z = 440; z < 2100; z += 340) for (let y = Y0 + 380; y < Y1 - 120; y += 170) { const c = M(cols[k++ % 6], { rough: .4 }); if (k % 3) cyl(2900, y, z + 18, z + 18 + 140 + (k % 2) * 60, 55, 55, c, 18).userData.skip = true; else B(2800, y - 70, 3010, y + 70, z + 18, z + 200, M('#c9a77c', { tex: 'rattan' }), 12).userData.skip = true; }
-  // 문: 아래 우드(0~820) / 위 화이트(820~천장), 2열. 위 왼쪽 문은 연 모습(안 선반 보이게)
+  let k = 0; for (let z = 440; z < 2100; z += 340) for (let y = Y0 + 380; y < Y1 - 120; y += 150) { const c = M(cols[k++ % 6], { rough: .4 }); if (k % 3) cyl(2985, y, z + 18, z + 18 + 140 + (k % 2) * 50, 45, 45, c, 18).userData.skip = true; else B(2900, y - 60, 3040, y + 60, z + 18, z + 190, M('#e8e1d4', { rough: .6 }), 10).userData.skip = true; }
+  const rm = M('#f2f2f0', { rough: .4, metal: .3 });
+  // 랙: 축 방향 axis 'y'(닫힌 문 뒤: x 방향 깊이) / 'x'(열린 문: y 방향 깊이)
+  const rack = (u1, u2, z1, z2, closed, flag) => { const ps = []; for (let z = z1 + 60; z < z2 - 80; z += 300) {
+      if (closed) { ps.push(B(X0 + 22, u1 + 30, X0 + 130, u2 - 30, z, z + 8, rm, 2), B(X0 + 125, u1 + 30, X0 + 130, u2 - 30, z + 8, z + 70, rm));
+        for (let y = u1 + 60, q = 0; y < u2 - 80; y += 75, q++) ps.push(cyl(X0 + 75, y + 30, z + 8, z + 8 + 120 + (q % 3) * 30, 28, 28, M(cols[(q + z / 10) % 6 | 0], { rough: .4 }), 14)); }
+      else { ps.push(B(u1 + 30, Y1 - 110, u2 - 30, Y1, z, z + 8, rm, 2), B(u1 + 30, Y1 - 110, u2 - 30, Y1 - 105, z + 8, z + 70, rm));
+        for (let x = u1 + 60, q = 0; x < u2 - 80; x += 75, q++) ps.push(cyl(x + 30, Y1 - 55, z + 8, z + 8 + 120 + (q % 3) * 30, 28, 28, M(cols[(q + 1) % 6], { rough: .4 }), 14)); } }
+    ps.forEach(o => { o.userData.skip = true; }); };
+  // 문: 아래 우드(100~820) / 위 화이트(820~천장), 2열. 위 오른쪽 문은 연 모습(문 뒤 랙이 보이게)
   const ym = (Y0 + Y1) / 2;
-  for (const [a, b] of [[Y0 + 2, ym - 2], [ym + 2, Y1 - 2]]) B(X0, a, X0 + 20, b, 100, 818, wd, 2).userData.door = true;
-  B(X0, Y0 + 2, X0 + 20, ym - 2, 822, CEIL - 22, wh, 2).userData.door = true;
+  for (const [a, b] of [[Y0 + 2, ym - 2], [ym + 2, Y1 - 2]]) { const d = B(X0, a, X0 + 20, b, 100, 818, wd, 2); d.userData.door = true; d.userData.cabDoor = true; rack(a, b, 100, 818, true); }
+  { const d = B(X0, Y0 + 2, X0 + 20, ym - 2, 822, CEIL - 22, wh, 2); d.userData.door = true; d.userData.cabDoor = true; rack(Y0 + 2, ym - 2, 822, CEIL - 22, true); }
   B(X0 - (Y1 - ym - 4), Y1, X0, Y1 + 20, 822, CEIL - 22, wh, 2).userData.door = true; // 위 오른쪽 문은 연 모습(경첩 창 쪽)
-  B(X0 - 3, ym - 40, X0, ym + 40, 790, 830, M('#3a3a3a')).userData.door = true;
+  rack(X0 - (Y1 - ym - 4), X0, 822, CEIL - 22, false);
+  { const h = B(X0 - 3, ym - 40, X0, ym + 40, 790, 830, M('#3a3a3a')); h.userData.door = true; h.userData.cabDoor = true; }
 }
 function cornerSofa(T) { // 창가 코너(ㄱ자) 소파: 창 쪽 0~2150, 왼쪽 벽 쪽 y9250~9760
   const base = M(darker(T.seat, .82), { tex: 'fabric' }), seat = M(T.seat, { tex: 'fabric', rough: 1 }), back = M(T.back, { tex: 'fabric', rough: 1 });
