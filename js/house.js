@@ -778,6 +778,8 @@ export function buildHouse(scene, T, V) {
   { const g = grp(600, 4355, 'S'); const tc = T.entryCab || T.tall;
     cabinet(g, 1200, 370, 300, 800, { color: T.tall, doors: 3, handle: 'none', toe: 0, wood: true });
     cabinet(g, 1200, 370, 1400, CEIL - 1400, { color: T.upper || '#f3f1ec', doors: 3, handle: 'none', toe: 0 });
+    // 11/3 케이·실장님: 장은 300 띄움 그대로, 문짝만 100 더 내려(200~300) 바닥 틈 200 → 운동화는 들어가고 덜 드러남
+    for (const [x1, x2] of [[2, 398], [402, 798], [802, 1198]]) B(x1, 4522, x2, 4540, 200, 302, M(T.tall, { tex: 'grainV' }));
     B(0, 4170, 1200, 4540, 1385, 1400, M(darker(T.upper || '#f3f1ec', .95))); B(0, 4170, 1200, 4540, 1100, 1110, M(T.tall, { tex: 'grain' })); B(0, 4170, 18, 4540, 1110, 1385, M(T.tall, { tex: 'grainV' })); B(0, 4170, 1200, 4190, 1110, 1385, M(T.tall, { tex: 'grainV' }));
     B(10, 4500, 1190, 4520, 1375, 1380, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 })); B(10, 4490, 1190, 4520, 290, 295, M('#fff4dc', { emissive: '#ffe9c0', ei: 2 }));
     cyl(300, 4380, 1110, 1290, 50, 60, M('#cdbfa8', { rough: .4 })).userData.skip = true; B(700, 4300, 900, 4420, 1110, 1130, M('#2b2b2b', { rough: .3 }), 4);
@@ -795,6 +797,7 @@ export function buildHouse(scene, T, V) {
       const fr = [[18, 318, 300, 1100], [336, 656, 300, 1100], [674, 954, 708, 1100], [674, 954, 300, 690], [972, 1132, 300, 1100]];
       for (const [x1, x2, z0, z1] of fr) { B(x1 + 2, 5527, x2 - 2, 5545, z0 + 2, z1 - 2, cw); B(x1 + 2, 5524, x2 - 2, 5528, z1 - 34, z1 - 24, dk); }
       for (const x of [0, 318, 656, 954, 1132]) B(x, 5527, x + 18, 5545, 300, 1100, M(darker(T.tall, .85), { tex: 'grainV' }));
+      for (const [x1, x2] of [[20, 316], [338, 654], [676, 952], [974, 1130]]) B(x1, 5527, x2, 5545, 200, 302, cw); /* 11/3: 인출장 앞판만 100 더 내림(바닥 틈 200) */
       const tags = [[168, 1060, '#6b6b6b'], [496, 1060, '#9fbf8f'], [814, 1060, '#c9c2e0'], [814, 650, '#7ea6c9'], [1052, 1060, '#e2c48b']];
       for (const [cx, z, c] of tags) B(cx - 40, 5521, cx + 40, 5525, z - 30, z, M(c, { rough: .4 }), 2).userData.skip = true; }
     cabinet(g, 1150, 420, 1400, CEIL - 1400, { color: T.upper || '#f3f1ec', doors: 3, handle: 'none', toe: 0 });
