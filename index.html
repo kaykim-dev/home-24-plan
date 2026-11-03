@@ -130,7 +130,7 @@ const NOWIN=['bath','entryBoth']; // 창 없는 공간은 낮에도 조명 켠 �
 const RV=[['living','창가 식탁(ㄱ자 벤치)'],['play','가운데 놀이 매트'],['livingCab','거실 니치 키큰장'],['kitchen','주방'],['master','안방'],['study','서재(안방 확장)'],['kids1','아이방 1'],['kids2','아이방 2'],['bath','욕실'],['entryBoth','현관 신발장·분리수거장']];
 function rdraw(m){const g=document.getElementById('rgrid');g.className='rgrid'+(m==='both'?' both':'');g.innerHTML=RV.map(([k,t])=>m==='both'?`<figure><div class="pair"><img loading="lazy" src="img/render/${k}_day.jpg"><img loading="lazy" src="img/render/${k}_night.jpg"></div><figcaption>${t} · 낮 / 밤</figcaption></figure>`:(()=>{const mm=(m==='day'&&NOWIN.includes(k))?'night':m;return `<figure><a href="img/render/${k}_${mm}.jpg" target="_blank"><img loading="lazy" src="img/render/${k}_${mm}.jpg"></a><figcaption>${t}${mm!==m?' (창이 없어 조명 켠 모습)':''}</figcaption></figure>`})()).join('');}
 document.querySelectorAll('.rtog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.rtog button').forEach(x=>x.classList.toggle('on',x===b));rdraw(b.dataset.r);});rdraw('day');
-if(location.hash==='#render'){document.querySelector('#tabs button[data-t=trender]').click();}
+addEventListener('DOMContentLoaded',()=>{if(location.hash==='#render')document.querySelector('#tabs button[data-t=trender]').click();});
 </script>
 <script type="module" src="js/app.js?v=24"></script>
 </body>
