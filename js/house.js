@@ -392,27 +392,29 @@ function nightstand(cx, cy, T, lampOn = true) {
   for (const [dx, dy] of [[-190, -170], [190, -170], [-190, 170], [190, 170]]) cyl(cx + dx, cy + dy, 0, 60, 12, 12, M('#3a3a3a'), 8);
   if (lampOn) lamp(cx + 40, cy - 30, 500);
 }
-// 11/3 케이: 안방 붙박이장 속 구성(IKEA PAX식). 몸통 속을 비우고 칸마다 행거·서랍·선반. 문은 userData.cabDoor(“장 속 보기”에서 숨김)
-// axis 'x': 북쪽 벽 장(앞면 +y, yBack~yFront), axis 'y': 동쪽 벽 장(앞면 -x, xBack~xFront). secs = [[a,b,kind], ...] kind: jacketDrawer | longDrawer | double | shelves
-function closet(axis, a0, a1, back, front, secs, T, col, wood, mirrorIdx = -1) {
+// 11/3 케이: 안방 붙박이장(IKEA PAX식). 겉에서 보이는 서랍(아래) + 여닫이 문(위, 두 짝으로 나눠 문 열리는 폭 약 30cm) + 속 행거
+// axis 'x': 북쪽 벽 장(앞면 +y), axis 'y': 동쪽 벽 장(앞면 -x). secs = [[a,b,kind]] kind: jacketDrawer(위 걸이 100cm + 아래 서랍) | longDrawer(위 코트 160cm + 아래 서랍) | double(2단 걸이) | mirror(전신 거울 문 + 선반)
+function closet(axis, a0, a1, back, front, secs, T, col, wood) {
   const body = M(col, { tex: wood ? 'grainV' : undefined, rough: .5 }), inner = M(mixc(col, '#f4f1ea', .5), { rough: .6 }), door = M(col, { tex: wood ? 'grainV' : undefined, rough: .45 });
-  const dir = front > back ? 1 : -1, fIn = front - dir * 40; // 문 두께·레일 40
+  const dir = front > back ? 1 : -1, fIn = front - dir * 20;
   const R = (u1, u2, v1, v2, z1, z2, m, r = 0) => axis === 'x' ? B(u1, Math.min(v1, v2), u2, Math.max(v1, v2), z1, z2, m, r) : B(Math.min(v1, v2), u1, Math.max(v1, v2), u2, z1, z2, m, r);
   R(a0, a1, back, back + dir * 18, 0, CEIL, inner).userData.wall = true; R(a0, a1, back, fIn, CEIL - 20, CEIL, body).userData.wall = true; R(a0, a1, back, fIn, 0, 100, M(darker(col, .8))).userData.wall = true;
   R(a0, a0 + 18, back, fIn, 0, CEIL, body).userData.wall = true; R(a1 - 18, a1, back, fIn, 0, CEIL, body).userData.wall = true;
-  const rail = M('#b9bcbf', { metal: .8, rough: .3 }), cloth = ['#3d4450', '#8a7a68', '#d9d2c5', '#5b6b5e', '#a79a8a', '#2f2f33', '#c8b9a4'];
+  const rail = M('#b9bcbf', { metal: .8, rough: .3 }), cloth = ['#3d4450', '#8a7a68', '#d9d2c5', '#5b6b5e', '#a79a8a', '#2f2f33', '#c8b9a4'], dk = M('#3a3a3a');
   const hang = (u1, u2, zr, len, k0) => { R(u1 + 20, u2 - 20, back + dir * 270, back + dir * 290, zr, zr + 20, rail).userData.skip = true; let k = k0; for (let u = u1 + 50; u < u2 - 60; u += 70, k++) R(u, u + 45, back + dir * 60, back + dir * 500, zr - len, zr - 20, M(cloth[k % 7], { tex: 'fabric', rough: 1 }), 8).userData.skip = true; };
-  const drawers = (u1, u2, z1, z2, n) => { const h = (z2 - z1) / n; for (let i = 0; i < n; i++) { const d = R(u1 + 22, u2 - 22, fIn - dir * 22, fIn, z1 + i * h + 4, z1 + (i + 1) * h - 4, M(mixc(col, '#ffffff', .2), { rough: .45 }), 3); d.userData.skip = true; R((u1 + u2) / 2 - 60, (u1 + u2) / 2 + 60, fIn, fIn + dir * 4, z1 + (i + 1) * h - 40, z1 + (i + 1) * h - 28, M('#3a3a3a')).userData.skip = true; } R(u1 + 18, u2 - 18, back, fIn, z2, z2 + 18, inner).userData.skip = true; };
+  const shelf = (u1, u2, z) => R(u1 + 18, u2 - 18, back, fIn, z, z + 18, inner).userData.skip = true;
+  // 겉 서랍(앞판이 장 앞면과 같은 면) + 손잡이 홈
+  const drawers = (u1, u2, z1, z2, n) => { const h = (z2 - z1) / n; for (let i = 0; i < n; i++) { R(u1 + 2, u2 - 2, front - dir * 20, front, z1 + i * h + 2, z1 + (i + 1) * h - 2, door, 2).userData.skip = true; R(u1 + 40, u2 - 40, front, front + dir * 2, z1 + (i + 1) * h - 30, z1 + (i + 1) * h - 20, dk).userData.skip = true; } shelf(u1, u2, z2); };
+  // 여닫이 문(두 짝, 또는 한 짝) — 장 속 보기에서 숨김
+  const doors = (u1, u2, z1, z2, n, mir = false) => { const w = (u2 - u1) / n; for (let i = 0; i < n; i++) { const x1 = u1 + i * w; const d = R(x1 + 2, x1 + w - 2, front - dir * 20, front, z1 + 2, z2 - 2, door, 2); d.userData.cabDoor = true; d.userData.door = true;
+      const hx = (n === 2 ? (i ? x1 + 30 : x1 + w - 42) : x1 + w - 42); const hz = z1 > 300 ? z1 + 40 : 1000; const h = R(hx, hx + 12, front, front + dir * 2, hz, hz + 300, dk); h.userData.cabDoor = true; h.userData.door = true;
+      if (mir) { const mm = R(x1 + 50, x1 + w - 50, front, front + dir * 6, z1 + 120, z2 - 120, M('#dfe6e9', { rough: 0.04, metal: 0.3 }), 2); mm.userData.cabDoor = true; mm.userData.door = true; } } };
   secs.forEach(([u1, u2, kind], i) => {
     if (i > 0) R(u1 - 9, u1 + 9, back, fIn, 100, CEIL - 20, body).userData.wall = true;
-    if (kind === 'jacketDrawer') { drawers(u1, u2, 100, 760, 3); R(u1 + 18, u2 - 18, back, fIn, 2030, 2048, inner).userData.skip = true; hang(u1, u2, 1960, 950, i * 3); }
-    else if (kind === 'longDrawer') { drawers(u1, u2, 100, 620, 2); R(u1 + 18, u2 - 18, back, fIn, 2160, 2178, inner).userData.skip = true; hang(u1, u2, 2130, 1450, i * 3); }
-    else if (kind === 'double') { R(u1 + 18, u2 - 18, back, fIn, 2160, 2178, inner).userData.skip = true; hang(u1, u2, 2120, 900, i * 3); R(u1 + 18, u2 - 18, back, fIn, 1140, 1158, inner).userData.skip = true; hang(u1, u2, 1110, 900, i * 3 + 2); }
-    else { for (let z = 100; z < CEIL - 200; z += 360) R(u1 + 18, u2 - 18, back, fIn, z, z + 18, inner).userData.skip = true; }
-    // 미닫이 문(두 레일 번갈아), 거울 문
-    const t = i % 2 ? 22 : 0, ov = 15; const dd = R(u1 - (i ? ov : 0), u2 + (i < secs.length - 1 ? ov : 0), front - dir * (40 - t), front - dir * (20 - t), 100, CEIL - 20, door, 2); dd.userData.cabDoor = true; dd.userData.door = true;
-    const gx = i % 2 ? u1 + 40 : u2 - 52; const gh = R(gx, gx + 12, front - dir * (20 - t), front - dir * (19 - t), 800, 1500, M('#3a3a3a')); gh.userData.cabDoor = true; gh.userData.door = true;
-    if (i === mirrorIdx) { const mm = R(u1 + 60, u2 - 60, front - dir * (20 - t), front - dir * (14 - t), 220, CEIL - 140, M('#dfe6e9', { rough: 0.04, metal: 0.3 }), 2); mm.userData.cabDoor = true; mm.userData.door = true; }
+    if (kind === 'jacketDrawer') { drawers(u1, u2, 100, 1100, 4); hang(u1, u2, 2210, 1000, i * 3); doors(u1, u2, 1100, CEIL - 20, 2); }
+    else if (kind === 'longDrawer') { drawers(u1, u2, 100, 560, 2); hang(u1, u2, 2210, 1600, i * 3); doors(u1, u2, 560, CEIL - 20, 2); }
+    else if (kind === 'double') { shelf(u1, u2, 1140); hang(u1, u2, 2210, 950, i * 3); hang(u1, u2, 1100, 900, i * 3 + 2); doors(u1, u2, 100, CEIL - 20, 2); }
+    else { for (let z = 100; z < CEIL - 200; z += 360) shelf(u1, u2, z); doors(u1, u2, 100, CEIL - 20, 1, true); }
   });
 }
 function wardrobe(x1, y1, x2, y2, facing, T, o = {}) {
@@ -918,7 +920,7 @@ export function buildHouse(scene, T, V) {
   }
   // 11/3 케이: 수납 부족 → 방문 옆(x4211)부터 동쪽 벽까지 북쪽 벽 전체 붙박이장(ㄴ자, 코너 600×600은 버림), 미닫이 4짝
   //   코너 600×600(x6022~6622)은 화장대가 앞을 막아 쓰지 못하는 막힌 칸. 쓰는 장은 x4211~6022 미닫이 3짝, 코너 바로 옆 문 1짝 = 전신 거울 문(장 겸 거울)
-  closet('x', 4211, 6022, 5951, 6551, [[4211, 4815, 'jacketDrawer'], [4815, 5418, 'jacketDrawer'], [5418, 6022, 'shelves']], T, mCab, mWood, 2); // 방문 쪽 2칸 = 위 재킷 걸이 + 아래 속옷 서랍 3단, 코너 옆 = 거울 문 + 선반
+  closet('x', 4211, 6022, 5951, 6551, [[4211, 4815, 'jacketDrawer'], [4815, 5418, 'jacketDrawer'], [5418, 6022, 'mirror']], T, mCab, mWood); // 방문 쪽 2칸 = 위 재킷 걸이 + 아래 속옷 서랍 3단, 코너 옆 = 거울 문 + 선반
   B(6022, 5951, 6622, 6551, 0, CEIL, M(mCab, { tex: mWood ? 'grainV' : undefined, rough: .5 })).userData.wall = true; // 막힌 코너
   // 안방 확장부 = 서재: 창가 긴 책상(1.5m) + 의자 + 벽 선반, 안방과는 3짝 슬라이딩 도어로 분리
   // 11/3 케이: 보유 책상 1,400×800, 휴먼스케일 의자(뒤로 빼서 드나들 자리 650 필요, 평소 바짝 당겨 앉음)
