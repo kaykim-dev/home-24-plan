@@ -1138,16 +1138,12 @@ function bathroom(T) { // 욕실 x4474~6258, y4119~5724. 변기(북서) ↔ 세�
   // 욕조 700 x 1500
   B(5450, 4180, 6150, 5680, 0, 560, tub, 30);
   B(5520, 4250, 6080, 5610, 420, 562, M('#dfe9ee', { rough: 0.1 }), 60);
-  // 욕조 뒤 벽: 100mm 덧벽에 긴 수납 니치 2줄 (샴푸·바디용품)
+  // 11/3 케이: 욕조 뒤 니치 없앰(벽을 파지 않음). 대신 욕조 뒤 긴 벽에 허리 높이 젠다이(조적 단 + 돌 상판, 깊이 약 12cm)로 샴푸·바디용품 자리
   const st = M(T.bathStone || '#e3ded6', { rough: .3 });
-  const fw = (y1, y2, z0, z1) => { B(6150, y1, 6250, y2, z0, z1, st).userData.wall = true; };
-  fw(4127, 5716, 560, 1000); fw(4127, 4300, 1000, 1300); fw(5560, 5716, 1000, 1300); fw(4127, 5716, 1300, 1500); fw(4127, 4300, 1500, 1720); fw(5000, 5716, 1500, 1720); fw(4127, 5716, 1720, CEIL);
-  B(6160, 4300, 6250, 5560, 1140, 1152, M('#e8f0f2', { rough: .05, opacity: .6 })).userData.skip = true; // 니치 중간 유리 선반
-  B(6160, 4310, 6175, 5550, 1288, 1296, M('#fff3dc', { emissive: '#ffe6bf', ei: 2 })).userData.wall = true;
+  B(6150, 4127, 6250, 5716, 560, 1050, st).userData.wall = true; // 조적 단(덧벽) 욕조 테두리~1,050
+  B(6130, 4127, 6250, 5716, 1050, 1080, M(T.bathMarble || '#ece8e2', { tex: 'marble', rough: .2 }), 3).userData.wall = true; // 돌 상판
   const bc = ['#ffffff', '#c9b49a', '#9fb2bf', '#e8d3c0', '#5d6b74', '#f4f1ea'];
-  for (let i = 0; i < 9; i++) { const y = 4350 + i * 135; cyl(6205, y, 1000, 1000 + 120 + (i % 3) * 15, 28, 28, M(bc[i % 6], { rough: .3 }), 16).userData.skip = true; }
-  for (let i = 0; i < 7; i++) { const y = 4360 + i * 160; cyl(6205, y, 1152, 1152 + 100 + (i % 2) * 20, 25, 25, M(bc[(i + 2) % 6], { rough: .3 }), 16).userData.skip = true; }
-  for (let i = 0; i < 4; i++) { const y = 4360 + i * 150; cyl(6205, y, 1500, 1500 + 150, 30, 30, M(bc[(i + 4) % 6], { rough: .3 }), 16).userData.skip = true; }
+  for (let i = 0; i < 8; i++) { const y = 4400 + i * 140; cyl(6195, y, 1080, 1080 + 150 + (i % 3) * 25, 28, 28, M(bc[i % 6], { rough: .3 }), 16).userData.skip = true; }
   // 욕조 반만 분리: 얇은 돌 벽 30mm (물때 적게), 길이 750, 높이 2.0m
   B(5420, 4127, 5450, 4930, 0, 2000, M(T.bathStone || '#e3ded6', { rough: .3 }), 4);
   // 수전·샤워 (북쪽 벽)

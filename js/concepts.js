@@ -109,6 +109,6 @@ export const VIEWS = {
   livingCab: ['거실 팬트리장', [1.5, 1.45, 8.7], [2.95, 1.2, 9.85]],
   play: ['거실 가운데', [2.55, 1.55, 8.6], [0.6, 0.6, 6.4]],
   study: ['서재(안방 확장)', [4.95, 1.55, 8.75], [3.9, 0.9, 10.2]],
-  laundry: ['세탁 부스', [4.2, 1.5, 9.95], [6.3, 1.0, 10.0]],
+  laundry: ['세탁 부스', [4.3, 1.55, 9.75], [6.2, 1.2, 10.15]],
 };
 export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'entryBoth', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'boiler', 'kids2', 'bath', 'laundry'];
