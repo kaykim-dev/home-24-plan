@@ -1135,19 +1135,19 @@ function bathroom(T) { // 욕실 x4474~6258, y4119~5724. 변기(북서) ↔ 세�
   wallTile(4474, 4119, 6258, 4127, 0, CEIL, tc); wallTile(4474, 5716, 6258, 5724, 0, CEIL, tc);
   wallTile(4474, 4127, 4482, 4975, 0, CEIL, tc); wallTile(6250, 4127, 6258, 5716, 0, CEIL, tc);
   const tub = WHITEPORC();
-  // 욕조 700 x 1500
-  B(5450, 4180, 6150, 5680, 0, 560, tub, 30);
-  B(5520, 4250, 6080, 5610, 420, 562, M('#dfe9ee', { rough: 0.1 }), 60);
-  // 11/3 케이: 욕조 뒤 니치 없앰(벽을 파지 않음). 대신 욕조 뒤 긴 벽에 허리 높이 젠다이(조적 단 + 돌 상판, 깊이 약 12cm)로 샴푸·바디용품 자리
-  const st = M(T.bathStone || '#e3ded6', { rough: .3 });
-  B(6150, 4127, 6250, 5716, 560, 1050, st).userData.wall = true; // 조적 단(덧벽) 욕조 테두리~1,050
-  B(6130, 4127, 6250, 5716, 1050, 1080, M(T.bathMarble || '#ece8e2', { tex: 'marble', rough: .2 }), 3).userData.wall = true; // 돌 상판
+  // 욕조 700 x 1500 — 11/3 케이: 덧벽·젠다이 없이 욕조를 동쪽 벽에 바로 붙임(욕실 바닥이 10cm 넓어짐)
+  B(5550, 4180, 6250, 5680, 0, 560, tub, 30);
+  B(5620, 4250, 6180, 5610, 420, 562, M('#dfe9ee', { rough: 0.1 }), 60);
   const bc = ['#ffffff', '#c9b49a', '#9fb2bf', '#e8d3c0', '#5d6b74', '#f4f1ea'];
-  for (let i = 0; i < 8; i++) { const y = 4400 + i * 140; cyl(6195, y, 1080, 1080 + 150 + (i % 3) * 25, 28, 28, M(bc[i % 6], { rough: .3 }), 16).userData.skip = true; }
+  // 기성 코너 선반 2단(욕조 북동 코너, 벽 타공 최소) — 샴푸·바디용품
+  for (const z of [1050, 1350]) { B(6060, 4127, 6250, 4317, z, z + 10, M('#2b2b2b', { rough: .35, metal: .6 }), 3).userData.wall = true; B(6060, 4300, 6250, 4317, z + 10, z + 45, M('#2b2b2b', { rough: .35, metal: .6 }), 2).userData.wall = true;
+    for (let k = 0; k < 3; k++) cyl(6110 + (k % 2) * 80, 4180 + k * 45, z + 10, z + 10 + 150 + (k % 2) * 30, 28, 28, M(bc[(k + (z > 1200 ? 3 : 0)) % 6], { rough: .3 }), 16).userData.skip = true; }
   // 욕조 반만 분리: 얇은 돌 벽 30mm (물때 적게), 길이 750, 높이 2.0m
-  B(5420, 4127, 5450, 4930, 0, 2000, M(T.bathStone || '#e3ded6', { rough: .3 }), 4);
-  // 수전·샤워 (북쪽 벽)
-  B(5780, 4127, 5850, 4145, 950, 1050, METAL(), 6); cyl(5815, 4235, 1880, 1900, 90, 90, METAL(), 24); B(5810, 4127, 5820, 4160, 1050, 1990, METAL()); B(5810, 4127, 5820, 4240, 1980, 1990, METAL());
+  B(5520, 4127, 5550, 4930, 0, 2000, M(T.bathStone || '#e3ded6', { rough: .3 }), 4);
+  // 선반형 해바라기 샤워 수전(기성): 수전 + 세로 바 가운데에 선반(높이 약 1,050) + 해바라기 헤드
+  B(5880, 4127, 5950, 4145, 850, 950, METAL(), 6); cyl(5915, 4235, 1880, 1900, 90, 90, METAL(), 24); B(5910, 4127, 5920, 4160, 950, 1990, METAL()); B(5910, 4127, 5920, 4240, 1980, 1990, METAL());
+  B(5775, 4135, 6055, 4255, 1040, 1055, M('#2b2b2b', { rough: .3, metal: .5 }), 4); // 수전 선반 28×12cm
+  for (let k = 0; k < 4; k++) cyl(5810 + k * 65, 4195, 1055, 1055 + 140 + (k % 2) * 30, 26, 26, M(bc[(k + 1) % 6], { rough: .3 }), 16).userData.skip = true;
   // 변기 (북서, 옛 세면대 자리)
   B(4610, 4127, 4850, 4317, 380, 780, WHITEPORC(), 30);
   const bowl = addMesh(new THREE.CylinderGeometry(0.19, 0.15, 0.4, 32), WHITEPORC()); bowl.scale.z = 1.3; bowl.position.set(4730 * S, 0.2, 4530 * S);
@@ -1165,8 +1165,8 @@ function bathroom(T) { // 욕실 x4474~6258, y4119~5724. 변기(북서) ↔ 세�
   for (let i = 0; i < 3; i++) { const x1 = 4495 + i * 302; B(x1, 4257, x1 + 298, 4263, 1456, CEIL - 10, M('#dfe6e9', { rough: 0.04, metal: 0.3 }), 3).userData.wall = true; }
   B(4495, 4250, 5395, 4258, 1440, 1448, M('#fff2d8', { emissive: '#ffeccc', ei: 1.8 })).userData.wall = true;
   // 욕조 위 전용 조명(방습 다운라이트 2개) + 니치 간접등은 위 · 욕실 천장 등
-  for (const y of [4600, 5250]) { LIGHT_PLAN.push({ k: 'down', x: 5800, y }); const d = addMesh(new THREE.CylinderGeometry(0.04, 0.04, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.8 }), null, false); d.position.set(5.8, (CEIL - 4) * S, y * S); CEIL_ONLY.push(d); }
-  { const L = new THREE.PointLight('#fff1dc', 0.8, 3, 2); L.position.set(5.8, 2.05, 4.95); root.add(L); }
+  for (const y of [4600, 5250]) { LIGHT_PLAN.push({ k: 'down', x: 5900, y }); const d = addMesh(new THREE.CylinderGeometry(0.04, 0.04, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.8 }), null, false); d.position.set(5.9, (CEIL - 4) * S, y * S); CEIL_ONLY.push(d); }
+  { const L = new THREE.PointLight('#fff1dc', 0.8, 3, 2); L.position.set(5.9, 2.05, 4.95); root.add(L); }
   { const d = addMesh(new THREE.CylinderGeometry(0.05, 0.05, 0.006, 20), M('#ffffff', { emissive: '#fff4dc', ei: 1.6 }), null, false); d.position.set(4.95, (CEIL - 4) * S, 4.85); CEIL_ONLY.push(d); }
   rug(4520, 4980, 5100, 5420, '#e6e1d8');
 }
