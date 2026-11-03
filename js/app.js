@@ -8,9 +8,9 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 RectAreaLightUniformsLib.init();
-import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=24';
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=25';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=24';
+import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=25';
 
 const wrap = document.getElementById('viewer');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -65,9 +65,11 @@ function resize() {
   setFov(); needs = true;
 }
 window.addEventListener('resize', resize);
+wrap.addEventListener('wheel', e => { if (!pano) return; e.preventDefault(); camera.fov = Math.max(35, Math.min(95, camera.fov + e.deltaY * 0.03)); camera.updateProjectionMatrix(); needs = true; }, { passive: false });
 
 function setFov() { const port = wrap.clientWidth < wrap.clientHeight; camera.fov = (curView.startsWith('overview') ? 45 : 58) * (port ? 1.3 : 1); camera.updateProjectionMatrix(); }
 function goView(key, instant = false) {
+  if (pano && !key.startsWith('__')) { scene.remove(pano.mesh); pano = null; scene.children.forEach(o => { if (o.isGroup) o.visible = true; }); labelR.domElement.style.display = ''; controls.minPolarAngle = 0; controls.enablePan = true; controls.rotateSpeed = 1; document.querySelectorAll('#panobar button[data-p]').forEach(b => b.classList.remove('on')); document.getElementById('panoExit').style.display = 'none'; }
   curView = key; setFov(); const [, p, t] = VIEWS[key];
   document.querySelectorAll('#views button').forEach(b => b.classList.toggle('on', b.dataset.v === key));
   const isOver = key.startsWith('overview');
@@ -104,6 +106,49 @@ function renderInfo(c) {
     <p class="quick">이 컨셉 핵심 장면 → ${c.views.map(v => `<button data-v="${v}">${VIEWS[v][0]}</button>`).join(' ')}</p>`;
   el.querySelectorAll('.quick button').forEach(b => b.onclick = () => { goView(b.dataset.v); wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
 }
+
+// ---------- 사진처럼 둘러보기: 360° 실사 사진(Blender Cycles) (11/3 케이: 렌더 탭 말고 3D 안에서) ----------
+// [키, 이름, x, y, 첫 시선 방향(world x,z)]
+const PANOS = [['panoLiving', '거실·식탁', 1300, 7900, [0, 1]], ['panoKitchen', '주방', 3300, 1900, [0, -1]], ['panoMaster', '안방', 4400, 9200, [0, -1]], ['panoStudy', '서재', 4300, 9750, [0, 1]],
+  ['panoKids1', '아이방 1', 850, 3450, [0, -1]], ['panoKids2', '아이방 2', 5350, 3500, [0, -1]], ['panoBath', '욕실', 5350, 4950, [1, 0]], ['panoEntry', '현관', 700, 5000, [-1, 0]]];
+let pano = null; const texLoader = new THREE.TextureLoader(); const panoTex = {};
+function panoMode() { return (lightMode === 'night' || lightMode === 'nightAll') ? 'night' : 'day'; }
+function panoTexture(key) {
+  const k = key + '_' + panoMode();
+  if (!panoTex[k]) { panoTex[k] = texLoader.load(`img/pano/${k}.jpg?v=2`, () => { needs = true; document.getElementById('panoInfo').textContent = ''; }); panoTex[k].colorSpace = THREE.SRGBColorSpace; }
+  return panoTex[k];
+}
+function enterPano(key) {
+  const P = PANOS.find(p => p[0] === key); if (!P) return;
+  if (!pano && lightMode === 'day') setLightMode('night'); // 360 사진은 저녁 간접등이 기본(낮 버튼으로 바꿀 수 있음)
+  if (!pano) {
+    const geo = new THREE.SphereGeometry(5, 64, 32); geo.scale(-1, 1, 1);
+    const mat = new THREE.MeshBasicMaterial({ toneMapped: false });
+    const pm = new THREE.Mesh(geo, mat); pm.rotation.y = -Math.PI / 2; // 사진 북쪽을 집 북쪽에 맞춤
+    pano = { mesh: pm, prev: { p: camera.position.clone(), t: controls.target.clone(), view: curView } };
+    scene.add(pano.mesh);
+  }
+  pano.key = key; document.getElementById('panoInfo').textContent = '사진 불러오는 중…';
+  pano.mesh.material.map = panoTexture(key); pano.mesh.material.needsUpdate = true;
+  const c = new THREE.Vector3(P[2] / 1000, 1.4, P[3] / 1000); pano.mesh.position.copy(c);
+  scene.children.forEach(o => { if (o !== pano.mesh && o.isGroup) o.visible = false; });
+  labelR.domElement.style.display = 'none';
+  tween = null; const dv = P[4] || [0, -1]; camera.position.copy(c).add(new THREE.Vector3(-dv[0] * 0.01, 0, -dv[1] * 0.01)); controls.target.copy(c);
+  controls.minDistance = 0.01; controls.maxDistance = 0.01; controls.maxPolarAngle = Math.PI * 0.85; controls.minPolarAngle = Math.PI * 0.15; controls.enablePan = false; controls.rotateSpeed = -0.35;
+  camera.fov = 75; camera.updateProjectionMatrix();
+  document.querySelectorAll('#panobar button[data-p]').forEach(b => b.classList.toggle('on', b.dataset.p === key));
+  document.getElementById('panoExit').style.display = ''; needs = true;
+}
+function exitPano() {
+  if (!pano) return; scene.remove(pano.mesh); const prev = pano.prev; pano = null;
+  scene.children.forEach(o => { if (o.isGroup) o.visible = true; }); labelR.domElement.style.display = '';
+  controls.minPolarAngle = 0; controls.enablePan = true; controls.rotateSpeed = 1;
+  document.querySelectorAll('#panobar button[data-p]').forEach(b => b.classList.remove('on'));
+  document.getElementById('panoExit').style.display = 'none'; document.getElementById('panoInfo').textContent = '';
+  goView(prev.view || 'overview');
+}
+document.querySelectorAll('#panobar button[data-p]').forEach(b => b.onclick = () => { enterPano(b.dataset.p); wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+document.getElementById('panoExit').onclick = exitPano;
 
 // ---------- 실사 소품(Poly Haven CC0 3D 모델, 사진 렌더와 같은 자리) ----------
 const DECOR = [
@@ -173,7 +218,7 @@ function applyLightMode(root) {
   if (lightMode === 'plan') planGroup = buildPlan(root);
   document.getElementById('legend').style.display = lightMode === 'plan' ? 'block' : 'none';
   document.querySelectorAll('#lightbar button').forEach(b => b.classList.toggle('on', b.dataset.m === lightMode));
-  needs = true;
+  needs = true; if (pano) { pano.mesh.material.map = panoTexture(pano.key); pano.mesh.material.needsUpdate = true; }
 }
 let curRoot = null;
 function setLightMode(m) {
@@ -201,6 +246,7 @@ function loop(now) {
   const over = camera.position.y > 5;
   labelObjs.forEach(o => o.visible = over); CEIL_ONLY.forEach(o => o.visible = camera.position.y < 2.25); OUTSIDE.forEach(o => o.visible = camera.position.y < 3 && lightMode !== 'night' && lightMode !== 'nightAll');
   scene.background.set(lightMode === 'night' || lightMode === 'nightAll' ? '#10141c' : over ? '#eef0f1' : '#dfe8ee');
+  if (pano) { renderer.render(scene, camera); return; }
   composer.render(); labelR.render(scene, camera);
 }
 

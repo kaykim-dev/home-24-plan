@@ -66,3 +66,6 @@ footer{text-align:center;color:#9a9288;font-size:12px;padding:20px}
 @media (max-width:700px){.rgrid{grid-template-columns:1fr}.rgrid .pair{grid-template-columns:1fr}}
 
 .gorender{background:#2b2f3a;color:#f3efe8;border-radius:12px;padding:10px 14px;margin:0 0 12px;font:500 14px Pretendard,sans-serif;line-height:1.5}.gorender button{background:#ffcf8f;color:#222;border:0;border-radius:8px;padding:5px 10px;font:700 14px Pretendard,sans-serif;cursor:pointer;margin:0 2px}
+
+.panobar{align-items:center;background:#fff7ec;border:1px solid #f0d9b5;border-radius:12px;padding:8px}.panobar span{font:800 14px Pretendard,sans-serif;color:#8a5a1c;margin-right:4px}.panobar button.on{background:#c9a77c;border-color:#c9a77c;color:#1d1d1d;font-weight:700}.panobar button.exit{background:#2b2f3a;color:#fff;border-color:#2b2f3a}
+.ptinfo2{position:absolute;left:50%;top:45%;transform:translateX(-50%);z-index:6;color:#fff;font:700 15px Pretendard,sans-serif;text-shadow:0 1px 4px rgba(0,0,0,.6)}
