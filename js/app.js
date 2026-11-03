@@ -8,7 +8,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 RectAreaLightUniformsLib.init();
-import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=52';
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=53';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=36';
 
@@ -87,7 +87,7 @@ function setConcept(i) {
   document.getElementById('loading').style.display = 'flex';
   setTimeout(() => {
     labelObjs.forEach(o => o.element.remove()); labelObjs.length = 0;
-    const g = buildHouse(scene, c.T, c.V); addLabels(g, c.V); curRoot = g; applyLightMode(g); addDecor(g);
+    const g = buildHouse(scene, c.T, c.V); addLabels(g, c.V); curRoot = g; applyLightMode(g); addDecor(g); applyCabOpen(g);
     renderInfo(c); needs = true;
     document.getElementById('loading').style.display = 'none';
     history.replaceState(null, '', '#c' + c.id);
@@ -216,7 +216,7 @@ function applyLightMode(root) {
   if (planGroup) { planGroup.parent && planGroup.parent.remove(planGroup); planGroup = null; }
   if (lightMode === 'plan') planGroup = buildPlan(root);
   document.getElementById('legend').style.display = lightMode === 'plan' ? 'block' : 'none';
-  document.querySelectorAll('#lightbar button').forEach(b => b.classList.toggle('on', b.dataset.m === lightMode));
+  document.querySelectorAll('#lightbar button[data-m]').forEach(b => b.classList.toggle('on', b.dataset.m === lightMode));
   needs = true; if (pano) { pano.mesh.material.map = panoTexture(pano.key); pano.mesh.material.needsUpdate = true; }
 }
 let curRoot = null;
@@ -225,7 +225,11 @@ function setLightMode(m) {
   if (curRoot) applyLightMode(curRoot);
   if (m === 'plan') goView('lightPlan');
 }
-document.querySelectorAll('#lightbar button').forEach(b => b.onclick = () => setLightMode(b.dataset.m));
+document.querySelectorAll('#lightbar button[data-m]').forEach(b => b.onclick = () => setLightMode(b.dataset.m));
+// 11/3 케이: 붙박이장 속 보기(문 숨김)
+var cabOpen = false;
+function applyCabOpen(g) { (g || curRoot)?.traverse(o => { if (o.userData && o.userData.cabDoor) o.visible = !cabOpen; }); }
+document.getElementById('cabBtn').onclick = (e) => { cabOpen = !cabOpen; e.currentTarget.classList.toggle('on', cabOpen); e.currentTarget.textContent = cabOpen ? '장 문 닫기' : '🚪 장 속 보기'; applyCabOpen(); };
 
 // UI
 const chips = document.getElementById('chips');
