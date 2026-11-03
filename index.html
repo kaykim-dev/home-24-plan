@@ -9,7 +9,7 @@
 <meta property="og:description" content="돌려 보는 3D 컨셉 6가지, 계획 도면, 같은 평면 시공 사례">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
 <body>
@@ -31,6 +31,7 @@
 
 <main>
 <section id="t3d" class="tab on">
+  <div class="gorender">위에 보낸 것 같은 <b>사진처럼 그린 장면 20장</b>은 <button onclick="document.querySelector('#tabs button[data-t=trender]').click();scrollTo(0,0)">사진 렌더 탭</button>에 있어요. 아래 3D는 돌려 보는 용도라 빛 계산이 단순해요.</div>
   <div id="chips" class="chips"></div>
   <div id="viewer">
     <div id="loading">3D 불러오는 중…</div>
@@ -129,7 +130,8 @@ const NOWIN=['bath','entryBoth']; // 창 없는 공간은 낮에도 조명 켠 �
 const RV=[['living','창가 식탁(ㄱ자 벤치)'],['play','가운데 놀이 매트'],['livingCab','거실 니치 키큰장'],['kitchen','주방'],['master','안방'],['study','서재(안방 확장)'],['kids1','아이방 1'],['kids2','아이방 2'],['bath','욕실'],['entryBoth','현관 신발장·분리수거장']];
 function rdraw(m){const g=document.getElementById('rgrid');g.className='rgrid'+(m==='both'?' both':'');g.innerHTML=RV.map(([k,t])=>m==='both'?`<figure><div class="pair"><img loading="lazy" src="img/render/${k}_day.jpg"><img loading="lazy" src="img/render/${k}_night.jpg"></div><figcaption>${t} · 낮 / 밤</figcaption></figure>`:(()=>{const mm=(m==='day'&&NOWIN.includes(k))?'night':m;return `<figure><a href="img/render/${k}_${mm}.jpg" target="_blank"><img loading="lazy" src="img/render/${k}_${mm}.jpg"></a><figcaption>${t}${mm!==m?' (창이 없어 조명 켠 모습)':''}</figcaption></figure>`})()).join('');}
 document.querySelectorAll('.rtog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.rtog button').forEach(x=>x.classList.toggle('on',x===b));rdraw(b.dataset.r);});rdraw('day');
+if(location.hash==='#render'){document.querySelector('#tabs button[data-t=trender]').click();}
 </script>
-<script type="module" src="js/app.js?v=22"></script>
+<script type="module" src="js/app.js?v=24"></script>
 </body>
 </html>

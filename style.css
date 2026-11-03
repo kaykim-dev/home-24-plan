@@ -64,3 +64,5 @@ footer{text-align:center;color:#9a9288;font-size:12px;padding:20px}
 .rgrid figure{margin:0;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.06)}.rgrid img{width:100%;display:block}
 .rgrid figcaption{padding:9px 12px;font:600 14px Pretendard,sans-serif;color:#333}.rgrid .pair{display:grid;grid-template-columns:1fr 1fr;gap:2px}
 @media (max-width:700px){.rgrid{grid-template-columns:1fr}.rgrid .pair{grid-template-columns:1fr}}
+
+.gorender{background:#2b2f3a;color:#f3efe8;border-radius:12px;padding:10px 14px;margin:0 0 12px;font:500 14px Pretendard,sans-serif;line-height:1.5}.gorender button{background:#ffcf8f;color:#222;border:0;border-radius:8px;padding:5px 10px;font:700 14px Pretendard,sans-serif;cursor:pointer;margin:0 2px}

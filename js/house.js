@@ -14,6 +14,27 @@ let tagNext = null;
 const matCache = new Map();
 
 // ---------- textures ----------
+// ---------- 실사 질감(Poly Haven CC0 사진) 오버레이 (11/3 케이: 3D도 사진처럼) ----------
+export const REAL = {};
+export async function preloadReal(base = 'img/tex/') {
+  const load = src => new Promise(res => { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+  for (const k of ['oak', 'linen', 'floor']) {
+    const im = await load(base + k + '.jpg?v=1'); if (!im) continue;
+    const c = document.createElement('canvas'); c.width = c.height = 512; const g = c.getContext('2d'); g.drawImage(im, 0, 0, 512, 512);
+    const d = g.getImageData(0, 0, 512, 512), a = d.data; let sum = 0;
+    for (let i = 0; i < a.length; i += 4) { const l = 0.3 * a[i] + 0.59 * a[i + 1] + 0.11 * a[i + 2]; a[i] = l; sum += l; }
+    const mean = sum / (a.length / 4), k2 = k === 'linen' ? 2.2 : k === 'floor' ? 2.0 : 2.0;
+    for (let i = 0; i < a.length; i += 4) { const v = Math.max(0, Math.min(255, 128 + (a[i] - mean) * k2)); a[i] = a[i + 1] = a[i + 2] = v; a[i + 3] = 255; }
+    g.putImageData(d, 0, 0); REAL[k] = c;
+  }
+}
+function realOverlay(g, key, W, H, alpha = 0.85, rot = false) {
+  const c = REAL[key]; if (!c) return false;
+  g.save(); g.globalCompositeOperation = 'overlay'; g.globalAlpha = alpha;
+  if (rot) { g.translate(W / 2, H / 2); g.rotate(Math.PI / 2); g.translate(-W / 2, -H / 2); }
+  for (let y = 0; y < H; y += 512) for (let x = 0; x < W; x += 512) g.drawImage(c, x, y);
+  g.restore(); return true;
+}
 function canvasTex(w, h, draw, repeat = 1) {
   const c = document.createElement('canvas'); c.width = w; c.height = h;
   draw(c.getContext('2d'), w, h);
@@ -43,6 +64,7 @@ function woodFloorTex(col, plank = 190) {
       }
       g.fillStyle = 'rgba(60,40,20,0.35)'; g.fillRect(x, 0, 1.5, H);
     }
+    realOverlay(g, 'floor', W, H, 0.8, true);
   });
 }
 function tileTex(col, size, grout = 3) { // 1200mm square canvas
@@ -66,6 +88,7 @@ function terrazzoTex(col) {
 function grainTex(col) {
   return canvasTex(512, 512, (g, W, H) => {
     const r = rnd(3); g.fillStyle = rgb(col); g.fillRect(0, 0, W, H);
+    if (realOverlay(g, 'oak', W, H, 0.9, true)) return;
     for (let k = 0; k < 140; k++) { g.strokeStyle = `rgba(70,40,15,${0.03 + r() * 0.07})`; g.lineWidth = 0.6 + r() * 1.6; g.beginPath(); const y = r() * H; g.moveTo(0, y); g.bezierCurveTo(W / 3, y + (r() - .5) * 18, 2 * W / 3, y + (r() - .5) * 18, W, y + (r() - .5) * 10); g.stroke(); }
   });
 }
@@ -103,6 +126,7 @@ function caneTex(col) {
 function fabricTex(col) {
   return canvasTex(256, 256, (g, W, H) => {
     const r = rnd(9); g.fillStyle = rgb(col); g.fillRect(0, 0, W, H);
+    if (realOverlay(g, 'linen', W, H, 0.55)) return;
     for (let i = 0; i < W; i += 2) { g.fillStyle = `rgba(0,0,0,${0.02 + r() * 0.03})`; g.fillRect(i, 0, 1, H); g.fillStyle = `rgba(255,255,255,${r() * 0.03})`; g.fillRect(0, i, W, 1); }
   }, 4);
 }

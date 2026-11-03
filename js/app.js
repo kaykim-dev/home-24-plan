@@ -8,14 +8,15 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 RectAreaLightUniformsLib.init();
-import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit } from './house.js?v=22';
-import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=22';
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=24';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=24';
 
 const wrap = document.getElementById('viewer');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.82;
+renderer.toneMapping = THREE.AgXToneMapping; renderer.toneMappingExposure = 0.88; // 11/3: 사진 렌더와 같은 AgX
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 wrap.appendChild(renderer.domElement);
 const labelR = new CSS2DRenderer(); labelR.domElement.className = 'labels'; wrap.appendChild(labelR.domElement);
@@ -84,7 +85,7 @@ function setConcept(i) {
   document.getElementById('loading').style.display = 'flex';
   setTimeout(() => {
     labelObjs.forEach(o => o.element.remove()); labelObjs.length = 0;
-    const g = buildHouse(scene, c.T, c.V); addLabels(g, c.V); curRoot = g; applyLightMode(g);
+    const g = buildHouse(scene, c.T, c.V); addLabels(g, c.V); curRoot = g; applyLightMode(g); addDecor(g);
     renderInfo(c); needs = true;
     document.getElementById('loading').style.display = 'none';
     history.replaceState(null, '', '#c' + c.id);
@@ -102,6 +103,34 @@ function renderInfo(c) {
     <p class="ref">참고 사례: ${c.ref}</p>
     <p class="quick">이 컨셉 핵심 장면 → ${c.views.map(v => `<button data-v="${v}">${VIEWS[v][0]}</button>`).join(' ')}</p>`;
   el.querySelectorAll('.quick button').forEach(b => b.onclick = () => { goView(b.dataset.v); wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+}
+
+// ---------- 실사 소품(Poly Haven CC0 3D 모델, 사진 렌더와 같은 자리) ----------
+const DECOR = [
+  ['pachira_aquatica_01', 2700, 10120, 0, 1500, 0.4], ['potted_plant_04', 2650, 6250, 1500, 260, 0], ['ceramic_vase_03', 2650, 7600, 1500, 220, 0],
+  ['wicker_basket_01', 2550, 7300, 0, 280, 0.3], ['ceramic_vase_04', 3510, 7090, 520, 230, 0], ['calathea_orbifolia_01', 5450, 10250, 0, 700, 0], ['wicker_basket_01', 1700, 3400, 0, 280, 0],
+];
+const gltfCache = {}; const gl = new GLTFLoader();
+function loadModel(name) {
+  if (!gltfCache[name]) gltfCache[name] = new Promise(res => gl.load(`img/models/${name}/${name}.gltf`, g => {
+    let root = g.scene; const kids = root.children.filter(c => c.isObject3D);
+    if (kids.length > 1) { // 여러 개 묶음 모델이면 가장 큰 것 하나만
+      let best = null, bh = -1; for (const k of kids) { const b = new THREE.Box3().setFromObject(k); const h = b.max.y - b.min.y; if (h > bh) { bh = h; best = k; } }
+      root = new THREE.Group(); root.add(best.clone(true));
+    }
+    root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.userData.skip = true; } });
+    res(root);
+  }, undefined, () => res(null)));
+  return gltfCache[name];
+}
+async function addDecor(root) {
+  for (const [name, x, y, z, h, rot] of DECOR) {
+    const m = await loadModel(name); if (!m || !root.parent) continue;
+    const o = m.clone(true); const b = new THREE.Box3().setFromObject(o); const s = (h / 1000) / Math.max(0.001, b.max.y - b.min.y);
+    const cx = (b.min.x + b.max.x) / 2, cz = (b.min.z + b.max.z) / 2;
+    const w = new THREE.Group(); o.position.set(-cx, -b.min.y, -cz); w.add(o); w.scale.setScalar(s); w.rotation.y = rot; w.position.set(x / 1000, z / 1000, y / 1000);
+    w.userData.skip = true; root.add(w); needs = true;
+  }
 }
 
 // ---------- 조명 보기 (11/2 케이: 천장 조명이 잘 보이게) ----------
@@ -136,7 +165,7 @@ function applyLightMode(root) {
   winLights.length = 0; root.traverse(o => { if (o.isRectAreaLight) { if (o.userData.base === undefined) o.userData.base = o.intensity; winLights.push(o); } });
   winLights.forEach(o => o.intensity = night ? 0 : o.userData.base);
   hemi.intensity = night ? 0.06 : 0.75; sun.intensity = night ? 0 : 2.6; scene.environmentIntensity = night ? 0.03 : 0.3;
-  renderer.toneMappingExposure = night ? 1.05 : 0.82;
+  renderer.toneMappingExposure = night ? 1.15 : 0.88;
   root.traverse(o => { if (o.isPointLight && !o.userData.night) { if (o.userData.base === undefined) o.userData.base = o.intensity; o.intensity = night ? o.userData.base * (lightMode === 'nightAll' ? 1.2 : 0.35) : o.userData.base; } });
   if (nightGroup) { nightGroup.parent && nightGroup.parent.remove(nightGroup); nightGroup = null; }
   if (night) { nightGroup = buildNight(root, lightMode === 'nightAll'); nightGroup.traverse(o => o.userData.night = true); }
@@ -178,6 +207,6 @@ function loop(now) {
 resize();
 const start = Math.max(0, CONCEPTS.findIndex(c => location.hash === '#c' + c.id));
 const qv = new URLSearchParams(location.search).get('v');
-setConcept(start); goView(qv && VIEWS[qv] ? qv : 'overview', true);
+await preloadReal(); setConcept(start); goView(qv && VIEWS[qv] ? qv : 'overview', true);
 requestAnimationFrame(loop);
 window.__ao = gtao; window.__audit = audit; window.__concepts = CONCEPTS; window.__views = VIEWS; window.__goView = goView; window.__setConcept = setConcept; window.__setLightMode = setLightMode; window.__scene = scene; window.__camera = camera; window.__lightPlan = LIGHT_PLAN; window.__ceil = CEIL_ONLY; window.__outside = OUTSIDE;
