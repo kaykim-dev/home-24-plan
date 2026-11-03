@@ -8,9 +8,9 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 RectAreaLightUniformsLib.init();
-import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=27';
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=30';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=25';
+import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=27';
 
 const wrap = document.getElementById('viewer');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -51,7 +51,7 @@ controls.addEventListener('change', () => { needs = true; });
 const labelObjs = [];
 function addLabels(group, V = {}) {
   const win = (V.living || '').startsWith('diningWin');
-  const L = win ? LABELS.filter(l => l[0] !== '식탁' && l[0] !== '거실·놀이').concat([['창가 식탁', 1525, 9500], ['놀이방', 1100, 7100]]) : LABELS;
+  const L = win ? LABELS.filter(l => l[0] !== '식탁' && l[0] !== '거실·놀이').concat([['창가 식탁', 1525, 9500], ['거실', 1100, 7100]]) : LABELS;
   for (const [t, x, y] of L) {
     const d = document.createElement('div'); d.className = 'lbl'; d.textContent = t;
     const o = new CSS2DObject(d); o.position.set(x / 1000, 2.45, y / 1000); group.add(o); labelObjs.push(o);

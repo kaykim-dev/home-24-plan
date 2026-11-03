@@ -76,7 +76,7 @@
       <li><b>투톤 원칙</b> 상부장·장 윗부분은 화이트로 가볍게, 하부장·서랍·니치는 우드로 무게감(주방·키큰장·신발장·분리수거장·거실장 공통).</li>
       <li><b>주방 가전</b> 전자레인지는 싱크 기준 오른쪽 상판 끝(전용 콘센트), 얼음정수기는 왼쪽 키큰장 가운데 칸(싱크에서 급수). <b>시스템 에어컨</b> 거실 4웨이 1 + 안방·아이방1·아이방2 1웨이 각 1, 주방 없음.</li>
       <li><b>주방</b> ㄱ자 + 오른쪽 연장. 오른쪽 상부장은 창 쪽 코너장 없이 오른쪽 벽에 깊이 35cm 일자. 싱크볼 960, 싱크 왼쪽 2단 건조대 위 상부장은 키큰장 폭(50cm)으로 벽까지 이어서 문이 창 쪽으로 열림. 오른쪽 전부 상부장(후드 일체). 키큰장 가운데는 모든 컨셉에서 열린 칸(홈카페). 주방 창은 싱크 위 약 0.92m.</li>
-      <li><b>거실·식탁 (고정)</b> 모든 안 공통: 식탁 1,600×800은 거실 창가로, 창 쪽 2.15m + 왼쪽 벽 1.2m ㄱ자 붙박이 벤치(좌판 아래 서랍) + 맞은편 의자 2. 가운데(옛 식탁 자리)는 매트 깔고 아기 놀이 공간(낮은 장난감장·티피·미끄럼틀·아이 테이블). 창 오른쪽(책장 쪽) 벽에 니치 키큰장: 위 장(화이트)·가운데 간접등 니치+콘센트·아래 서랍(우드). 창은 로만쉐이드.</li>
+      <li><b>거실·식탁 (고정)</b> 모든 안 공통: 식탁 1,600×800은 거실 창가로, 기성품 ㄱ자 다이닝 소파(창 쪽 약 2.15m + 왼쪽 벽 약 1.16m, 붙박이 아님) + 맞은편 의자 2. 가운데(옛 식탁 자리)는 비워 둠(장난감·매트는 모형에서 뺌). 창 오른쪽(책장 쪽) 벽에 키큰장: 위 장(화이트)·아래 서랍(우드), 가운데 니치 없이 전부 수납. 창은 로만쉐이드.</li>
       <li><b>안방</b> 침대 머리 서쪽 벽, 동쪽 벽 전체 미닫이 붙박이장. 화장대는 폭 60cm, 서서 쓰는 높이(상판 90cm) + 아래 서랍, 모든 안에서 방문 쪽(왼쪽) 끝, 문 닫으면 장처럼 보이는 파우더룸형(02·06·08)도 있음. 일부 장문은 전신거울. 확장부는 서재(1.5m 책상), 안방과는 3짝 슬라이딩 도어로 분리(유리·플루티드·간살·한지·라탄 등).</li>
       <li><b>아이방</b> 아이방1은 붙박이장(깊이 60cm, 미닫이)을 서쪽 벽으로, 침대는 동쪽 → 창을 안 가림. 아이방2도 미닫이(폭이 좁아 깊이 45cm). 책상 없음, 이층 침대 없음. 기성 서랍장(100×50×110): 아이방2는 창가에 들어감(서랍 앞 약 52cm, 창 아래 20cm 가림), 아이방1 창가는 침대 머리와 18cm라 서랍을 못 열어서 붙박이장 앞쪽 1m 대신 넣는 안(01·05·07).</li>
       <li><b>욕실</b> 변기(문 쪽 구석) ↔ 세면대(욕조 옆). 세면대·변기 위에 대리석 다이(젠다이, 깊이 12cm, 높이 약 1.2m)를 일자로 길게, 그 위로 천장까지 거울장(아래 1.45m부터 띄움, 간접등), 수전은 벽 수전. 욕조 700×1,500 절반만 30mm 돌 벽, 욕조 뒤 덧벽 니치 2줄, 욕조 위 방습 다운라이트 2개 따로.</li>
@@ -125,15 +125,15 @@ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.que
 const lb=document.getElementById('lightbox');document.addEventListener('click',e=>{if(e.target.matches('.cards img,.cases img')){lb.querySelector('img').src=e.target.src;lb.classList.add('on');}else if(e.target.closest('#lightbox'))lb.classList.remove('on');});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
-<script>fetch("scope.md?v=12").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
+<script>fetch("scope.md?v=13").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>fetch("elements.md?v=1").then(r=>r.text()).then(t=>{document.getElementById("elem").innerHTML=marked.parse(t);document.querySelectorAll("#elem a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>
 const NOWIN=['bath','entryBoth']; // 창 없는 공간은 낮에도 조명 켠 모습
-const RV=[['living','창가 식탁(ㄱ자 벤치)'],['play','가운데 놀이 매트'],['livingCab','거실 니치 키큰장'],['kitchen','주방'],['master','안방'],['study','서재(안방 확장)'],['kids1','아이방 1'],['kids2','아이방 2'],['bath','욕실'],['entryBoth','현관 신발장·분리수거장']];
+const RV=[['living','창가 식탁(ㄱ자 소파)'],['play','거실 가운데'],['livingCab','거실 키큰장'],['kitchen','주방'],['master','안방'],['study','서재(안방 확장)'],['kids1','아이방 1'],['kids2','아이방 2'],['bath','욕실'],['entryBoth','현관 신발장·분리수거장']];
 function rdraw(m){const g=document.getElementById('rgrid');g.className='rgrid'+(m==='both'?' both':'');g.innerHTML=RV.map(([k,t])=>m==='both'?`<figure><div class="pair"><img loading="lazy" src="img/render/${k}_day.jpg"><img loading="lazy" src="img/render/${k}_night.jpg"></div><figcaption>${t} · 낮 / 밤</figcaption></figure>`:(()=>{const mm=(m==='day'&&NOWIN.includes(k))?'night':m;return `<figure><a href="img/render/${k}_${mm}.jpg" target="_blank"><img loading="lazy" src="img/render/${k}_${mm}.jpg"></a><figcaption>${t}${mm!==m?' (창이 없어 조명 켠 모습)':''}</figcaption></figure>`})()).join('');}
 document.querySelectorAll('.rtog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.rtog button').forEach(x=>x.classList.toggle('on',x===b));rdraw(b.dataset.r);});rdraw('day');
 addEventListener('DOMContentLoaded',()=>{if(location.hash==='#render')document.querySelector('#tabs button[data-t=trender]').click();});
 </script>
-<script type="module" src="js/app.js?v=30"></script>
+<script type="module" src="js/app.js?v=34"></script>
 </body>
 </html>
