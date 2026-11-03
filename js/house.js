@@ -851,7 +851,8 @@ export function buildHouse(scene, T, V) {
   const mCab = T.mCab || T.tall, mWood = !!T.mWood, mH = T.mHandle || 'groove';
   const segs = V.wd || [['wd', 5951, 7300, []], ['van', 7300, 8400], ['wd', 8400, 9317, []]]; CUR_SEGS.length = 0; CUR_SEGS.push(...segs);
   for (const sg of segs) {
-    if (sg[0] === 'wd') wardrobe(6022, sg[1], 6622, sg[2], 'W', T, { doors: Math.max(2, Math.round((sg[2] - sg[1]) / 600)), color: mCab, handle: 'none', wood: mWood, mirror: sg[3] || [], sliding: true });
+    if (sg[0] === 'mir') wardrobe(6022, sg[1], 6622, sg[2], 'W', T, { doors: 1, color: mCab, handle: 'none', wood: mWood, mirror: [0] }); // 11/3 케이: 맨 왼쪽(방문 쪽) 전신 거울 장(폭 500, 뒤는 얕은 수납)
+    else if (sg[0] === 'wd') wardrobe(6022, sg[1], 6622, sg[2], 'W', T, { doors: Math.max(2, Math.round((sg[2] - sg[1]) / 600)), color: mCab, handle: 'none', wood: mWood, mirror: sg[3] || [], sliding: true });
     else vanityNook(sg[1], sg[2], T, mCab, mWood, sg[0] === 'pow');
   }
   // 안방 확장부 = 서재: 창가 긴 책상(1.5m) + 의자 + 벽 선반, 안방과는 3짝 슬라이딩 도어로 분리
@@ -892,7 +893,7 @@ export function buildHouse(scene, T, V) {
 }
 
 
-function vanityNook(y1, y2, T, mCab, mWood, hidden = false) { // 서서 쓰는 좁은 화장대(폭 약 60cm, 상판 900) + 아래 서랍 + 거울·조명 + 위 장. hidden=파우더룸
+function vanityNook(y1, y2, T, mCab, mWood, hidden = false) { // 서서 쓰는 화장대(11/3 케이: 폭 100cm, 거울 장 오른쪽, 상판 900) + 아래 서랍 + 거울·조명 + 위 장. hidden=파우더룸
   const vm = M(mCab, { tex: mWood ? 'grainV' : undefined, rough: .5 }); const w = y2 - y1;
   B(6122, y1, 6622, y2, 2000, CEIL, vm, 3); B(6600, y1, 6622, y2, 0, 2000, vm);
   B(6022, y1, 6622, y1 + 20, 0, CEIL, vm); B(6022, y2 - 20, 6622, y2, 0, CEIL, vm);
