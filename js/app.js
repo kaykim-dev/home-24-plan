@@ -8,9 +8,9 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 RectAreaLightUniformsLib.init();
-import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=58';
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=59';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=36';
+import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=37';
 
 const wrap = document.getElementById('viewer');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
