@@ -636,7 +636,7 @@ function kidsWardrobe(x1, y1, x2, y2, facing, T) { // 아이 붙박이장: 위 �
   B(W / 2 - cw, D / 2 - 20, W / 2, D / 2 + 1, 100, 520, M(darker(col, .85)), 0, g);
   for (let i = 0; i < 2; i++) B(W / 2 - cw + 20 + i * (cw / 2), D / 2 - 330, W / 2 - cw + (i + 1) * (cw / 2) - 10, D / 2 - 30, 110, 420, M(['#e7d8c6', '#cfdcd2', '#efe0b8'][i], { tex: 'fabric' }), 25, g);
 }
-function bumperBed(cx, cy, col = '#eee8df') { // 11/3 케이: 비비엔다 범퍼침대(바닥형) 외경 1,200×1,700×350, 바닥 매트 5cm, 범퍼 두께 10cm 4개(긴 것 2 + 짧은 것 2)
+function bumperBed(cx, cy, col = '#e9d8bd') { // 11/4 케이 확인: 비비엔다 특대형 범퍼침대 풀세트(크림 베이지). 11/3 케이: 비비엔다 범퍼침대(바닥형) 외경 1,200×1,700×350, 바닥 매트 5cm, 범퍼 두께 10cm 4개(긴 것 2 + 짧은 것 2)
   const x1 = cx - 600, x2 = cx + 600, y1 = cy - 850, y2 = cy + 850;
   const fab = M(col, { tex: 'fabric', rough: 1 }), seam = M(darker(col, .9), { tex: 'fabric', rough: 1 });
   B(x1 + 100, y1 + 100, x2 - 100, y2 - 100, 0, 50, M('#f7f4ee', { tex: 'fabric', rough: 1 }), 20); // 바닥 매트 1,000×1,500×50
