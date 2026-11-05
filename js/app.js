@@ -8,9 +8,9 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 RectAreaLightUniformsLib.init();
-import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal } from './house.js?v=59';
+import { buildHouse, LABELS, CEIL_ONLY, OUTSIDE, LIGHT_PLAN, audit, preloadReal, KIDS, KIDS_PLANS } from './house.js?v=62';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=40';
+import { CONCEPTS, VIEWS, VIEW_ORDER } from './concepts.js?v=41';
 
 const wrap = document.getElementById('viewer');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -236,6 +236,21 @@ const chips = document.getElementById('chips');
 CONCEPTS.forEach((c, i) => { const b = document.createElement('button'); b.innerHTML = `<b>${c.id}</b> ${c.name}`; b.onclick = () => setConcept(i); chips.appendChild(b); });
 const vbar = document.getElementById('views');
 VIEW_ORDER.forEach(k => { const b = document.createElement('button'); b.textContent = VIEWS[k][0]; b.dataset.v = k; b.onclick = () => goView(k); vbar.appendChild(b); });
+// 11/5 케이: 아이방 배치안(침대·서랍장 실제로 옮겨 보기)
+const sp0 = new URLSearchParams(location.search);
+for (const r of ['k1', 'k2']) { const q = (sp0.get(r) || '').toUpperCase(); if (KIDS_PLANS[r][q]) KIDS[r] = q; }
+function renderKids() {
+  const bar = document.getElementById('kidsbar'); bar.innerHTML = '';
+  for (const [r, title] of [['k1', '아이방 1 배치'], ['k2', '아이방 2 배치']]) {
+    const row = document.createElement('div'); row.className = 'krow'; row.innerHTML = `<span>${title}</span>`;
+    for (const [key, [name]] of Object.entries(KIDS_PLANS[r])) { const b = document.createElement('button'); b.innerHTML = `<b>${key}</b> ${name}`; b.classList.toggle('on', KIDS[r] === key);
+      b.onclick = () => { KIDS[r] = key; renderKids(); const u = new URL(location.href); u.searchParams.set(r, key); u.searchParams.delete('v'); history.replaceState(null, '', u); setConcept(CONCEPTS.indexOf(current)); setTimeout(() => goView(r === 'k1' ? 'kids1Top' : 'kids2Top'), 80); };
+      row.appendChild(b); }
+    const n = document.createElement('p'); n.className = 'knote'; n.textContent = `${KIDS[r]}안: ${KIDS_PLANS[r][KIDS[r]][1]}`; row.appendChild(n);
+    bar.appendChild(row);
+  }
+}
+renderKids();
 
 function loop(now) {
   requestAnimationFrame(loop);

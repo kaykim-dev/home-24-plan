@@ -9,7 +9,7 @@
 <meta property="og:description" content="돌려 보는 3D 컨셉 6가지, 계획 도면, 같은 평면 시공 사례">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
 <body>
@@ -42,6 +42,7 @@
   <div id="panobar" class="views panobar"><span>📷 사진처럼 둘러보기 (360°)</span><button data-p="panoLiving">거실·식탁</button><button data-p="panoKitchen">주방</button><button data-p="panoMaster">안방</button><button data-p="panoStudy">서재</button><button data-p="panoKids1">아이방 1</button><button data-p="panoKids2">아이방 2</button><button data-p="panoBath">욕실</button><button data-p="panoEntry">현관</button><button id="panoExit" style="display:none" class="exit">✕ 3D 모형으로</button></div>
   <div id="lightbar" class="views lightbar"><span>조명 보기</span><button id="cabBtn">🚪 장 속 보기</button><button data-m="day" class="on">낮</button><button data-m="night">밤 · 간접등만</button><button data-m="nightAll">밤 · 전부 켬</button><button data-m="plan">천장 조명 평면도</button></div>
   <div id="views" class="views"></div>
+  <div id="kidsbar" class="kidsbar"></div>
   <article id="info" class="info"></article>
   <p class="note">· 배치 점검: 모든 문이 열리는 자리(아이방·욕실·안방·세탁부스), 싱크·쿡탑 앞 60cm, 냉장고·키큰장 문 열림, 식탁 의자 빼는 자리, 침대 양옆·발치 통로, 세탁기·세면대·변기 앞 공간에 가구가 겹치지 않게 6개 컨셉 모두 자동으로 확인했어요.<br>· 천장 조명은 3D 아래 '조명 보기' 버튼으로 보세요: <b>밤 · 간접등만</b>(평소 분위기), <b>밤 · 전부 켬</b>(직접등까지), <b>천장 조명 평면도</b>(위에서 본 조명 위치·종류 색 구분).<br>· 벽 높이는 천장 2.3m로 가정했어요(실측 천장고·하리 높이 받으면 수정). 평면 치수는 실측 CAD 기준이고 가구는 예시입니다.<br>· 주소창의 #c01~#c06 으로 컨셉을 바로 열 수 있어요. 예) 이 페이지 주소 끝에 #c05</p>
 </section>
@@ -134,6 +135,6 @@ function rdraw(m){const g=document.getElementById('rgrid');g.className='rgrid'+(
 document.querySelectorAll('.rtog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.rtog button').forEach(x=>x.classList.toggle('on',x===b));rdraw(b.dataset.r);});rdraw('day');
 addEventListener('DOMContentLoaded',()=>{if(location.hash==='#render')document.querySelector('#tabs button[data-t=trender]').click();});
 </script>
-<script type="module" src="js/app.js?v=69"></script>
+<script type="module" src="js/app.js?v=72"></script>
 </body>
 </html>

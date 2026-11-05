@@ -69,3 +69,6 @@ footer{text-align:center;color:#9a9288;font-size:12px;padding:20px}
 
 .panobar{align-items:center;background:#fff7ec;border:1px solid #f0d9b5;border-radius:12px;padding:8px}.panobar span{font:800 14px Pretendard,sans-serif;color:#8a5a1c;margin-right:4px}.panobar button.on{background:#c9a77c;border-color:#c9a77c;color:#1d1d1d;font-weight:700}.panobar button.exit{background:#2b2f3a;color:#fff;border-color:#2b2f3a}
 .ptinfo2{position:absolute;left:50%;top:45%;transform:translateX(-50%);z-index:6;color:#fff;font:700 15px Pretendard,sans-serif;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+
+/* 11/5 아이방 배치안 */
+.kidsbar{background:#f3f6f4;border:1px solid #d6e2da;border-radius:12px;padding:8px 10px;margin:8px 0}.kidsbar .krow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}.kidsbar span{font:800 14px Pretendard,sans-serif;color:#2f5d46;margin-right:4px}.kidsbar button{border:1px solid #cfdcd2;background:#fff;border-radius:10px;padding:7px 11px;font:500 13.5px Pretendard,sans-serif;cursor:pointer}.kidsbar button.on{background:#2f5d46;border-color:#2f5d46;color:#fff}.kidsbar .knote{flex-basis:100%;margin:2px 0 6px;font:500 13.5px/1.5 Pretendard,sans-serif;color:#33443a}

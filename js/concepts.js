@@ -110,21 +110,10 @@ export const VIEWS = {
   play: ['거실 가운데', [2.55, 1.55, 8.6], [0.6, 0.6, 6.4]],
   study: ['서재(안방 확장)', [4.95, 1.55, 8.75], [3.9, 0.9, 10.2]],
   laundry: ['세탁 부스', [4.1, 1.75, 8.7], [5.9, 0.9, 10.05]],
-  // 11/5 케이: 아이방 두 곳 시점 여러 개 추가(배치는 그대로)
+  // 11/5 케이: 아이방 배치안 비교용 시점(문에서·위에서)
   kids1Door: ['아이방1 문에서', [1.95, 1.6, 3.85], [0.7, 0.75, 1.7]],
-  kids1Closet: ['아이방1 붙박이장', [2.0, 1.6, 1.6], [0.2, 0.9, 3.3]],
-  kids1Bed: ['아이방1 침대', [0.7, 1.55, 3.7], [1.6, 0.25, 2.1]],
-  kids1Sash: ['아이방1 창고 샷시 쪽', [0.75, 1.5, 3.75], [1.55, 1.05, 1.42]],
-  kids1Eye: ['아이방1 아이 눈높이', [1.85, 0.75, 3.8], [0.9, 0.7, 1.6]],
-  kids1Store: ['아이방1 창고 안', [1.05, 1.55, 0.4], [2.0, 0.9, 1.35]],
   kids1Top: ['아이방1 위에서', [1.06, 4.6, 2.72], [1.06, 0, 2.7]],
   kids2Door: ['아이방2 문에서', [4.85, 1.6, 3.8], [6.2, 0.6, 1.8]],
-  kids2Closet: ['아이방2 붙박이장', [6.5, 1.6, 1.55], [4.8, 0.9, 3.2]],
-  kids2Dresser: ['아이방2 서랍장', [6.1, 1.55, 1.75], [6.1, 0.55, 3.95]],
-  kids2Bed: ['아이방2 침대', [5.3, 1.55, 3.55], [6.1, 0.25, 2.2]],
-  kids2Sash: ['아이방2 창고 샷시 쪽', [5.35, 1.5, 3.4], [5.95, 1.05, 1.35]],
-  kids2Eye: ['아이방2 아이 눈높이', [5.25, 0.75, 3.35], [6.3, 0.6, 1.9]],
-  kids2Store: ['아이방2 창고 안', [5.2, 1.5, 1.3], [6.3, 0.9, 0.35]],
   kids2Top: ['아이방2 위에서', [5.66, 4.6, 2.66], [5.66, 0, 2.65]],
 };
-export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'entryBoth', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'kids1Door', 'kids1Closet', 'kids1Bed', 'kids1Sash', 'kids1Eye', 'kids1Store', 'kids1Top', 'boiler', 'kids2', 'kids2Door', 'kids2Closet', 'kids2Dresser', 'kids2Bed', 'kids2Sash', 'kids2Eye', 'kids2Store', 'kids2Top', 'bath', 'laundry'];
+export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'entryBoth', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'kids1Door', 'kids1Top', 'boiler', 'kids2', 'kids2Door', 'kids2Top', 'bath', 'laundry'];
