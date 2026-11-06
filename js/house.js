@@ -769,7 +769,7 @@ export function buildHouse(scene, T, V) {
   for (const c of root.children) if (c.isMesh && c.position.y > 1.9) c.userData.wall = true;
   // 거실/안방 확장부 새 벽
   wall(3066, 9540, 3176, 10500);
-  // 세탁 부스: (11/5 케이) 일반 여닫이 문 1짝(경첩 창 쪽) + 안방 쪽 고정 마감판(11/6 틈새장 취소)
+  // 세탁 부스: (11/5 케이) 일반 여닫이 문 1짝(경첩 창 쪽) + 안방 쪽 벽 고정 선반 4단(11/6 틈새장 취소 → 케이 안)
   // 11/3 케이: 부스를 50cm 내밀던 벽 → 10cm만(세탁기 깊이 약 87cm + 문 여유). 앞면 x5572, 내력벽 면(x5672)에서 10cm. 서재가 40cm 넓어짐
   wall(5572, 9480, 5672, 9540); B(5572, 9540, 5622, 10500, 2050, CEIL, wallM).userData.wall = true;
   { const pm = M('#f6f5f2', { rough: 0.6 }); /* 11/2 아내 레퍼런스: 세탁실 문짝은 무광 화이트(어두우면 답답) */ const pan = (ax, ay, bx, by) => { const L = Math.hypot(bx - ax, by - ay); const m = addMesh(new THREE.BoxGeometry(22 * S, 2030 * S, L * S), pm); m.position.set((ax + bx) / 2 * S, 1.03, (ay + by) / 2 * S); m.rotation.y = Math.atan2(bx - ax, by - ay); m.userData.door = true; };
@@ -966,7 +966,11 @@ export function buildHouse(scene, T, V) {
     B(6608, 9560, 6610, 9760, 150, 154, M('#9a958d')).userData.wall = true; B(6608, 9560, 6610, 9760, 496, 500, M('#9a958d')).userData.wall = true; }
   { // 11/6 실장님: 문 달면 문틀이 양쪽 최소 36mm씩 들어와 세탁기 쪽 실제 폭은 830~850, 세탁기(686) 옆은 약 11cm만 남음 → 틈새장 빼고 남는 틈은 판으로 막아 마감(문 옆 면 고정판), 세탁기 위 선반 유지
     const fm = M('#f6f5f2', { rough: .55 });
-    B(5600, 9555, 5620, 9765, 20, 2040, fm); // 고정 마감판(부스 앞면과 같은 면)
+    // 11/6 케이: 마감판 대신 안방 쪽 벽에 고정 선반 4단(세탁기와 안 닿게, 앞쪽 약 35cm만), 문 열면 보이고 닫으면 가려짐
+    const sh = M('#f2efe9', { rough: .5 }), lip = M('#c9a272', { tex: 'grain', rough: .5 });
+    for (const z of [300, 650, 1000, 1350]) { B(5640, 9560, 5990, 9660, z, z + 18, sh); B(5640, 9655, 5990, 9662, z + 18, z + 48, lip).userData.skip = true; B(5640, 9560, 5648, 9662, z + 18, z + 48, lip).userData.skip = true; }
+    const bc2 = ['#5d8fc9', '#f2f2f2', '#e8b04a', '#8ac0a8'];
+    for (let k = 0; k < 4; k++) { const z = 318 + k * 350; for (let j = 0; j < 2; j++) B(5665 + j * 150, 9572, 5775 + j * 150, 9650, z, z + 200 + (j % 2) * 50, M(bc2[(k + j) % 4], { rough: .35 }), 14).userData.skip = true; }
     B(5740, 9560, 6612, 10490, 2140, 2160, M(darker(T.part, .9))).userData.wall = true;
     for (let j = 0; j < 3; j++) B(5800 + j * 270, 9620, 6040 + j * 270, 10440, 2160, 2280, M('#d9c9ae', { tex: 'rattan' }), 15).userData.wall = true;
   }
