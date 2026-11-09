@@ -787,7 +787,7 @@ export function buildHouse(scene, T, V) {
   wall(0, 5950, 1250, 6000, 0, 1110, partMats); wall(0, 5950, 1250, 6000, 1390, CEIL, partMats); wall(0, 5950, 18, 6000, 1110, 1390, partMats); wall(1132, 5950, 1250, 6000, 1110, 1390, partMats);
   { const gm = GLASS(); const g = B(18, 5968, 1132, 5982, 1110, 1390, gm); g.castShadow = false; g.userData.wall = true;
     const fm = M(T.niche || T.tall, { tex: 'grainV', rough: .5 }); B(18, 5950, 1132, 6000, 1100, 1110, fm).userData.wall = true; B(18, 5950, 1132, 6000, 1390, 1400, fm).userData.wall = true; }
-  { const fr = M(T.dframe, { rough: 0.45, metal: 0.15, tex: 'grainV' }); const pc = M('#f3f1ea', { rough: 0.75, opacity: 0.62 }); const hm = T.khandle === 'brass' ? M('#b8955a', { metal: .8, rough: .3 }) : BLACKMETAL();
+  { const fr = M(T.entryCab || T.tall || '#c9a272', { rough: 0.5, tex: 'grainV' }); /* 11/9 케이: 간살은 우드(신발장과 같은 나무) */ const pc = M('#f3f1ea', { rough: 0.75, opacity: 0.62 }); const hm = T.khandle === 'brass' ? M('#b8955a', { metal: .8, rough: .3 }) : BLACKMETAL();
     B(1190, 4400, 1250, 4430, 0, 2100, fr); B(1190, 5720, 1250, 5750, 0, 2100, fr); B(1190, 4400, 1250, 5750, 2070, 2100, fr); // 문틀
     const LW = 643, open = 0.26; // 문짝 폭 643×2(가운데 4mm), 약 15° 열린 모습
     for (const [hy, dir] of [[4432, 1], [5718, -1]]) {

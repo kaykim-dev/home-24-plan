@@ -7,7 +7,7 @@ export const CONCEPTS = [
     id: '01', name: '화이트 오크 미니멀', tag: '밝은 오크 + 무광 화이트. 같은 평면 사례와 가장 가까운 기본안. 식탁은 창가 ㄱ자 소파, 가운데는 비워 둠.',
     T: { upper: '#f5f3ef', niche: '#d2b48c', blackout: '#b9b4ad', wall: '#efede8', part: '#ece9e3', dframe: '#2f2f2f', klow: '#d2b48c', kWood: true, ctop: '#ebe6de', kup: '#f5f3ef', tall: '#d2b48c', fridge: '#eceeef', base: '#f1eee8', seat: '#e3d8c8', back: '#d8cab6', table: '#c9a272', leg: '#a07a52', chair: '#c9a272', mat: '#f4ead6', acc: '#cfe0d4', duvet: '#efe8dc', head: '#d9ccb8', desk: '#d2b892', vanity: '#ffffff', curtain: '#f3efe8', floor: 'wood', floorc: [214, 188, 152], entry: [214, 208, 198], rug: '#ece4d6', khandle: 'groove', shelf: '#f6f5f2', kidFrame: '#d2b892', mCab: '#f4f3f0', panel: '#d2b892' },
     V: { living: 'corner', tall: 'cafe', kids: 'single', sep: 'glass', cove: true, dresser: true, wd: [['van', 6551, 7551], ['wd', 7551, 9317, []]] },
-    pal: [['#efede8', '벽 · 웜화이트'], ['#d6bc98', '바닥 · 라이트 오크 마루'], ['#f7f6f3', '주방·붙박이장 · 무광 화이트'], ['#e3d8c8', '창가 소파 · 오트밀 패브릭'], ['#c9a272', '식탁·의자 · 오크 원목'], ['#2f2f2f', '중문 · 블랙 간살 양개']],
+    pal: [['#efede8', '벽 · 웜화이트'], ['#d6bc98', '바닥 · 라이트 오크 마루'], ['#f7f6f3', '주방·붙박이장 · 무광 화이트'], ['#e3d8c8', '창가 소파 · 오트밀 패브릭'], ['#c9a272', '식탁·의자 · 오크 원목'], ['#d2b48c', '중문 · 오크 간살 양개']],
     inter: ['상부장·키큰장 윗부분은 화이트로 가볍게, 하부장·서랍은 라이트 오크로 무게감(투톤)', '손잡이 없는 홈(그루브) 도어, 밝은 스톤 상판', '거실·주방은 마그네틱 레일 조명 + 커튼박스 간접등, 방은 작은 2인치 매입등, 식탁 위만 펜던트 1개'],
     eff: ['거실 창가: 기성품 ㄱ자 다이닝 소파(창 쪽 약 2.15m + 왼쪽 벽 약 1.16m) + 식탁 1,600×800 + 맞은편 의자 2, 가운데는 비워 둔 거실', '창 오른쪽 벽 키큰장(가운데 니치 없이 전부 수납, 위 화이트 장·가운데 간접등 니치+콘센트·아래 우드 서랍)', '키큰장 가운데 허리 높이 열린 홈카페 칸(커피머신·토스터·전자레인지) + 위 간접등', '아이방: 비비엔다 범퍼침대 120×170, 기성 서랍장(100×50×110)은 아이방2 창가·아이방1 붙박이장 앞쪽에'],
     sep: '안방↔서재: 문 없이 트임(11/3) · 붙박이장: 전부 미닫이, 방문 옆 북쪽 벽부터 ㄴ자 붙박이장(코너 옆 문 1짝은 전신 거울 문), 동쪽 벽 화장대 폭 100cm·서서 쓰는 높이(상판 90cm)·아래 서랍, 옆 문 1짝 전신거울',
@@ -19,7 +19,7 @@ export const CONCEPTS = [
     V: { living: 'corner', tall: 'cafeGlass', kids: 'floor', headPanel: true, cove: true, jungmun: 'one', sep: 'gansal', wd: [['pow', 6551, 7551], ['wd', 7551, 9317, []]] },
     pal: [['#ebe4d9', '벽 · 그레이지'], ['#c4a078', '바닥 · 미디엄 오크(220폭)'], ['#b98d62', '주방 하부장·키큰장·붙박이장 · 오크 무늬목'], ['#ece4d6', '소파·의자 · 크림 부클레'], ['#b8955a', '손잡이·수전·조명 · 브라스'], ['#efe9df', '상판 · 웜화이트 스톤']],
     inter: ['주방 하부장·키큰장·신발장·안방 붙박이장을 같은 오크 무늬목으로 이어서 고급스럽게', '천장 가장자리 간접등 + 안방 침대 뒤 오크 헤드월(위 간접등, 양쪽 브라스 벽등)', '브라스 손잡이·수전·펜던트, 중문은 오크 간살 양개(유리 없음)'],
-    eff: ['키큰장 가운데: 플루티드 유리 포켓도어 홈카페(쓸 땐 문을 옆으로 밀어 넣음) + 머그 선반', '거실 창가: 기성품 ㄱ자 다이닝 소파(창 쪽 약 2.15m + 왼쪽 벽 약 1.16m) + 식탁 1,600×800 + 맞은편 의자 2, 가운데는 비워 둔 거실', '현관은 간살 양개 중문(유리 없음, 살 뒤 반투명 폴리카보네이트)', '아이방: 비비엔다 범퍼침대 120×170(바닥형) + 붙박이장'],
+    eff: ['키큰장 가운데: 플루티드 유리 포켓도어 홈카페(쓸 땐 문을 옆으로 밀어 넣음) + 머그 선반', '거실 창가: 기성품 ㄱ자 다이닝 소파(창 쪽 약 2.15m + 왼쪽 벽 약 1.16m) + 식탁 1,600×800 + 맞은편 의자 2, 가운데는 비워 둔 거실', '현관은 우드 간살 양개 중문(유리 없음, 살 뒤 반투명 폴리카보네이트)', '아이방: 비비엔다 범퍼침대 120×170(바닥형) + 붙박이장'],
     sep: '안방↔서재: 문 없이 트임(11/3) · 파우더룸: ㄴ자 붙박이장 + 화장대(폭 100cm)를 포켓도어로 숨김 → 닫으면 붙박이장처럼 보임, 옆 문 1짝 전신거울',
     ref: '국보 씨티극동 43평(통창·간접등), 디자인다룸(중문)', views: ['cafe', 'vanityN']
   },
@@ -57,7 +57,7 @@ export const CONCEPTS = [
     id: '06', name: '스모크 오크 + 트래버틴', tag: '짙은 스모크 오크 + 따뜻한 트래버틴 + 웜화이트. 차분하고 묵직한 고급감.',
     T: { upper: '#f1ede7', niche: '#5e5246', blackout: '#b9b4ad', wall: '#efebe5', part: '#e4ddd3', dframe: '#3b3631', klow: '#5e5246', kWood: true, ctop: '#e2d5c3', kup: '#f1ede7', tall: '#5e5246', fridge: '#efebe5', base: '#d8cdbf', seat: '#e3dbd0', back: '#d3c7b8', table: '#dccbb3', stone: true, leg: '#3b3631', metalLeg: true, chair: '#5e5246', chairStyle: 'wood', mat: '#e9e1d6', acc: '#a58e74', duvet: '#f1ede7', head: '#8c7a68', channel: true, desk: '#5e5246', vanity: '#5e5246', curtain: '#ece6dd', floor: 'wood', floorc: [206, 182, 150], plank: 240, entry: [190, 180, 168], rug: '#e3dbd0', pendant: '#e2d5c3', pendantStyle: 'dome', khandle: 'bar', splash: '#e2d5c3', shelf: '#efebe5', kidCab: '#f1ede7', kidFrame: '#b39b80', mCab: '#5e5246', mWood: true, mHandle: 'bar', panel: '#5e5246', vanityTop: '#e2d5c3', niche: '#e2d5c3', entryCab: '#5e5246', entryWood: true, entryDoor: '#3b3631', lampc: '#efe2c8' },
     V: { living: 'corner', tall: 'cafe', kids: 'nook', headPanel: true, cove: true, sep: 'gansal', wd: [['pow', 6551, 7551], ['wd', 7551, 9317, []]] },
-    pal: [['#efebe5', '벽 · 웜화이트'], ['#ceb696', '바닥 · 내추럴 오크(240폭)'], ['#5e5246', '주방·키큰장·붙박이장 · 스모크 오크'], ['#e2d5c3', '상판·식탁·벽타일 · 트래버틴'], ['#e3dbd0', '창가 소파 · 스톤 패브릭'], ['#3b3631', '중문 간살·조명 · 다크 브론즈']],
+    pal: [['#efebe5', '벽 · 웜화이트'], ['#ceb696', '바닥 · 내추럴 오크(240폭)'], ['#5e5246', '주방·키큰장·붙박이장 · 스모크 오크'], ['#e2d5c3', '상판·식탁·벽타일 · 트래버틴'], ['#e3dbd0', '창가 소파 · 스톤 패브릭'], ['#3b3631', '조명 · 다크 브론즈']],
     inter: ['짙은 스모크 오크 수납장 + 밝은 바닥·벽으로 대비', '주방 상판·벽타일·식탁을 트래버틴 톤으로 통일', '천장 간접등, 안방 스모크 오크 헤드월'],
     eff: ['키큰장 가운데 홈카페 칸: 트래버틴 안쪽 + 위 간접등', '거실 창가: 기성품 ㄱ자 다이닝 소파(창 쪽 약 2.15m + 왼쪽 벽 약 1.16m) + 식탁 1,600×800 + 맞은편 의자 2, 가운데는 비워 둔 거실', '아이방: 비비엔다 범퍼침대 + 창가 쿠션 벤치'],
     sep: '안방↔서재: 문 없이 트임(11/3) · 파우더룸: ㄴ자 붙박이장 + 화장대(폭 100cm)를 포켓도어로 숨김',
@@ -92,6 +92,9 @@ export const VIEWS = {
   living: ['창가 식탁(ㄱ자 소파)', [2.55, 1.55, 7.6], [0.9, 0.5, 10.4]],
   dining: ['식탁·책장', [0.9, 1.5, 9.6], [2.6, 0.9, 6.6]],
   entry: ['현관·전실', [2.4, 1.5, 7.4], [0.35, 0.95, 4.8]],
+  jungmun: ['중문(간살 양개)', [2.3, 1.6, 5.0], [1.2, 1.3, 5.08]],
+  jungmunIn: ['현관에서 본 중문', [0.15, 1.45, 5.08], [2.2, 1.05, 5.08]],
+  nicheGlass: ['니치 유리(거실에서)', [1.0, 1.3, 7.3], [0.6, 1.25, 5.9]],
   kitchen: ['주방', [3.5, 1.55, 4.95], [3.0, 1.1, 0.6]],
   sink: ['싱크·건조대', [3.36, 1.6, 2.95], [3.36, 1.35, 0.3]],
   lightPlan: ['천장 조명 평면도', [3.31, 13.2, 5.36], [3.31, 0, 5.3]],
@@ -116,4 +119,4 @@ export const VIEWS = {
   kids2Door: ['아이방2 문에서', [4.85, 1.6, 3.8], [6.2, 0.6, 1.8]],
   kids2Top: ['아이방2 위에서', [5.66, 4.6, 2.66], [5.66, 0, 2.65]],
 };
-export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'entryBoth', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'kids1Door', 'kids1Top', 'boiler', 'kids2', 'kids2Door', 'kids2Top', 'bath', 'laundry'];
+export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'jungmun', 'jungmunIn', 'nicheGlass', 'entryBoth', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'kids1Door', 'kids1Top', 'boiler', 'kids2', 'kids2Door', 'kids2Top', 'bath', 'laundry'];
