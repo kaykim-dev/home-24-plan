@@ -780,11 +780,27 @@ export function buildHouse(scene, T, V) {
       const k = addMesh(new THREE.BoxGeometry(20 * S, 160 * S, 22 * S), M('#c9a272', { rough: .5 })); k.position.set((hx - Math.sin(-a) * (L - 60) - 30) * S, 1.0, (hy - Math.cos(-a) * (L - 60)) * S); k.rotation.y = -a; k.userData.door = true; }
     B(5572, 9770, 5622, 9790, 0, 2040, M('#b9b9b9', { metal: .6, rough: .3 })).userData.wall = true; // 문틀(틈새장과 문 사이)
     B(5572, 9540, 5622, 10500, 2040, 2050, M('#b9b9b9', { metal: .6, rough: .3 })).userData.wall = true; }
-  // 전실 벽 + 3연동 중문
-  wall(1200, 4170, 1250, 4400, 0, CEIL, partMats); wall(1200, 5750, 1250, 6000, 0, CEIL, partMats); wall(0, 5950, 1250, 6000, 0, CEIL, partMats); wall(1200, 4400, 1250, 5750, 2100, CEIL, partMats);
-  { const fr = M(T.dframe, { rough: 0.4, metal: 0.3 }); const gm = V.jungmun === 'one' ? M('#f4f2ec', { rough: 0.55, opacity: 0.72 }) : V.moru ? M('#eef2f2', { rough: 0.6, opacity: 0.55 }) : GLASS();
-    (V.jungmun === 'one' ? [[4400, 5380], [5330, 5750]] : [[4400, 4880], [4850, 5320], [5290, 5750]]).forEach(([a, b], i) => { const x = 1196 + i * 16; B(x, a, x + 14, b, 0, 25, fr); B(x, a, x + 14, b, 2075, 2100, fr); B(x, a, x + 14, a + 25, 0, 2100, fr); B(x, b - 25, x + 14, b, 0, 2100, fr); if (V.muntin) B(x, a, x + 14, b, 1000, 1020, fr); const g = B(x + 5, a + 25, x + 9, b - 25, 25, 2075, gm); g.castShadow = false; });
-    B(1190, 4400, 1250, 5750, 2085, 2100, fr); if (V.jungmun === 'one') B(1180, 5240, 1192, 5260, 700, 1400, METAL(), 5); }
+  // 전실 벽 + 중문
+  // 11/9 케이·아내: 중문은 유리 대신 간살(세로 살) + 양개형(가운데서 양쪽으로 열림). 살 뒤는 안 깨지는 반투명 폴리카보네이트판
+  // 11/9 케이: 분리수거장 니치(1,100~1,400) 뒤 벽을 유리로 → 현관에서 거실이 보이게(고정 강화유리, 아이 손 안 닿는 높이)
+  wall(1200, 4170, 1250, 4400, 0, CEIL, partMats); wall(1200, 5750, 1250, 6000, 0, CEIL, partMats); wall(1200, 4400, 1250, 5750, 2100, CEIL, partMats);
+  wall(0, 5950, 1250, 6000, 0, 1110, partMats); wall(0, 5950, 1250, 6000, 1390, CEIL, partMats); wall(0, 5950, 18, 6000, 1110, 1390, partMats); wall(1132, 5950, 1250, 6000, 1110, 1390, partMats);
+  { const gm = GLASS(); const g = B(18, 5968, 1132, 5982, 1110, 1390, gm); g.castShadow = false; g.userData.wall = true;
+    const fm = M(T.niche || T.tall, { tex: 'grainV', rough: .5 }); B(18, 5950, 1132, 6000, 1100, 1110, fm).userData.wall = true; B(18, 5950, 1132, 6000, 1390, 1400, fm).userData.wall = true; }
+  { const fr = M(T.dframe, { rough: 0.45, metal: 0.15, tex: 'grainV' }); const pc = M('#f3f1ea', { rough: 0.75, opacity: 0.62 }); const hm = T.khandle === 'brass' ? M('#b8955a', { metal: .8, rough: .3 }) : BLACKMETAL();
+    B(1190, 4400, 1250, 4430, 0, 2100, fr); B(1190, 5720, 1250, 5750, 0, 2100, fr); B(1190, 4400, 1250, 5750, 2070, 2100, fr); // 문틀
+    const LW = 643, open = 0.26; // 문짝 폭 643×2(가운데 4mm), 약 15° 열린 모습
+    for (const [hy, dir] of [[4432, 1], [5718, -1]]) {
+      const g = new THREE.Group(); g.position.set(1225 * S, 0, hy * S); g.rotation.y = dir * open; root.add(g);
+      const y0 = dir > 0 ? 0 : -LW, y1 = dir > 0 ? LW : 0;
+      const part = (a, b, z0, z1, m) => { const o = B(-20, a, 20, b, z0, z1, m, 0, g); if (o) o.userData.door = true; return o; };
+      part(y0, y0 + 55, 10, 2065, fr); part(y1 - 55, y1, 10, 2065, fr); part(y0, y1, 10, 110, fr); part(y0, y1, 1975, 2065, fr); part(y0, y1, 960, 1010, fr);
+      const pn = part(y0 + 55, y1 - 55, 110, 1975, pc); pn.castShadow = false; pn.scale.x = 0.15;
+      const n = 12, inner = LW - 110, sw = 22, gap = (inner - n * sw) / (n + 1);
+      for (let i = 0; i < n; i++) { const a = y0 + 55 + gap + i * (sw + gap); part(a, a + sw, 110, 1975, fr).scale.x = 0.8; }
+      const hy2 = dir > 0 ? y1 - 90 : y0 + 90; for (const sx of [-1, 1]) { const h = B(sx * 34 - 6, hy2 - 8, sx * 34 + 6, hy2 + 8, 750, 1350, hm, 3, g); h.userData.door = true; }
+    }
+  }
   // 문짝 + 문틀
   const doorCol = T.doorCol || '#f3f1ec';
   // 보일러실 문: 11/3 발코니2를 창고로 남겨 원래처럼 창고(발코니) 쪽에서 드나듦. 폭 약 580
@@ -888,7 +904,7 @@ export function buildHouse(scene, T, V) {
       for (const [cx, z, c] of tags) B(cx - 40, 5521, cx + 40, 5525, z - 30, z, M(c, { rough: .4 }), 2).userData.skip = true; }
     cabinet(g, 1150, 420, 1400, CEIL - 1400, { color: T.upper || '#f3f1ec', doors: 3, handle: 'none', toe: 0 });
     const nm = M(T.niche || T.tall, { tex: 'grainV', rough: .5 });
-    B(0, 5530, 1150, 5950, 1100, 1118, nm); B(0, 5930, 1150, 5950, 1100, 1400, nm); B(0, 5530, 18, 5950, 1100, 1400, nm); B(1132, 5530, 1150, 5950, 1100, 1400, nm); B(0, 5530, 1150, 5950, 1382, 1400, nm);
+    B(0, 5530, 1150, 5950, 1100, 1118, nm); /* 11/9 니치 뒤판 없음 → 거실 쪽 유리 */ B(0, 5530, 18, 5950, 1100, 1400, nm); B(1132, 5530, 1150, 5950, 1100, 1400, nm); B(0, 5530, 1150, 5950, 1382, 1400, nm);
     B(30, 5540, 1120, 5560, 1372, 1378, M('#fff4dc', { emissive: '#ffe9c0', ei: 2.2 })).userData.wall = true;
     B(150, 5700, 450, 5880, 1118, 1135, M(T.table || '#c9a272', { tex: 'grain' }), 6).userData.skip = true; // 키 트레이
     B(250, 5760, 300, 5800, 1135, 1145, METAL(), 3).userData.skip = true;
@@ -1286,7 +1302,7 @@ function bathroom(T) { // 욕실 x4474~6258, y4119~5724. 변기(북서) ↔ 세�
 export const DOOR_SWINGS = { '보일러실 문': [932, 420, 1512, 1000, 932, 420, 580], '아이방1 문': [1250, 3175, 2040, 3965, 2040, 3965, 790], '아이방2 문': [4704, 3030, 5554, 3880, 4704, 3880, 850], '욕실 문': [4474, 4975, 5149, 5650, 4474, 5650, 675], '안방 문': [3264, 5951, 4164, 6851, 3264, 5951, 900] };
 export const USE_ZONES = {
   '싱크 앞 서는 자리(60cm)': [2880, 885, 3840, 1463], '건조대 앞(손 닿는 자리)': [2865, 885, 3300, 1300], '쿡탑 앞(60cm)': [3255, 1930, 3835, 2510], '식세기 문 여는 자리': [3255, 1335, 3835, 1925], '냉장고 문 열림(60cm)': [3070, 2341, 3640, 4170], '키큰장 문 열림(50cm)': [2865, 890, 3340, 2341],
-  '신발장 앞': [0, 4540, 1200, 4900], '현관→중문 동선': [0, 4560, 1190, 5120], '중문 앞 복도': [1250, 4400, 1800, 5750],
+  '신발장 앞': [0, 4540, 1200, 4900], '현관→중문 동선': [0, 4560, 1190, 5120], '중문 앞 복도·양개 문 열리는 자리': [1250, 4400, 1920, 5750],
   '식탁 의자 빼는 자리(옆)': [2060, 6790, 2460, 8000], '식탁 끝 의자 빼는 자리': [820, 8830, 1280, 9150], '의자 뒤 거실 통로(책장 앞)': [2060, 6000, 2760, 9250],
   '안방 침대 북쪽 옆': [3720, 6900, 5450, 7300], '안방 침대 남쪽 옆': [3720, 8960, 5450, 9317],
   '세탁기 문 앞(부스 안·앞)': [5050, 9850, 5700, 10465], '세탁실 문 여는 자리(경첩 창 쪽)': [4872, 9790, 5570, 10470], '세면대 앞': [4995, 4525, 5395, 4920], '변기 앞': [4550, 4790, 4910, 5200], '서재 의자 빼는 자리(65cm)': [3786, 9030, 4486, 9680], '세탁실 가는 길(책상 동쪽)': [4846, 9560, 5040, 10480], '안방 북쪽 붙박이장 앞(거울 문 포함)': [4221, 6560, 6012, 7150], '안방→서재 통로': [4610, 9317, 5160, 9540], '팬트리 문 여는 자리': [2180, 9560, 2720, 10300], '분리수거 통 빼는 자리': [0, 5130, 1150, 5525],

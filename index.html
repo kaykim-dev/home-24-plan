@@ -81,7 +81,7 @@
       <li><b>안방</b> 침대 머리 서쪽 벽, 동쪽 벽 전체 미닫이 붙박이장. 화장대는 폭 60cm, 서서 쓰는 높이(상판 90cm) + 아래 서랍, 모든 안에서 방문 쪽(왼쪽) 끝, 문 닫으면 장처럼 보이는 파우더룸형(02·06·08)도 있음. 일부 장문은 전신거울. 확장부는 서재(1.5m 책상), 안방과는 3짝 슬라이딩 도어로 분리(유리·플루티드·간살·한지·라탄 등).</li>
       <li><b>아이방</b> 아이방1은 붙박이장(깊이 60cm, 미닫이)을 서쪽 벽으로, 침대는 동쪽 → 창을 안 가림. 아이방2도 미닫이(폭이 좁아 깊이 45cm). 책상 없음, 이층 침대 없음. 기성 서랍장(100×50×110): 아이방2는 창가에 들어감(서랍 앞 약 52cm, 창 아래 20cm 가림), 아이방1 창가는 침대 머리와 18cm라 서랍을 못 열어서 붙박이장 앞쪽 1m 대신 넣는 안(01·05·07).</li>
       <li><b>욕실</b> 변기(문 쪽 구석) ↔ 세면대(욕조 옆). 세면대·변기 위에 대리석 다이(젠다이, 깊이 12cm, 높이 약 1.2m)를 일자로 길게, 그 위로 천장까지 거울장(아래 1.45m부터 띄움, 간접등), 수전은 벽 수전. 욕조 700×1,500 절반만 30mm 돌 벽, 욕조 뒤 덧벽 니치 2줄, 욕조 위 방습 다운라이트 2개 따로.</li>
-      <li><b>현관</b> 전실 + 중문(3연동 또는 오크 프레임 원슬라이딩·샤틴 유리: 02·07·08) + 신발장(아래 우드·가운데 오크 니치·위 화이트) + 분리수거장 5분류(폭 1,150: 종량제 30cm 뚜껑 통 · 플라스틱 32cm · 위 비닐/아래 캔·유리 28cm · 종이 세움칸 16cm, 문을 당기면 통이 같이 나오는 인출식, 투입구 없음, 종량제·캔유리 칸은 아이 잠금) + 가운데 키 칸 + 상부장(봉투·장바구니).</li>
+      <li><b>현관</b> 전실 + 중문(간살 양개형, 유리 없이 살 뒤 반투명 폴리카보네이트, 11/9) · 분리수거장 니치 뒤 벽은 고정 유리(현관에서 거실이 보임) + 신발장(아래 우드·가운데 오크 니치·위 화이트) + 분리수거장 5분류(폭 1,150: 종량제 30cm 뚜껑 통 · 플라스틱 32cm · 위 비닐/아래 캔·유리 28cm · 종이 세움칸 16cm, 문을 당기면 통이 같이 나오는 인출식, 투입구 없음, 종량제·캔유리 칸은 아이 잠금) + 가운데 키 칸 + 상부장(봉투·장바구니).</li>
       <li><b>세탁</b> 창고 자리 세탁부스: 정면 전체를 4짝 폴딩도어로 → 열면 앞이 다 트여 세탁기 문이 끝까지 열림. 세탁기 옆 빼서 쓰는 세제 틈새장(폭 21cm), 위 선반. 방음은 흡음 패널 폴딩도어 + 고무 가스켓.</li>
       <li><b>난방</b> 개별난방(LNG). 확장부 바닥 난방 배관 연장 필요.</li>
     </ul>
@@ -126,7 +126,7 @@ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.que
 const lb=document.getElementById('lightbox');document.addEventListener('click',e=>{if(e.target.matches('.cards img,.cases img')){lb.querySelector('img').src=e.target.src;lb.classList.add('on');}else if(e.target.closest('#lightbox'))lb.classList.remove('on');});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
-<script>fetch("scope.md?v=30").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
+<script>fetch("scope.md?v=31").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>fetch("elements.md?v=1").then(r=>r.text()).then(t=>{document.getElementById("elem").innerHTML=marked.parse(t);document.querySelectorAll("#elem a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>
 const NOWIN=['bath','entryBoth']; // 창 없는 공간은 낮에도 조명 켠 모습
@@ -135,6 +135,6 @@ function rdraw(m){const g=document.getElementById('rgrid');g.className='rgrid'+(
 document.querySelectorAll('.rtog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.rtog button').forEach(x=>x.classList.toggle('on',x===b));rdraw(b.dataset.r);});rdraw('day');
 addEventListener('DOMContentLoaded',()=>{if(location.hash==='#render')document.querySelector('#tabs button[data-t=trender]').click();});
 </script>
-<script type="module" src="js/app.js?v=74"></script>
+<script type="module" src="js/app.js?v=75"></script>
 </body>
 </html>
