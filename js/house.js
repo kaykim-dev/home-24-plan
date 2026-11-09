@@ -799,6 +799,9 @@ export function buildHouse(scene, T, V) {
       const n = 12, inner = LW - 110, sw = 22, gap = (inner - n * sw) / (n + 1);
       for (let i = 0; i < n; i++) { const a = y0 + 55 + gap + i * (sw + gap); part(a, a + sw, 110, 1975, fr).scale.x = 0.8; }
       const hy2 = dir > 0 ? y1 - 90 : y0 + 90; for (const sx of [-1, 1]) { const h = B(sx * 34 - 6, hy2 - 8, sx * 34 + 6, hy2 + 8, 750, 1350, hm, 3, g); h.userData.door = true; }
+      // 11/9 케이: 아이가 밀고 나가지 않게 '거는' 장치(잠금 X). 거실 쪽 위(1,700~1,760) 슬라이드 걸쇠 + 가운데 자석 캐치, 아래 문짝은 플러시 볼트로 바닥 고정
+      { const lb = dir > 0 ? [y1 - 150, y1 - 4] : [y0 + 4, y0 + 50]; const o = B(20, lb[0], 30, lb[1], 1700, 1760, hm, 2, g); if (o) o.userData.door = true;
+        if (dir > 0) { const fb = B(20, y1 - 40, 28, y1 - 20, 10, 160, hm, 2, g); if (fb) fb.userData.door = true; } }
     }
   }
   // 문짝 + 문틀

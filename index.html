@@ -126,7 +126,7 @@ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.que
 const lb=document.getElementById('lightbox');document.addEventListener('click',e=>{if(e.target.matches('.cards img,.cases img')){lb.querySelector('img').src=e.target.src;lb.classList.add('on');}else if(e.target.closest('#lightbox'))lb.classList.remove('on');});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
-<script>fetch("scope.md?v=31").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
+<script>fetch("scope.md?v=32").then(r=>r.text()).then(t=>{document.getElementById("scope").innerHTML=marked.parse(t);document.querySelectorAll("#scope a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>fetch("elements.md?v=1").then(r=>r.text()).then(t=>{document.getElementById("elem").innerHTML=marked.parse(t);document.querySelectorAll("#elem a").forEach(a=>{a.target="_blank";a.rel="noopener"});});</script>
 <script>
 const NOWIN=['bath','entryBoth']; // 창 없는 공간은 낮에도 조명 켠 모습
@@ -135,6 +135,6 @@ function rdraw(m){const g=document.getElementById('rgrid');g.className='rgrid'+(
 document.querySelectorAll('.rtog button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.rtog button').forEach(x=>x.classList.toggle('on',x===b));rdraw(b.dataset.r);});rdraw('day');
 addEventListener('DOMContentLoaded',()=>{if(location.hash==='#render')document.querySelector('#tabs button[data-t=trender]').click();});
 </script>
-<script type="module" src="js/app.js?v=75"></script>
+<script type="module" src="js/app.js?v=76"></script>
 </body>
 </html>
