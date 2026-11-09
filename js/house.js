@@ -775,16 +775,19 @@ export function buildHouse(scene, T, V) {
   for (const c of root.children) if (c.isMesh && c.position.y > 1.9) c.userData.wall = true;
   // 거실/안방 확장부 새 벽
   wall(3066, 9540, 3176, 10500);
-  // 세탁 부스: (11/5 케이) 일반 여닫이 문 1짝(경첩 창 쪽) + 안방 쪽 벽 고정 선반 4단(11/6 틈새장 취소 → 케이 안)
+  // 세탁 부스: 11/9 양개 여닫이 2짝(각 약 44cm, 서재 쪽으로 열림), 옆 수납 없음
   // 11/3 케이: 부스를 50cm 내밀던 벽 → 10cm만(세탁기 깊이 약 87cm + 문 여유). 앞면 x5572, 내력벽 면(x5672)에서 10cm. 서재가 40cm 넓어짐
   wall(5572, 9480, 5672, 9540); B(5572, 9540, 5622, 10500, 2050, CEIL, wallM).userData.wall = true;
   { const pm = M('#f6f5f2', { rough: 0.6 }); /* 11/2 아내 레퍼런스: 세탁실 문짝은 무광 화이트(어두우면 답답) */ const pan = (ax, ay, bx, by) => { const L = Math.hypot(bx - ax, by - ay); const m = addMesh(new THREE.BoxGeometry(22 * S, 2030 * S, L * S), pm); m.position.set((ax + bx) / 2 * S, 1.03, (ay + by) / 2 * S); m.rotation.y = Math.atan2(bx - ax, by - ay); m.userData.door = true; };
     // 11/5 케이: 폴딩도어 → 일반 여닫이 문 1짝, 경첩은 창 쪽(y10490), 서재 쪽으로 열림. 문 폭 700(활짝 열면 끝이 x4872 → 책상 끝 x4836과 안 부딪힘)
     //   문 왼쪽(안방 쪽) y9548~9770은 틈새장 앞판이 부스 앞면과 같은 면으로 마감(문 대신 이 판을 당겨 틈새장을 뺌)
-    { const L = 700, hx = 5583, hy = 10490, a = -0.32; /* 살짝 연 모습(약 18°) */ const m = addMesh(new THREE.BoxGeometry(L * S, 2030 * S, 40 * S), pm);
-      m.position.set((hx - Math.sin(-a) * L / 2) * S, 1.03, (hy - Math.cos(-a) * L / 2) * S); m.rotation.y = Math.PI / 2 - a; m.userData.door = true;
-      const k = addMesh(new THREE.BoxGeometry(20 * S, 160 * S, 22 * S), M('#c9a272', { rough: .5 })); k.position.set((hx - Math.sin(-a) * (L - 60) - 30) * S, 1.0, (hy - Math.cos(-a) * (L - 60)) * S); k.rotation.y = -a; k.userData.door = true; }
-    B(5572, 9770, 5622, 9790, 0, 2040, M('#b9b9b9', { metal: .6, rough: .3 })).userData.wall = true; // 문틀(틈새장과 문 사이)
+    // 11/9 실장님 스케치업: 문 1짝(약 77cm)이면 서재 책상에 걸려 다 안 열리고 세탁기 옆 틈은 67mm뿐 → 케이 안: 양개 여닫이 2짝(각 약 44cm), 옆 수납 없음
+    for (const [hy, dir, a] of [[9576, 1, 0.55], [10464, -1, 0.55]]) { const L = 442, hx = 5590;
+      const m = addMesh(new THREE.BoxGeometry(36 * S, 2030 * S, L * S), pm);
+      m.position.set((hx - Math.sin(a) * L / 2) * S, 1.03, (hy + dir * Math.cos(a) * L / 2) * S); m.rotation.y = dir > 0 ? -a : Math.PI + a; m.userData.door = true;
+      const kx = hx - Math.sin(a) * (L - 50) - 25 * Math.cos(a), ky = hy + dir * Math.cos(a) * (L - 50) + dir * 0;
+      const k = addMesh(new THREE.BoxGeometry(18 * S, 160 * S, 18 * S), M('#c9a272', { rough: .5 })); k.position.set(kx * S, 1.0, ky * S); k.userData.door = true; }
+    for (const [y1, y2] of [[9540, 9576], [10464, 10500]]) B(5572, y1, 5622, y2, 0, 2040, M('#b9b9b9', { metal: .6, rough: .3 })).userData.wall = true; // 문틀 36mm
     B(5572, 9540, 5622, 10500, 2040, 2050, M('#b9b9b9', { metal: .6, rough: .3 })).userData.wall = true; }
   // 전실 벽 + 중문
   // 11/9 케이·아내: 중문은 유리 대신 간살(세로 살) + 양개형(가운데서 양쪽으로 열림). 살 뒤는 안 깨지는 반투명 폴리카보네이트판
@@ -1007,11 +1010,7 @@ export function buildHouse(scene, T, V) {
     B(6608, 9560, 6610, 9760, 150, 154, M('#9a958d')).userData.wall = true; B(6608, 9560, 6610, 9760, 496, 500, M('#9a958d')).userData.wall = true; }
   { // 11/6 실장님: 문 달면 문틀이 양쪽 최소 36mm씩 들어와 세탁기 쪽 실제 폭은 830~850, 세탁기(686) 옆은 약 11cm만 남음 → 틈새장 빼고 남는 틈은 판으로 막아 마감(문 옆 면 고정판), 세탁기 위 선반 유지
     const fm = M('#f6f5f2', { rough: .55 });
-    // 11/6 케이: 마감판 대신 안방 쪽 벽에 고정 선반 4단(세탁기와 안 닿게, 앞쪽 약 35cm만), 문 열면 보이고 닫으면 가려짐
-    const sh = M('#f2efe9', { rough: .5 }), lip = M('#c9a272', { tex: 'grain', rough: .5 });
-    for (const z of [300, 650, 1000, 1350]) { B(5640, 9560, 5990, 9660, z, z + 18, sh); B(5640, 9655, 5990, 9662, z + 18, z + 48, lip).userData.skip = true; B(5640, 9560, 5648, 9662, z + 18, z + 48, lip).userData.skip = true; }
-    const bc2 = ['#5d8fc9', '#f2f2f2', '#e8b04a', '#8ac0a8'];
-    for (let k = 0; k < 4; k++) { const z = 318 + k * 350; for (let j = 0; j < 2; j++) B(5665 + j * 150, 9572, 5775 + j * 150, 9650, z, z + 200 + (j % 2) * 50, M(bc2[(k + j) % 4], { rough: .35 }), 14).userData.skip = true; }
+    // 11/9: 옆 틈 67mm라 선반·틈새장 없음(양개 문이 앞을 다 가림)
     B(5740, 9560, 6612, 10490, 2140, 2160, M(darker(T.part, .9))).userData.wall = true;
     for (let j = 0; j < 3; j++) B(5800 + j * 270, 9620, 6040 + j * 270, 10440, 2160, 2280, M('#d9c9ae', { tex: 'rattan' }), 15).userData.wall = true;
   }
@@ -1330,7 +1329,7 @@ export const USE_ZONES = {
   '신발장 앞': [0, 4540, 1200, 4900], '현관→중문 동선': [0, 4560, 1190, 5120], 
   '식탁 의자 빼는 자리(옆)': [2060, 6790, 2460, 8000], '식탁 끝 의자 빼는 자리': [820, 8830, 1280, 9150], '의자 뒤 거실 통로(책장 앞)': [2060, 6000, 2760, 9250],
   '안방 침대 북쪽 옆': [3720, 6900, 5450, 7300], '안방 침대 남쪽 옆': [3720, 8960, 5450, 9317],
-  '세탁기 문 앞(부스 안·앞)': [5050, 9850, 5700, 10465], '세탁실 문 여는 자리(경첩 창 쪽)': [4872, 9790, 5570, 10470], '세면대 앞': [4995, 4525, 5395, 4920], '변기 앞': [4550, 4790, 4910, 5200], '서재 의자 빼는 자리(65cm)': [3786, 9030, 4486, 9680], '세탁실 가는 길(책상 동쪽)': [4846, 9560, 5040, 10480], '안방 북쪽 붙박이장 앞(거울 문 포함)': [4221, 6560, 6012, 7150], '안방→서재 통로': [4610, 9317, 5160, 9540], '팬트리 문 여는 자리': [2180, 9560, 2720, 10300], '분리수거 통 빼는 자리': [0, 5130, 1150, 5525],
+  '세탁기 문 앞(부스 안·앞)': [5050, 9850, 5700, 10465], '세탁실 양개 문 여는 자리': [5120, 9580, 5570, 10460], '세면대 앞': [4995, 4525, 5395, 4920], '변기 앞': [4550, 4790, 4910, 5200], '서재 의자 빼는 자리(65cm)': [3786, 9030, 4486, 9680], '세탁실 가는 길(책상 동쪽)': [4846, 9560, 5040, 10480], '안방 북쪽 붙박이장 앞(거울 문 포함)': [4221, 6560, 6012, 7150], '안방→서재 통로': [4610, 9317, 5160, 9540], '팬트리 문 여는 자리': [2180, 9560, 2720, 10300], '분리수거 통 빼는 자리': [0, 5130, 1150, 5525],
 };
 export function audit() {
   const out = []; const bb = new THREE.Box3();
