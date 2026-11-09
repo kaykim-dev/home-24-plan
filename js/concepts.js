@@ -92,7 +92,8 @@ export const VIEWS = {
   living: ['창가 식탁(ㄱ자 소파)', [2.55, 1.55, 7.6], [0.9, 0.5, 10.4]],
   dining: ['식탁·책장', [0.9, 1.5, 9.6], [2.6, 0.9, 6.6]],
   entry: ['현관·전실', [2.4, 1.5, 7.4], [0.35, 0.95, 4.8]],
-  jungmun: ['중문(간살 양개)', [2.3, 1.6, 5.0], [1.2, 1.3, 5.08]],
+  jungmunTop: ['중문 위에서', [1.45, 3.4, 5.1], [1.45, 0, 5.08]],
+  jungmun: ['중문(복도에서)', [2.3, 1.6, 5.0], [1.2, 1.3, 5.08]],
   jungmunIn: ['현관에서 본 중문', [0.15, 1.45, 5.08], [2.2, 1.05, 5.08]],
   nicheGlass: ['니치 유리(거실에서)', [1.0, 1.3, 7.3], [0.6, 1.25, 5.9]],
   kitchen: ['주방', [3.5, 1.55, 4.95], [3.0, 1.1, 0.6]],
@@ -119,4 +120,4 @@ export const VIEWS = {
   kids2Door: ['아이방2 문에서', [4.85, 1.6, 3.8], [6.2, 0.6, 1.8]],
   kids2Top: ['아이방2 위에서', [5.66, 4.6, 2.66], [5.66, 0, 2.65]],
 };
-export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'jungmun', 'jungmunIn', 'nicheGlass', 'entryBoth', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'kids1Door', 'kids1Top', 'boiler', 'kids2', 'kids2Door', 'kids2Top', 'bath', 'laundry'];
+export const VIEW_ORDER = ['overview', 'overview2', 'living', 'livingCab', 'ac', 'dining', 'play', 'entry', 'jungmunIn', 'jungmun', 'jungmunTop', 'nicheGlass', 'entryBoth', 'recycle', 'kitchen', 'sink', 'cafe', 'master', 'vanityN', 'study', 'kids1', 'kids1Door', 'kids1Top', 'boiler', 'kids2', 'kids2Door', 'kids2Top', 'bath', 'laundry'];
